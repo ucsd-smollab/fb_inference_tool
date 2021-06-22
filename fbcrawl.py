@@ -35,8 +35,8 @@ def generate_inferences(friends, participant, key_value_pairs):
 
 #-------------------------------------------------------------------------------
 
-path_to_chrome_driver = "/Users/masmart/Downloads/chromedriver"
-username = "masmart14@gmail.com"
+path_to_chrome_driver = "C:\\Users\\tanst\\chromedriver.exe"
+username = "sttan@ucsd.edu"
 url = "https://mobile.facebook.com/home.php"
 
 driver = FBdriver(executable_path=path_to_chrome_driver)
@@ -49,7 +49,9 @@ key_value_pairs = {
     "religion": [],
 }
 
+# fetching all url paths to the user's friends' profiles
 friends = driver.full_friend_lookup_table()
+
 for p, f in friends.items():
     f.attributes["places"] = driver.scrape_places_lived(f)
     f.attributes["religion"] = driver.scrape_religion(f)

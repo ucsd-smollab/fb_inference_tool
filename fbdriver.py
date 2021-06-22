@@ -37,9 +37,21 @@ class FBdriver(webdriver.Chrome):
 
     def full_friend_lookup_table(self):
         if self.friend_lookup_table:
+            # no variable named friend_lookup. is it supposed to return self.friend_lookup_table?
             return friend_lookup
-        url = "https://mobile.facebook.com/{}/friends".format(self.participant_path)
+
+        # navigating to user profile
+        profile_url = "https://mobile.facebook.com/{}".format(self.participant_path)
+        self.get(profile_url)
+
+        # navigating to friends list
+        friends_btn_element = self.find_element_by_css_selector("[data-sigil=expanded-context-log]")
+        friends_list_url = friends_btn_element.get_attribute("href")
+        friends_list_url = friends_list_url.split("/")[-1]
+        url = "https://mobile.facebook.com/{}".format(friends_list_url)
         self.get(url)
+
+        # getting all of user's friends loaded on screen
         all_friends_loaded = False
         last_height = self.execute_script("return document.body.scrollHeight;")
         while (not all_friends_loaded):
@@ -48,12 +60,18 @@ class FBdriver(webdriver.Chrome):
             if new_height == last_height:
                 all_friends_loaded = True
             last_height = new_height
-        friend_elements = self.find_elements_by_css_selector("._52jh > a")
+        
+        # getting all url to friends
+        friend_elements = self.find_elements_by_css_selector("._5pxa ._5pxc a")
         friend_urls = [f.get_attribute("href") for f in friend_elements]
         friend_paths = [f.split("/")[-1] for f in friend_urls if f]
         friend_lookup_table = {p:Friend(p) for p in friend_paths}
         self.friend_lookup_table = friend_lookup_table
         return friend_lookup_table
+
+        '''
+        Note: profile.php is part of the 
+        '''
 
     def full_mutual_friend_list(self, friend):
         # TO DO
