@@ -37,8 +37,7 @@ class FBdriver(webdriver.Chrome):
 
     def full_friend_lookup_table(self):
         if self.friend_lookup_table:
-            # no variable named friend_lookup. is it supposed to return self.friend_lookup_table?
-            return friend_lookup
+            return self.friend_lookup_table
 
         # navigating to user profile
         profile_url = "https://mobile.facebook.com/{}".format(self.participant_path)
@@ -47,9 +46,7 @@ class FBdriver(webdriver.Chrome):
         # navigating to friends list
         friends_btn_element = self.find_element_by_css_selector("[data-sigil=expanded-context-log]")
         friends_list_url = friends_btn_element.get_attribute("href")
-        friends_list_url = friends_list_url.split("/")[-1]
-        url = "https://mobile.facebook.com/{}".format(friends_list_url)
-        self.get(url)
+        self.get(friends_list_url)
 
         # getting all of user's friends loaded on screen
         all_friends_loaded = False
@@ -69,10 +66,6 @@ class FBdriver(webdriver.Chrome):
         self.friend_lookup_table = friend_lookup_table
         return friend_lookup_table
 
-        '''
-        Note: profile.php is part of the 
-        '''
-
     def full_mutual_friend_list(self, friend):
         # TO DO
         # scrape list of mutual friends
@@ -81,7 +74,10 @@ class FBdriver(webdriver.Chrome):
         return []
 
     def scrape_places_lived(self, friend):
-        self.get("https://facebook.com/" + friend.path + "/about_places")
+        if "profile.php" in friend.path:
+            self.get("https://facebook.com/" + friend.path + "&sk=about_places")
+        else:
+            self.get("https://facebook.com/" + friend.path + "/about_places")
         sleep(0.2)
         try:
             elts = self.find_elements_by_css_selector(".aahdfvyu.sej5wr8e ~ div")
