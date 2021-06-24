@@ -35,8 +35,8 @@ def generate_inferences(friends, participant, key_value_pairs):
 
 #-------------------------------------------------------------------------------
 
-path_to_chrome_driver = "/Users/masmart/Downloads/chromedriver"
-username = "masmart14@gmail.com"
+path_to_chrome_driver = "/Users/aaron/opt/WebDriver/bin/chromedriver"
+username = "aaronbroukhim@aol.com"
 url = "https://mobile.facebook.com/home.php"
 
 driver = FBdriver(executable_path=path_to_chrome_driver)
@@ -45,35 +45,35 @@ driver.implicitly_wait(10)
 driver.login(url, username) # type pw manually
 
 key_value_pairs = {
-    "places": [],
-    "religion": [],
+    "work and ed": [],
+    "places lived": [],
 }
 
 friends = driver.full_friend_lookup_table()
 for p, f in friends.items():
-    f.attributes["places"] = driver.scrape_places_lived(f)
-    f.attributes["religion"] = driver.scrape_religion(f)
-    key_value_pairs["places"].extend(f.attributes["places"])
-    key_value_pairs["religion"].append(f.attributes["religion"])
+    f.attributes["places lived"] = driver.scrape_places_lived(f)
+    f.attributes["work and ed"] = driver.scrape_work_and_ed(f)
+    key_value_pairs["places lived"].extend(f.attributes["places lived"])
+    key_value_pairs["work and ed"].extend(f.attributes["work and ed"])
     f.mutual_friends = driver.full_mutual_friend_list(f)
     f.name = driver.scrape_name(f)
 participant = Friend(driver.participant_path)
-participant.attributes["places"] = driver.scrape_places_lived(participant)
-participant.attributes["religion"] = driver.scrape_religion(participant)
-key_value_pairs["places"].extend(participant.attributes["places"])
-key_value_pairs["religion"].append(participant.attributes["religion"])
+participant.attributes["places lived"] = driver.scrape_places_lived(participant)
+participant.attributes["work and ed"] = driver.scrape_work_and_ed(participant)
+key_value_pairs["places lived"].extend(participant.attributes["places lived"])
+key_value_pairs["work and ed"].extend(participant.attributes["work and ed"])
 
 # keep key value pairs that appear at least 3 times
-place_counts = Counter(key_value_pairs["places"])
-key_value_pairs["places"] = []
+place_counts = Counter(key_value_pairs["places lived"])
+key_value_pairs["places lived"] = []
 for place, count in place_counts.items():
     if count >= 3 and place is not None:
-        key_value_pairs["places"].append(place)
-religion_counts = Counter(key_value_pairs["religion"])
-key_value_pairs["religion"] = []
-for religion, count in religion_counts.items():
-    if count >= 3 and religion is not None:
-        key_value_pairs["religion"].append(religion)
+        key_value_pairs["places lived"].append(place)
+work_and_ed_counts = Counter(key_value_pairs["work and ed"])
+key_value_pairs["work and ed"] = []
+for workAndEd, count in work_and_ed_counts.items():
+    if count >= 3 and workAndEd is not None:
+        key_value_pairs["work and ed"].append(workAndEd)
 
 inferences = generate_inferences(friends, participant, key_value_pairs)
 

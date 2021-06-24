@@ -32,7 +32,8 @@ class FBdriver(webdriver.Chrome):
         self.participant_path = url.split("?")[0].split("/")[-1]
 
     def scroll(self):
-        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        #remove if not testing
+        #self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         sleep(0.5)
 
     def full_friend_lookup_table(self):
@@ -62,6 +63,25 @@ class FBdriver(webdriver.Chrome):
         # return list of Friends
         return []
 
+    def scrape_name(self, friend):
+        #load friends facebook page
+        self.get("https://facebook.com/" + friend.path)
+        sleep(0.2)
+        #find name element by xpath and return attribute string value
+        elt = self.find_element_by_css_selector("h1.gmql0nx0.l94mrbxd.p1ri9a11.lzcic4wl")
+        name = elt.get_attribute("innerText")
+        print(name)
+        return name
+
+    def scrape_work_and_ed(self, friend):
+        self.get("https://facebook.com/" + friend.path + "/about_work_and_education")
+        elts = self.find_elements_by_css_selector(".dati1w0a.tu1s4ah4.f7vcsfb0.discj3wi > div")
+        workAndEd = []
+        for i in elts:
+            workAndEd.append(i.get_attribute("innerText"))
+        print(workAndEd)
+        return workAndEd
+
     def scrape_places_lived(self, friend):
         self.get("https://facebook.com/" + friend.path + "/about_places")
         sleep(0.2)
@@ -69,12 +89,19 @@ class FBdriver(webdriver.Chrome):
             elts = self.find_elements_by_css_selector(".aahdfvyu.sej5wr8e ~ div")
             place_texts  = [elt.get_attribute("innerText") for elt in elts[7:]]
             places = [p.split("\n")[0] for p in place_texts if p != "No places to show"]
+            print(places)
             return places
         except Exception:
             return None
+    
+    def scrape_contact_and_basic(self, friend):
+        return "contact and basic"
 
-    def scrape_religion(self, friend):
-        return "TO DO"
+    def scrape_family_and_rel(self, friend):
+        return "family and rel"
 
-    def scrape_name(self, friend):
-        return "TO DO"
+    def scrape_details(self, friend):
+        return "details"
+
+    def scrape_life_events(self, friend):
+        return "events"
