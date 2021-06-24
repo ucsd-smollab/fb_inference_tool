@@ -66,8 +66,7 @@ class FBdriver(webdriver.Chrome):
     def scrape_name(self, friend):
         #load friends facebook page
         self.get("https://facebook.com/" + friend.path)
-        sleep(0.2)
-        #find name element by xpath and return attribute string value
+        #find name element by css selector and return attribute string value
         elt = self.find_element_by_css_selector("h1.gmql0nx0.l94mrbxd.p1ri9a11.lzcic4wl")
         name = elt.get_attribute("innerText")
         print(name)
@@ -95,13 +94,28 @@ class FBdriver(webdriver.Chrome):
             return None
     
     def scrape_contact_and_basic(self, friend):
-        return "contact and basic"
+        self.get("https://facebook.com/" + friend.path + "/about_contact_and_basic_info")
+        elts = self.find_elements_by_css_selector(".dati1w0a.tu1s4ah4.f7vcsfb0.discj3wi > div")
+        contactAndBasic = []
+        for i in elts:
+            contactAndBasic.append(i.get_attribute("innerText"))
+        print(contactAndBasic)
+        return contactAndBasic
 
     def scrape_family_and_rel(self, friend):
-        return "family and rel"
-
-    def scrape_details(self, friend):
-        return "details"
+        self.get("https://facebook.com/" + friend.path + "/about_family_and_relationships")
+        elts = self.find_elements_by_css_selector(".aahdfvyu.sej5wr8e ~ div")
+        familyAndRel = []
+        for i in elts[7:]:
+            familyAndRel.append(i.get_attribute("innerText"))
+        print(familyAndRel)
+        return familyAndRel
 
     def scrape_life_events(self, friend):
-        return "events"
+        self.get("https://facebook.com/" + friend.path + "/about_life_events")
+        elts = self.find_elements_by_css_selector(".dati1w0a.tu1s4ah4.f7vcsfb0.discj3wi")
+        lifeEvents = []
+        for i in elts:
+            lifeEvents.append(i.get_attribute("innerText"))
+        print(lifeEvents)
+        return lifeEvents
