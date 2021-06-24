@@ -85,6 +85,6 @@ data_to_send = {
 }
 
 querystring = urllib.parse.urlencode(data_to_send)
-driver.get("http://127.0.0.1:5000/go?{}".format(querystring)) # flask app
+driver.get(f'http://127.0.0.1:5000/go?{querystring}') # flask app
 
 driver.execute_script("alert('Finished!');")

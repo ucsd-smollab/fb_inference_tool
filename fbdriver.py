@@ -3,6 +3,12 @@ from selenium.webdriver.chrome.options import Options
 from time import sleep
 from friend import Friend
 
+def format_url(friend, sub_path):
+    places_url = f'https://facebook.com/{friend.path}'
+    if "profile.php" in friend.path:
+        return f'{places_url}&sk={sub_path}'
+    return f'{places_url}/{sub_path}'
+
 class FBdriver(webdriver.Chrome):
     def __init__(self, executable_path, options=None):
         if options is None:
@@ -40,7 +46,7 @@ class FBdriver(webdriver.Chrome):
             return self.friend_lookup_table
 
         # navigating to user profile
-        profile_url = "https://mobile.facebook.com/{}".format(self.participant_path)
+        profile_url = f'https://mobile.facebook.com/{self.participant_path}'
         self.get(profile_url)
 
         # navigating to friends list
@@ -67,17 +73,20 @@ class FBdriver(webdriver.Chrome):
         return friend_lookup_table
 
     def full_mutual_friend_list(self, friend):
-        # TO DO
-        # scrape list of mutual friends
-        # (scrape friend paths and then use lookup table to get Friend objects)
-        # return list of Friends
-        return []
+        self.get(format_url(friend, "friends_mutual"))
+        sleep(0.2)
+        try:
+            mutual_friends_elements = self.find_element_by_css_selector("[data-pagelet='ProfileAppSection_0']")
+            mutual_friends_anchors = mutual_friends_elements.find_elements_by_css_selector("[tabindex='-1']")
+            mutual_friends_urls = [anchor.get_attribute("href") for anchor in mutual_friends_anchors]
+            mutual_friends_paths = [path.split("/")[-1] for path in mutual_friends_urls]
+            print(mutual_friends_paths)
+            return mutual_friends_paths
+        except Exception:
+            return None
 
     def scrape_places_lived(self, friend):
-        if "profile.php" in friend.path:
-            self.get("https://facebook.com/" + friend.path + "&sk=about_places")
-        else:
-            self.get("https://facebook.com/" + friend.path + "/about_places")
+        self.get(format_url(friend, "about_places"))
         sleep(0.2)
         try:
             elts = self.find_elements_by_css_selector(".aahdfvyu.sej5wr8e ~ div")
