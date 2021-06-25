@@ -35,8 +35,8 @@ def generate_inferences(friends, participant, key_value_pairs):
 
 #-------------------------------------------------------------------------------
 
-path_to_chrome_driver = "C:\\Users\\tanst\\chromedriver.exe"
-username = "sttan@ucsd.edu"
+path_to_chrome_driver = "/Users/aaron/opt/WebDriver/bin/chromedriver"
+username = "aaronbroukhim@aol.com"
 url = "https://mobile.facebook.com/home.php"
 
 driver = FBdriver(executable_path=path_to_chrome_driver)
