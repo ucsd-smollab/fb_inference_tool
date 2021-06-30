@@ -139,7 +139,7 @@ class FBdriver(webdriver.Chrome):
             highschool_description = ""
 
             try:
-                highschool_name = highschool.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id.tvmbv18p").get_attribute("innerText")
+                highschool_name = highschool.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id").get_attribute("innerText")
             except Exception:
                 continue
 
