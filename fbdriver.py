@@ -9,6 +9,14 @@ def format_url(friend, sub_path):
         return f'{places_url}&sk={sub_path}'
     return f'{places_url}/{sub_path}'
 
+def extract_data(data, formatted_data):
+        splitted_data = data.split("\n")
+        correct_data = [split_data for split_data in splitted_data if not "Shared " in split_data and not "Only " in split_data]
+        for i in range(1, len(correct_data), 2):
+            category = correct_data[i+1].replace(" ", "").lower()
+            formatted_data[category] = correct_data[i]
+        return formatted_data
+
 class FBdriver(webdriver.Chrome):
     def __init__(self, executable_path, options=None):
         if options is None:
@@ -237,15 +245,51 @@ class FBdriver(webdriver.Chrome):
 
         print(places_lived)
         return []
-    
+
     def scrape_contact_and_basic(self, friend):
         self.get(format_url(friend, "about_contact_and_basic_info"))
         elts = self.find_elements_by_css_selector(".dati1w0a.tu1s4ah4.f7vcsfb0.discj3wi > div")
-        contactAndBasic = []
+        text_elements = []
         for i in elts:
-            contactAndBasic.append(i.get_attribute("innerText"))
-        #print(contactAndBasic)
-        return contactAndBasic
+            text_elements.append(i.get_attribute("innerText"))
+
+        contact_info = {
+            "address": "",
+            "mobile": "",
+            "email": ""
+        }
+        websites = []
+        social_links = []
+        basic_info = {
+            "languages": [],
+            "religiousviews": "",
+            "politicalviews": "",
+            "interestedin": "",
+            "gender": "",
+            "birthdate": "",
+            "birthyear": ""
+        }
+    
+        # getting contact_info
+        if not "No contact info to show" in text_elements[0]:
+            contact_info = extract_data(text_elements[0], contact_info)
+        
+        # getting website and social media links
+        if not "No links to show" in text_elements[1]:
+            all_links = text_elements[1].split("\n")
+            links = [link for link in all_links if not "Shared " in link and not "Only " in link and not "Add a " in link]
+            for i in range(1, len(links), 2):
+                if "Website" in links[i+1]:
+                    websites.append(links[i])
+                else:
+                    social_links.append({
+                        "platform": links[i+1], 
+                        "identifier": links[i] 
+                    })
+        
+        # getting basic info
+        basic_info = extract_data(text_elements[2], basic_info)
+        return []
 
     def scrape_family_and_rel(self, friend):
         self.get(format_url(friend, "about_family_and_relationships"))
