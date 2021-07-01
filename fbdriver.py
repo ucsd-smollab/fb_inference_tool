@@ -83,7 +83,7 @@ class FBdriver(webdriver.Chrome):
             mutual_friends_anchors = mutual_friends_elements.find_elements_by_css_selector("[tabindex='-1']")
             mutual_friends_urls = [anchor.get_attribute("href") for anchor in mutual_friends_anchors]
             mutual_friends_paths = [path.split("/")[-1] for path in mutual_friends_urls]
-           # print(mutual_friends_paths)
+            #print(mutual_friends_paths)
             return mutual_friends_paths
         except Exception:
             return None
@@ -99,82 +99,144 @@ class FBdriver(webdriver.Chrome):
 
     def scrape_work_and_ed(self, friend):
         self.get(format_url(friend, "about_work_and_education"))
-        elts = self.find_elements_by_css_selector(".dati1w0a.tu1s4ah4.f7vcsfb0.discj3wi > div")
-        workAndEd = []
-
-        work = []
-        colleges = []
-        highschools = []
-        college_elements = elts[1].find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt")
-
-        for college in college_elements:
-            college_name = ""
-            college_date = ""
-            college_description = ""
+        sections = self.find_elements_by_css_selector(".dati1w0a.tu1s4ah4.f7vcsfb0.discj3wi > div")
+        workList = []
+        work = sections[0]
+        for w in work.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt"):
+            workName = "NA"
+            dateOrLocationName = "NA"
+            locationName = "NA"
 
             try:
-                college_name = college.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id.tvmbv18p").get_attribute("innerText")
-            except Exception:
-                continue
+                workName = w.find_elements_by_css_selector("* > div")[0].get_attribute("innerText")
+                try:
+                    dateOrLocationName = w.find_elements_by_css_selector("* > div + div > div > span")[0].get_attribute("innerText")
+                    try:
+                        locationName = w.find_elements_by_css_selector("* > div + div > div > span + span")[0].get_attribute("innerText")
+                    except:
+                        pass
+                except:
+                    pass
+            except:
+                pass
 
-            try:
-                college_date = college.find_element_by_css_selector(".j5wam9gi.e9vueds3.m9osqain").get_attribute("innerText")
-            except Exception:
-                college_date = ""
-                    
-            try:
-                college_description = college.find_element_by_css_selector(".d2edcug0.hpfvmrgz.qv66sw1b.c1et5uql.lr9zc1uh.a8c37x1j.keod5gw0.nxhoafnm.aigsh9s9.d9wwppkn.fe6kdd0r.mau55g9w.c8b282yb.mdeji52x.sq6gx45u.a3bd9o3v.knj5qynh.m9osqain.hzawbc8m").get_attribute("innerText")
-            except Exception:
-                college_description = ""
-            print("-------------------------------------")
-            print(college_name)
-            print(college_date)
-            print(college_description)
-            print("-------------------------------------")
-        
-        highschool_elements = elts[2].find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt")
-        for highschool in highschool_elements:
-            highschool_name = ""
-            highschool_date = ""
-            highschool_description = ""
+            if locationName == "NA" and dateOrLocationName != "NA":
+                if not any(str.isdigit(c) for c in dateOrLocationName):
+                    locationName = dateOrLocationName
+                    dateOrLocationName = "NA"
+            elif locationName != "NA" and dateOrLocationName != "NA":
+                dateOrLocationName = dateOrLocationName[:-3]
+            tempDict = {
+                "title": workName,
+                "date": dateOrLocationName,
+                "location": locationName
+            }
+            workList.append(tempDict)
+        print(workList)
 
+        college = sections[1]
+        collegeList = []
+        for c in college.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt"):
+            schoolName = "NA"
+            degree = "NA"
+            otherConcentrations = "NA"
+            year = "NA"
             try:
-                highschool_name = highschool.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id").get_attribute("innerText")
-            except Exception:
-                continue
+                schoolName = c.find_elements_by_css_selector("* > div")[0].get_attribute("innerText")
+                try:
+                    degree = c.find_elements_by_css_selector("* > div + div > div > span")[0].get_attribute("innerText")
+                    try:
+                        otherConcentrations = c.find_elements_by_css_selector("* > div + div > div > span + span")[0].get_attribute("innerText")
+                        try:
+                            year = c.find_elements_by_css_selector("* > div + div > div > span + span + span")[0].get_attribute("innerText")
+                        except:
+                            pass
+                    except:
+                        pass
+                except:
+                    pass
+            except:
+                pass          
+            if degree != "NA" and not any(str.isdigit(c) for c in year):  
+                if any(str.isdigit(c) for c in degree):
+                    year = degree
+                    degree = "NA"
+                elif degree[:4]=="Also" and otherConcentrations=="NA":
+                    otherConcentrations = degree
+                    degree = "NA"
+                elif degree[:4]=="Also" and otherConcentrations!="NA":
+                    year = otherConcentrations
+                    otherConcentrations = degree
+                    degree = "NA"
+                elif any(str.isdigit(c) for c in otherConcentrations):
+                    year = otherConcentrations
+                    otherConcentrations = "NA"
+            tempDict = {
+                "schoolTitle": schoolName,
+                "degree": degree,
+                "concentrations": otherConcentrations,
+                "year": year
+            }
+            collegeList.append(tempDict)
+        print(collegeList)
 
+        highSchool = sections[2]
+        highSchoolList = []
+        for h in highSchool.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt"):
+            hSchoolName = "NA"
+            hSYear = "NA"
             try:
-                highschool_date = highschool.find_element_by_css_selector(".j5wam9gi.e9vueds3.m9osqain").get_attribute("innerText")
-            except Exception:
-                highschool_date = ""
-                    
-            try:
-                highschool_description = highschool.find_element_by_css_selector(".d2edcug0.hpfvmrgz.qv66sw1b.c1et5uql.lr9zc1uh.a8c37x1j.keod5gw0.nxhoafnm.aigsh9s9.d9wwppkn.fe6kdd0r.mau55g9w.c8b282yb.mdeji52x.sq6gx45u.a3bd9o3v.knj5qynh.m9osqain.hzawbc8m").get_attribute("innerText")
-            except Exception:
-                highschool_description = ""
-            print("-------------------------------------")
-            print(highschool_name)
-            print(highschool_date)
-            print(highschool_description)
-            print("-------------------------------------")
-
-        for i in elts:
-            workAndEd.append(i.get_attribute("innerText"))
-
-        print(workAndEd)
-        return workAndEd
+                hSchoolName = h.find_elements_by_css_selector("* > div")[0].get_attribute("innerText")
+                try:
+                    hSYear = h.find_elements_by_css_selector("* > div + div > div > span")[0].get_attribute("innerText")
+                except:
+                    pass
+            except:
+                pass
+            tempDict = {
+                "schoolName": hSchoolName,
+                "year": hSYear,
+            }
+            highSchoolList.append(tempDict)
+        print(highSchoolList)
+        return []
 
     def scrape_places_lived(self, friend):
         self.get(format_url(friend, "about_places"))
         sleep(0.2)
-        try:
-            elts = self.find_elements_by_css_selector(".aahdfvyu.sej5wr8e ~ div")
-            place_texts  = [elt.get_attribute("innerText") for elt in elts[7:]]
-            places = [p.split("\n")[0] for p in place_texts if p != "No places to show"]
-          #  print(places)
-            return places
-        except Exception:
-            return None
+        places_lived = {
+            "hometown": "",
+            "currentCity": "",
+            "otherCities": []
+        }
+        elts = self.find_elements_by_css_selector(".aahdfvyu.sej5wr8e ~ div")
+        place_texts  = [elt.get_attribute("innerText") for elt in elts[7:]]
+        for place in place_texts:
+            index_city = 0
+            if "no places to show" in place.lower():
+                break
+            place_info = place.split("\n")
+            if "Add " in place_info[index_city]:
+                continue
+            elif "Current" in place_info[-1]:
+                places_lived["currentCity"] = place_info[index_city]
+            elif "Hometown" in place_info[-1]:
+                places_lived["hometown"] = place_info[index_city]
+            else:
+                otherPlace = {
+                    "dateMove": "",
+                    "city": place_info[index_city]
+                }
+                if "Only " in place_info[-1]:
+                    index_city = -2
+                else:
+                    index_city = -1
+                if any(str.isdigit(c) for c in place_info[index_city]):
+                    otherPlace["dateMove"] = place_info[index_city]
+                places_lived["otherCities"].append(otherPlace)
+
+        print(places_lived)
+        return []
     
     def scrape_contact_and_basic(self, friend):
         self.get(format_url(friend, "about_contact_and_basic_info"))
@@ -182,7 +244,7 @@ class FBdriver(webdriver.Chrome):
         contactAndBasic = []
         for i in elts:
             contactAndBasic.append(i.get_attribute("innerText"))
-       # print(contactAndBasic)
+        #print(contactAndBasic)
         return contactAndBasic
 
     def scrape_family_and_rel(self, friend):
@@ -191,7 +253,7 @@ class FBdriver(webdriver.Chrome):
         familyAndRel = []
         for i in elts[7:]:
             familyAndRel.append(i.get_attribute("innerText"))
-     #   print(familyAndRel)
+        #print(familyAndRel)
         return familyAndRel
 
     def scrape_life_events(self, friend):
@@ -200,5 +262,5 @@ class FBdriver(webdriver.Chrome):
         lifeEvents = []
         for i in elts:
             lifeEvents.append(i.get_attribute("innerText"))
-      #  print(lifeEvents)
+        #print(lifeEvents)
         return lifeEvents
