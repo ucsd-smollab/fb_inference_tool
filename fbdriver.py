@@ -81,7 +81,7 @@ class FBdriver(webdriver.Chrome):
             mutual_friends_anchors = mutual_friends_elements.find_elements_by_css_selector("[tabindex='-1']")
             mutual_friends_urls = [anchor.get_attribute("href") for anchor in mutual_friends_anchors]
             mutual_friends_paths = [path.split("/")[-1] for path in mutual_friends_urls]
-            print(mutual_friends_paths)
+            #print(mutual_friends_paths)
             return mutual_friends_paths
         except Exception:
             return None
@@ -97,12 +97,107 @@ class FBdriver(webdriver.Chrome):
 
     def scrape_work_and_ed(self, friend):
         self.get(format_url(friend, "about_work_and_education"))
-        elts = self.find_elements_by_css_selector(".dati1w0a.tu1s4ah4.f7vcsfb0.discj3wi > div")
-        workAndEd = []
-        for i in elts:
-            workAndEd.append(i.get_attribute("innerText"))
-        print(workAndEd)
-        return workAndEd
+        sections = self.find_elements_by_css_selector(".dati1w0a.tu1s4ah4.f7vcsfb0.discj3wi > div")
+        workList = []
+        work = sections[0]
+        for w in work.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt"):
+            workName = "NA"
+            dateOrLocationName = "NA"
+            locationName = "NA"
+
+            try:
+                workName = w.find_elements_by_css_selector("* > div")[0].get_attribute("innerText")
+                try:
+                    dateOrLocationName = w.find_elements_by_css_selector("* > div + div > div > span")[0].get_attribute("innerText")
+                    try:
+                        locationName = w.find_elements_by_css_selector("* > div + div > div > span + span")[0].get_attribute("innerText")
+                    except:
+                        pass
+                except:
+                    pass
+            except:
+                pass
+
+            if locationName == "NA" and dateOrLocationName != "NA":
+                if not any(str.isdigit(c) for c in dateOrLocationName):
+                    locationName = dateOrLocationName
+                    dateOrLocationName = "NA"
+            elif locationName != "NA" and dateOrLocationName != "NA":
+                dateOrLocationName = dateOrLocationName[:-3]
+            tempDict = {
+                "title": workName,
+                "date": dateOrLocationName,
+                "location": locationName
+            }
+            workList.append(tempDict)
+        print(workList)
+
+        college = sections[1]
+        collegeList = []
+        for c in college.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt"):
+            schoolName = "NA"
+            degree = "NA"
+            otherConcentrations = "NA"
+            year = "NA"
+            try:
+                schoolName = c.find_elements_by_css_selector("* > div")[0].get_attribute("innerText")
+                try:
+                    degree = c.find_elements_by_css_selector("* > div + div > div > span")[0].get_attribute("innerText")
+                    try:
+                        otherConcentrations = c.find_elements_by_css_selector("* > div + div > div > span + span")[0].get_attribute("innerText")
+                        try:
+                            year = c.find_elements_by_css_selector("* > div + div > div > span + span + span")[0].get_attribute("innerText")
+                        except:
+                            pass
+                    except:
+                        pass
+                except:
+                    pass
+            except:
+                pass          
+            if degree != "NA" and not any(str.isdigit(c) for c in year):  
+                if any(str.isdigit(c) for c in degree):
+                    year = degree
+                    degree = "NA"
+                elif degree[:4]=="Also" and otherConcentrations=="NA":
+                    otherConcentrations = degree
+                    degree = "NA"
+                elif degree[:4]=="Also" and otherConcentrations!="NA":
+                    year = otherConcentrations
+                    otherConcentrations = degree
+                    degree = "NA"
+                elif any(str.isdigit(c) for c in otherConcentrations):
+                    year = otherConcentrations
+                    otherConcentrations = "NA"
+            tempDict = {
+                "schoolTitle": schoolName,
+                "degree": degree,
+                "concentrations": otherConcentrations,
+                "year": year
+            }
+            collegeList.append(tempDict)
+        print(collegeList)
+
+        highSchool = sections[2]
+        highSchoolList = []
+        for h in highSchool.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt"):
+            hSchoolName = "NA"
+            hSYear = "NA"
+            try:
+                hSchoolName = h.find_elements_by_css_selector("* > div")[0].get_attribute("innerText")
+                try:
+                    hSYear = h.find_elements_by_css_selector("* > div + div > div > span")[0].get_attribute("innerText")
+                except:
+                    pass
+            except:
+                pass
+            tempDict = {
+                "schoolName": hSchoolName,
+                "year": hSYear,
+            }
+            highSchoolList.append(tempDict)
+        print(highSchoolList)
+        return []
 
     def scrape_places_lived(self, friend):
         self.get(format_url(friend, "about_places"))
@@ -111,7 +206,7 @@ class FBdriver(webdriver.Chrome):
             elts = self.find_elements_by_css_selector(".aahdfvyu.sej5wr8e ~ div")
             place_texts  = [elt.get_attribute("innerText") for elt in elts[7:]]
             places = [p.split("\n")[0] for p in place_texts if p != "No places to show"]
-            print(places)
+            #print(places)
             return places
         except Exception:
             return None
@@ -122,7 +217,7 @@ class FBdriver(webdriver.Chrome):
         contactAndBasic = []
         for i in elts:
             contactAndBasic.append(i.get_attribute("innerText"))
-        print(contactAndBasic)
+        #print(contactAndBasic)
         return contactAndBasic
 
     def scrape_family_and_rel(self, friend):
@@ -131,7 +226,7 @@ class FBdriver(webdriver.Chrome):
         familyAndRel = []
         for i in elts[7:]:
             familyAndRel.append(i.get_attribute("innerText"))
-        print(familyAndRel)
+        #print(familyAndRel)
         return familyAndRel
 
     def scrape_life_events(self, friend):
@@ -140,5 +235,5 @@ class FBdriver(webdriver.Chrome):
         lifeEvents = []
         for i in elts:
             lifeEvents.append(i.get_attribute("innerText"))
-        print(lifeEvents)
+        #print(lifeEvents)
         return lifeEvents
