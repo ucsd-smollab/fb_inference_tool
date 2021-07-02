@@ -48,8 +48,7 @@ key_value_pairs = {
     "work and ed": [],
     "places lived": [],
     "contact and basic": [],
-    "family and rel": [],
-    "life events": [],
+    "family and rel": []
 }
 
 # fetching all url paths to the user's friends' profiles
@@ -66,8 +65,6 @@ for p, f in friends.items():
     key_value_pairs["contact and basic"].extend(f.attributes["contact and basic"])
     f.attributes["family and rel"] = driver.scrape_family_and_rel(f)
     key_value_pairs["family and rel"].extend(f.attributes["family and rel"])
-    f.attributes["life events"] = driver.scrape_life_events(f)
-    key_value_pairs["life events"].extend(f.attributes["life events"])
 participant = Friend(driver.participant_path)
 participant.attributes["work and ed"] = driver.scrape_work_and_ed(participant)
 key_value_pairs["work and ed"].extend(participant.attributes["work and ed"])
@@ -77,25 +74,13 @@ participant.attributes["contact and basic"] = driver.scrape_contact_and_basic(pa
 key_value_pairs["contact and basic"].extend(participant.attributes["work and ed"])
 participant.attributes["family and rel"] = driver.scrape_family_and_rel(participant)
 key_value_pairs["family and rel"].extend(participant.attributes["family and rel"])
-participant.attributes["life events"] = driver.scrape_life_events(participant)
-key_value_pairs["life events"].extend(participant.attributes["life events"])
 
 # keep key value pairs that appear at least 3 times
-work_and_ed_counts = Counter(key_value_pairs["work and ed"])
-key_value_pairs["work and ed"] = []
-for workAndEd, count in work_and_ed_counts.items():
-    if count >= 3 and workAndEd is not None:
-        key_value_pairs["work and ed"].append(workAndEd)
 place_counts = Counter(key_value_pairs["places lived"])
 key_value_pairs["places lived"] = []
 for place, count in place_counts.items():
     if count >= 3 and place is not None:
         key_value_pairs["places lived"].append(place)
-contact_and_basic_counts = Counter(key_value_pairs["contact and basic"])
-key_value_pairs["contact and basic"] = []
-for contAndBasic, count in contact_and_basic_counts.items():
-    if count >= 3 and contAndBasic is not None:
-        key_value_pairs["contact and basic"].append(contAndBasic)
 
 inferences = generate_inferences(friends, participant, key_value_pairs)
 
