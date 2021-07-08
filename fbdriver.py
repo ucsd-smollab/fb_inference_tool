@@ -358,7 +358,7 @@ class FBdriver(webdriver.Chrome):
                 famUrl = f.find_elements_by_css_selector("* > div > a")[0].get_attribute("href")
             except:
                 pass
-            if famRel:
+            if not famRel:
                 continue   
             famList.append(
                 {
