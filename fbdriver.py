@@ -85,12 +85,13 @@ class FBdriver(webdriver.Chrome):
         self.get(format_url(friend, "friends_mutual"))
         sleep(0.2)
         try:
-            mutual_friends_elements = self.find_element_by_css_selector("[data-pagelet='ProfileAppSection_0']")
-            if mutual_friends_elements.text.contains("No friends"):
-                raise Exception
+            mutual_friends_elements = self.find_element_by_class_name("j83agx80.btwxx1t3.lhclo0ds.i1fnvgqd")
+            if "No friends" in mutual_friends_elements.get_attribute("innerText"):
+                return None
             mutual_friends_anchors = mutual_friends_elements.find_elements_by_css_selector("[tabindex='-1']")
             mutual_friends_urls = [anchor.get_attribute("href") for anchor in mutual_friends_anchors]
             mutual_friends_paths = [path.split("/")[-1] for path in mutual_friends_urls]
+            print(mutual_friends_paths)
             return mutual_friends_paths
         except Exception:
             return None
