@@ -51,13 +51,37 @@ key_value_pairs = {
     "family and rel": []
 }
 
+category_groups = {
+    "work": {
+        "no_data": []
+    },
+    "college": {
+        "no_data": []
+    },
+    "highschool": {
+        "no_data": []
+    },
+    "cities": {
+        "no_data": []
+    },
+    "religious_views": {
+        "no_data": []
+    },
+    "political_views": {
+        "no_data": []
+    },
+    "birthyear": {
+        "no_data": []
+    },
+}
+
 # fetching all url paths to the user's friends' profiles
 friends = driver.full_friend_lookup_table()
 
 for p, f in friends.items():
     f.name = driver.scrape_name(f)
     f.mutual_friends = driver.full_mutual_friend_list(f)
-    f.attributes["work and ed"] = driver.scrape_work_and_ed(f)
+    (f.attributes["work"], f.attributes["college"], f.attributes["highschool"], f.profile_picture_url) = driver.scrape_work_and_ed(f)
     #key_value_pairs["work and ed"].extend(f.attributes["work and ed"])
     f.attributes["places lived"] = driver.scrape_places_lived(f)
     #key_value_pairs["places lived"].extend(f.attributes["places lived"])
