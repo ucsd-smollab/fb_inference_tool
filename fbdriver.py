@@ -267,7 +267,7 @@ class FBdriver(webdriver.Chrome):
                 schoolName = schoolName.split("at ")[1]
             list_of_years = generate_list_of_years(year)
             tempDict = {
-                "schoolTitle": schoolName,
+                "title": schoolName,
                 "degree": degree.replace("\n", ""),
                 "concentrations": otherConcentrations.replace("\n", ""),
                 "list_of_years": list_of_years,
@@ -500,5 +500,4 @@ class FBdriver(webdriver.Chrome):
         completionCount = 1
         if famList == "NA":
             completionCount-=1
-        print(relAndFamDict)
         return completionCount, relAndFamDict
