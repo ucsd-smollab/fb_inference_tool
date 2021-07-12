@@ -79,16 +79,27 @@ category_groups = {
 friends = driver.full_friend_lookup_table()
 
 for p, f in friends.items():
+    #cmopletion count is out of 9
+    count = 0
+    f.percent_complete = 0
     f.name = driver.scrape_name(f)
     f.mutual_friends = driver.full_mutual_friend_list(f)
-    (f.attributes["work"], f.attributes["college"], f.attributes["highschool"], f.profile_picture_url) = driver.scrape_work_and_ed(f)
+    (count, f.attributes["work"], f.attributes["college"], f.attributes["highschool"], f.profile_picture_url) = driver.scrape_work_and_ed(f)
+    f.percent_complete+=count
     #key_value_pairs["work and ed"].extend(f.attributes["work and ed"])
-    f.attributes["places lived"] = driver.scrape_places_lived(f)
+    count, f.attributes["places lived"] = driver.scrape_places_lived(f)
+    f.percent_complete+=count
     #key_value_pairs["places lived"].extend(f.attributes["places lived"])
-    f.attributes["contact and basic"] = driver.scrape_contact_and_basic(f)
+    count, f.attributes["contact and basic"] = driver.scrape_contact_and_basic(f)
+    f.percent_complete+=count
     #key_value_pairs["contact and basic"].extend(f.attributes["contact and basic"])
-    f.attributes["family and rel"] = driver.scrape_family_and_rel(f)
+    count, f.attributes["family and rel"] = driver.scrape_family_and_rel(f)
+    f.percent_complete+=count
+    f.percent_complete/=9
+    print(f.percent_complete)
     #key_value_pairs["family and rel"].extend(f.attributes["family and rel"])
+
+
 participant = Friend(driver.participant_path)
 participant.attributes["work and ed"] = driver.scrape_work_and_ed(participant)
 #key_value_pairs["work and ed"].extend(participant.attributes["work and ed"])

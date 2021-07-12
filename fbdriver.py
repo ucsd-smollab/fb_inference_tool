@@ -307,13 +307,17 @@ class FBdriver(webdriver.Chrome):
                 "highSchoolUrl": facebookPageUrlH
             }
             highSchoolList.append(tempDict)
+        completionCount = 3
         if not workList:
             workList = "NA"
+            completionCount-=1
         if not collegeList:
             collegeList = "NA"
+            completionCount-=1
         if not highSchoolList:
             highSchoolList = "NA"
-        return (workList, collegeList, highSchoolList, profile_picture_url)
+            completionCount-=1
+        return (completionCount, workList, collegeList, highSchoolList, profile_picture_url)
 
     def scrape_places_lived(self, friend):
         self.get(format_url(friend, "about_places"))
@@ -359,8 +363,11 @@ class FBdriver(webdriver.Chrome):
             places_lived["otherCities"] = "NA"
         if not places_lived["list_of_cities"]:
             places_lived["list_of_cities"] = "NA"
-        print(places_lived["list_of_cities"])
-        return places_lived
+        completionCount = 1
+        if all(value == "NA" for value in places_lived.values()):
+            completionCount = 0
+        #print(places_lived["list_of_cities"])
+        return completionCount, places_lived
 
     def scrape_contact_and_basic(self, friend):
         self.get(format_url(friend, "about_contact_and_basic_info"))
@@ -414,7 +421,16 @@ class FBdriver(webdriver.Chrome):
             "social_links": social_links,
             "basic_info": basic_info
         }
-        return contact_and_basic_info
+        completionCount = 4
+        if basic_info["languages"] == "NA":
+            completionCount-=1
+        if basic_info["religiousviews"] == "NA":
+            completionCount-=1
+        if basic_info["politicalviews"] == "NA":
+            completionCount-=1
+        if basic_info["birthyear"] == "NA":
+            completionCount-=1
+        return completionCount, contact_and_basic_info
 
     def scrape_family_and_rel(self, friend):
         self.get(format_url(friend, "about_family_and_relationships"))
@@ -442,6 +458,8 @@ class FBdriver(webdriver.Chrome):
                     "url": relUrl,
                     "description": relDescription
                 }
+            else:
+                tempDictRel = "NA"
         except:
             pass
 
@@ -457,7 +475,8 @@ class FBdriver(webdriver.Chrome):
             famPart = f.get_attribute("innerText").partition('\n')
             famName = famPart[0]
             if "No family" in famName:
-                continue
+                famList = "NA"
+                break
             famRel = famPart[2]
             famUrl = "NA"
             try:
@@ -478,4 +497,8 @@ class FBdriver(webdriver.Chrome):
             "relationship": tempDictRel,
             "family members": famList
         }
-        return relAndFamDict
+        completionCount = 1
+        if famList == "NA":
+            completionCount-=1
+        print(relAndFamDict)
+        return completionCount, relAndFamDict
