@@ -268,7 +268,7 @@ class FBdriver(webdriver.Chrome):
                 schoolName = schoolName.split("at ")[1]
             list_of_years = generate_list_of_years(year)
             tempDict = {
-                "schoolTitle": schoolName,
+                "title": schoolName,
                 "degree": degree.replace("\n", ""),
                 "concentrations": otherConcentrations.replace("\n", ""),
                 "list_of_years": list_of_years,
@@ -302,7 +302,7 @@ class FBdriver(webdriver.Chrome):
                 hSchoolName = hSchoolName.split(" to ")[1]
             list_of_years = generate_list_of_years(hSYear)
             tempDict = {
-                "schoolName": hSchoolName,
+                "title": hSchoolName,
                 "list_of_years": list_of_years,
                 "year": hSYear,
                 "highSchoolUrl": facebookPageUrlH
