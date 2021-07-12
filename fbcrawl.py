@@ -35,8 +35,8 @@ def generate_inferences(friends, participant, key_value_pairs):
 
 #-------------------------------------------------------------------------------
 
-path_to_chrome_driver = "C:\\Users\\tanst\\chromedriver.exe"
-username = "sttan@ucsd.edu"
+path_to_chrome_driver = "/Users/aaron/opt/WebDriver/bin/chromedriver"
+username = "aaronbroukhim@aol.com"
 url = "https://mobile.facebook.com/home.php"
 
 driver = FBdriver(executable_path=path_to_chrome_driver)
@@ -51,13 +51,37 @@ key_value_pairs = {
     "family and rel": []
 }
 
+category_groups = {
+    "work": {
+        "no_data": []
+    },
+    "college": {
+        "no_data": []
+    },
+    "highschool": {
+        "no_data": []
+    },
+    "cities": {
+        "no_data": []
+    },
+    "religious_views": {
+        "no_data": []
+    },
+    "political_views": {
+        "no_data": []
+    },
+    "birthyear": {
+        "no_data": []
+    },
+}
+
 # fetching all url paths to the user's friends' profiles
 friends = driver.full_friend_lookup_table()
 
 for p, f in friends.items():
     f.name = driver.scrape_name(f)
     f.mutual_friends = driver.full_mutual_friend_list(f)
-    f.attributes["work and ed"] = driver.scrape_work_and_ed(f)
+    (f.attributes["work"], f.attributes["college"], f.attributes["highschool"], f.profile_picture_url) = driver.scrape_work_and_ed(f)
     #key_value_pairs["work and ed"].extend(f.attributes["work and ed"])
     f.attributes["places lived"] = driver.scrape_places_lived(f)
     #key_value_pairs["places lived"].extend(f.attributes["places lived"])
