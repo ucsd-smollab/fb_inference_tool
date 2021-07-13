@@ -35,8 +35,8 @@ def generate_inferences(friends, participant, key_value_pairs):
 
 #-------------------------------------------------------------------------------
 
-path_to_chrome_driver = "/Users/aaron/opt/WebDriver/bin/chromedriver"
-username = "aaronbroukhim@aol.com"
+path_to_chrome_driver = "C:\\Users\\tanst\\chromedriver"
+username = "sttan@ucsd.edu"
 url = "https://mobile.facebook.com/home.php"
 
 driver = FBdriver(executable_path=path_to_chrome_driver)
@@ -79,14 +79,12 @@ category_groups = {
 def populate_category_groups(data, person_url, category_name):
     if data == "NA":
         category_groups[category_name]["no_data"].append(person_url)
-        print(category_groups)
         return
     if not isinstance(data, list):
         if data in category_groups[category_name]:
             category_groups[category_name][data].append(person_url)
         else:
             category_groups[category_name][data] = [person_url]
-        print(category_groups)
         return
     for entry in data:
         entry_name = entry
@@ -96,15 +94,12 @@ def populate_category_groups(data, person_url, category_name):
             category_groups[category_name][entry_name].append(person_url)
         else:
             category_groups[category_name][entry_name] = [person_url]
-    print(category_groups)
 
 # fetching all url paths to the user's friends' profiles
 friends = driver.full_friend_lookup_table()
 
 for p, f in friends.items():
-    #cmopletion count is out of 9
-    count = 0
-    f.percent_complete = 0
+    #completion count is out of 9
     f.name = driver.scrape_name(f)
     f.mutual_friends = driver.full_mutual_friend_list(f)
     (count, f.attributes["work"], f.attributes["college"], f.attributes["highschool"], f.profile_picture_url) = driver.scrape_work_and_ed(f)
@@ -113,38 +108,43 @@ for p, f in friends.items():
     populate_category_groups(f.attributes["college"], f.url, "college")
     populate_category_groups(f.attributes["highschool"], f.url, "highschool")
     #key_value_pairs["work and ed"].extend(f.attributes["work and ed"])
-    count, f.attributes["places lived"] = driver.scrape_places_lived(f)
+    (count, f.attributes["places lived"]) = driver.scrape_places_lived(f)
     f.percent_complete+=count    
     populate_category_groups(f.attributes["places lived"]["list_of_cities"], f.url, "cities")
     #key_value_pairs["places lived"].extend(f.attributes["places lived"])
-    count, f.attributes["contact and basic"] = driver.scrape_contact_and_basic(f)
+    (count, f.attributes["contact and basic"]) = driver.scrape_contact_and_basic(f)
     f.percent_complete+=count    
     populate_category_groups(f.attributes["contact and basic"]["basic_info"]["religiousviews"], f.url, "religious_views")
     populate_category_groups(f.attributes["contact and basic"]["basic_info"]["politicalviews"], f.url, "political_views")
     populate_category_groups(f.attributes["contact and basic"]["basic_info"]["birthyear"], f.url, "birthyear")
     #key_value_pairs["contact and basic"].extend(f.attributes["contact and basic"])
-    count, f.attributes["family and rel"] = driver.scrape_family_and_rel(f)
+    #(count, f.attributes["family and rel"]) = driver.scrape_family_and_rel(f)
     f.percent_complete+=count
     f.percent_complete/=9
-    print(f.percent_complete)
+    print(f'{f.name} - {f.percent_complete}%')
     #key_value_pairs["family and rel"].extend(f.attributes["family and rel"])
 
 
 participant = Friend(driver.participant_path)
-participant.attributes["work and ed"] = driver.scrape_work_and_ed(participant)
+(count, participant.attributes["work"], participant.attributes["college"], participant.attributes["highschool"], participant.profile_picture_url) = driver.scrape_work_and_ed(participant)
+participant.percent_complete+=count
 populate_category_groups(participant.attributes["work"], participant.url, "work")
 populate_category_groups(participant.attributes["college"], participant.url, "college")
 populate_category_groups(participant.attributes["highschool"], participant.url, "highschool")
 #key_value_pairs["work and ed"].extend(participant.attributes["work and ed"])
-participant.attributes["places lived"] = driver.scrape_places_lived(participant)
+(count, participant.attributes["places lived"]) = driver.scrape_places_lived(participant)
+participant.percent_complete+=count
 populate_category_groups(participant.attributes["places lived"]["list_of_cities"], participant.url, "cities")
 #key_value_pairs["places lived"].extend(participant.attributes["places lived"])
-participant.attributes["contact and basic"] = driver.scrape_contact_and_basic(participant)
+(count, participant.attributes["contact and basic"]) = driver.scrape_contact_and_basic(participant)
+participant.percent_complete+=count
 populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["religiousviews"], participant.url, "religious_views")
 populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["politicalviews"], participant.url, "political_views")
 populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["birthyear"], participant.url, "birthyear")
 #key_value_pairs["contact and basic"].extend(participant.attributes["work and ed"])
-participant.attributes["family and rel"] = driver.scrape_family_and_rel(participant)
+(count, participant.attributes["family and rel"]) = driver.scrape_family_and_rel(participant)
+participant.percent_complete+=count
+participant.percent_complete/=9
 #key_value_pairs["family and rel"].extend(participant.attributes["family and rel"])
 
 # keep key value pairs that appear at least 3 times
