@@ -154,6 +154,8 @@ class FBdriver(webdriver.Chrome):
             mutual_friends_anchors = mutual_friends_elements.find_elements_by_css_selector("[tabindex='-1']")
             mutual_friends_urls = [anchor.get_attribute("href") for anchor in mutual_friends_anchors]
             mutual_friends_paths = [path.split("/")[-1] for path in mutual_friends_urls]
+            print("mutual friends")
+            print(mutual_friends_paths)
             return mutual_friends_paths
         except Exception:
             return "NA"
@@ -164,6 +166,7 @@ class FBdriver(webdriver.Chrome):
         #find name element by css selector and return attribute string value
         elt = self.find_element_by_css_selector("h1.gmql0nx0.l94mrbxd.p1ri9a11.lzcic4wl")
         name = elt.get_attribute("innerText")
+        print(name)
         return name
 
     def scrape_work_and_ed(self, friend):
@@ -307,16 +310,22 @@ class FBdriver(webdriver.Chrome):
                 "highSchoolUrl": facebookPageUrlH
             }
             highSchoolList.append(tempDict)
-        completionCount = 3
+        completionCount = 2
         if not workList:
             workList = "NA"
             completionCount-=1
+        if not collegeList and not highSchoolList:
+            completionCount-=1
         if not collegeList:
             collegeList = "NA"
-            completionCount-=1
         if not highSchoolList:
             highSchoolList = "NA"
-            completionCount-=1
+        print("work")
+        print(workList)
+        print("college")
+        print(collegeList)
+        print("high school")
+        print(highSchoolList)
         return (completionCount, workList, collegeList, highSchoolList, profile_picture_url)
 
     def scrape_places_lived(self, friend):
@@ -366,7 +375,8 @@ class FBdriver(webdriver.Chrome):
         completionCount = 1
         if all(value == "NA" for value in places_lived.values()):
             completionCount = 0
-        #print(places_lived["list_of_cities"])
+        print("places lived")
+        print(places_lived)
         return completionCount, places_lived
 
     def scrape_contact_and_basic(self, friend):
@@ -415,6 +425,10 @@ class FBdriver(webdriver.Chrome):
 
         if not basic_info["languages"]:
             basic_info["languages"] = "NA"
+        if not websites:
+            websites = "NA"
+        if not social_links:
+            social_links = "NA"
         contact_and_basic_info = {
             "contact_info": contact_info,
             "websites": websites,
@@ -430,7 +444,21 @@ class FBdriver(webdriver.Chrome):
             completionCount-=1
         if basic_info["birthyear"] == "NA":
             completionCount-=1
-        return completionCount, contact_and_basic_info
+
+        totalCount = 5
+        if basic_info["interestedin"] == "NA":
+            totalCount-=1
+        if basic_info["gender"] == "NA":
+            totalCount-=1
+        if contact_info["address"] == "NA":
+            totalCount-=1
+        if contact_info["mobile"] == "NA":
+            totalCount-=1
+        if contact_info["email"] == "NA":
+            totalCount-=1
+        print("contact and basic info")
+        print(contact_and_basic_info)
+        return totalCount, completionCount, contact_and_basic_info
 
     def scrape_family_and_rel(self, friend):
         self.get(format_url(friend, "about_family_and_relationships"))
@@ -443,7 +471,9 @@ class FBdriver(webdriver.Chrome):
 
         try:
             relStatus = rel.find_elements_by_css_selector("* > div")[0].get_attribute("innerText")
-            if relStatus != "Single":
+            if relStatus == "No relationship info to show":
+                tempDictRel = "NA"
+            elif relStatus != "Single":
                 relName = relStatus
                 try:
                     relUrl = rel.find_elements_by_css_selector("* > div > a")[0].get_attribute("href")
@@ -458,16 +488,15 @@ class FBdriver(webdriver.Chrome):
                     "url": relUrl,
                     "description": relDescription
                 }
-            else:
-                tempDictRel = "NA"
         except:
             pass
-
-        tempDictRel = {
-            "name": relName,
-            "url": relUrl,
-            "description": relDescription
-        }
+        
+        if tempDictRel != "NA":
+            tempDictRel = {
+                "name": relName,
+                "url": relUrl,
+                "description": relDescription
+            }
         
         fam = sections[1:]
         famList = []
@@ -500,4 +529,9 @@ class FBdriver(webdriver.Chrome):
         completionCount = 1
         if famList == "NA":
             completionCount-=1
-        return completionCount, relAndFamDict
+        totalCount = 1
+        if tempDictRel == "NA":
+            totalCount-=1
+        print("relationship and family")
+        print(relAndFamDict)
+        return totalCount, completionCount, relAndFamDict
