@@ -3,6 +3,7 @@ class Friend:
         self.url = path
         self.attributes = {}
         self.percent_complete = 0
+        self.percent_total_complete = 0
         self.profile_picture_url = ""
         self.mutual_friends = None
         self.name = None
