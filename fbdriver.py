@@ -304,7 +304,7 @@ class FBdriver(webdriver.Chrome):
                 hSchoolName = hSchoolName.split(" to ")[1]
             list_of_years = generate_list_of_years(hSYear)
             tempDict = {
-                "schoolName": hSchoolName,
+                "title": hSchoolName,
                 "list_of_years": list_of_years,
                 "year": hSYear,
                 "highSchoolUrl": facebookPageUrlH
