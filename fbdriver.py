@@ -456,8 +456,8 @@ class FBdriver(webdriver.Chrome):
             totalCount-=1
         if contact_info["email"] == "NA":
             totalCount-=1
-        print("contact and basic info")
-        print(contact_and_basic_info)
+        #print("contact and basic info")
+        #print(contact_and_basic_info)
         return totalCount, completionCount, contact_and_basic_info
 
     def scrape_family_and_rel(self, friend):
