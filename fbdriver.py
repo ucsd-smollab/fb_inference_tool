@@ -39,7 +39,7 @@ def generate_list_of_years(string_years, default_year=4):
     list_of_years = []
     start_year = 0
     end_year = 0
-    if not string_years:
+    if string_years == "NA":
         return "NA"
     # Case 1 and Case 2
     if " - " in string_years:
@@ -186,31 +186,29 @@ class FBdriver(webdriver.Chrome):
             locationName = "NA"
             facebookPageUrl = "NA"
             list_of_years = "NA"
-            try:
-                workName = w.find_elements_by_css_selector("* > div")[0].get_attribute("innerText")
-                try:
-                    facebookPageUrl = w.find_elements_by_css_selector("* > div > a")[0].get_attribute("href")
-                except:
-                    pass
-                try:
-                    dateOrLocationName = w.find_elements_by_css_selector("* > div + div > div > span")[0].get_attribute("innerText")
-                    try:
-                        locationName = w.find_elements_by_css_selector("* > div + div > div > span + span")[0].get_attribute("innerText")
-                    except:
-                        pass
-                except:
-                    pass
-            except:
-                continue
 
-            if locationName == "NA" and dateOrLocationName == "NA":
+            if not "Add a " in w.get_attribute("innerText") and not " to show" in w.get_attribute("innerText"):
+                workElement = w.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id")
+                workName = workElement.get_attribute("innerText")
+                workUrlElement = workElement.find_elements_by_css_selector("[role='link']")
+                if workUrlElement:
+                    facebookPageUrl = workUrlElement[0].get_attribute("href")
+                dateOrLocations = w.find_elements_by_class_name("j5wam9gi.e9vueds3.m9osqain")
+                if len(dateOrLocations) > 1:
+                    dateOrLocationName = dateOrLocations[0].get_attribute("innerText")
+                    locationName = dateOrLocations[2].get_attribute("innerText")
+                elif len(dateOrLocations) == 1:
+                    dateOrLocationName = dateOrLocations[0].get_attribute("innerText")
+            else:
+                continue
+            
+            if locationName == "NA":
                 if not any(str.isdigit(c) for c in dateOrLocationName):
                     locationName = dateOrLocationName
                     dateOrLocationName = "NA"
                 else:
                     list_of_years = generate_list_of_years(dateOrLocationName, 0)
-            elif locationName != "NA" and dateOrLocationName != "NA":
-                dateOrLocationName = dateOrLocationName[:-2]
+            else:
                 list_of_years = generate_list_of_years(dateOrLocationName, 0)
             if " at " in workName:
                 workName = workName.split("at ")[1]
@@ -222,6 +220,7 @@ class FBdriver(webdriver.Chrome):
                 "workUrl": facebookPageUrl
             }
             workList.append(tempDict)
+        print(workList)
 
         college = sections[1]
         collegeList = []
@@ -232,32 +231,29 @@ class FBdriver(webdriver.Chrome):
             year = "NA"
             list_of_years = []
             facebookPageUrlC = "NA"
-            try:
-                schoolName = c.find_elements_by_css_selector("* > div")[0].get_attribute("innerText")
-                try:
-                    facebookPageUrlC = c.find_elements_by_css_selector("* > div > a")[0].get_attribute("href")
-                except:
-                    pass
-                try:
-                    degree = c.find_elements_by_css_selector("* > div + div > div > span")[0].get_attribute("innerText")
-                    try:
-                        otherConcentrations = c.find_elements_by_css_selector("* > div + div > div > span + span")[0].get_attribute("innerText")
-                        try:
-                            year = c.find_elements_by_css_selector("* > div + div > div > span + span + span")[0].get_attribute("innerText")
-                        except:
-                            pass
-                    except:
-                        pass
-                except:
-                    pass
-            except:
-                continue          
+
+            if not "Add a " in c.get_attribute("innerText") and not " to show" in c.get_attribute("innerText"):
+                schoolElement = c.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id")
+                schoolName = schoolElement.get_attribute("innerText")
+                schoolUrlElement = schoolElement.find_elements_by_css_selector("[role='link']")
+                if schoolUrlElement:
+                    facebookPageUrlC = schoolUrlElement[0].get_attribute("href")
+                elements = c.find_elements_by_css_selector(".j5wam9gi.e9vueds3.m9osqain")
+                if len(elements) == 1:
+                    degree = elements[0].get_attribute("innerText")
+                elif len(elements) == 3:
+                    degree = elements[0].get_attribute("innerText")
+                    otherConcentrations = elements[2].get_attribute("innerText")
+                elif len(elements) == 5:
+                    degree = elements[0].get_attribute("innerText")
+                    otherConcentrations = elements[2].get_attribute("innerText")
+                    year = elements[4].get_attribute("innerText")
+            else:
+                continue
+
             if degree and not any(str.isdigit(c) for c in year):  
                 if any(str.isdigit(c) for c in degree):
                     year = degree
-                    degree = "NA"
-                elif degree[:4]=="Also" and otherConcentrations:
-                    otherConcentrations = degree
                     degree = "NA"
                 elif degree[:4]=="Also" and otherConcentrations:
                     year = otherConcentrations
@@ -278,6 +274,7 @@ class FBdriver(webdriver.Chrome):
                 "collegeUrl": facebookPageUrlC
             }
             collegeList.append(tempDict)
+        print(collegeList)
 
         highSchool = sections[2]
         highSchoolList = []
@@ -286,22 +283,25 @@ class FBdriver(webdriver.Chrome):
             hSYear = "NA"
             facebookPageUrlH = "NA"
             list_of_years = []
-            try:
-                hSchoolName = h.find_elements_by_css_selector("* > div")[0].get_attribute("innerText")
-                try:
-                    facebookPageUrlH = h.find_elements_by_css_selector("* > div > a")[0].get_attribute("href")
-                except:
-                    pass
-                try:
-                    hSYear = h.find_elements_by_css_selector("* > div + div > div > span")[0].get_attribute("innerText")
-                except:
-                    pass
-            except:
+
+            if not "Add a " in h.get_attribute("innerText") and not " to show" in h.get_attribute("innerText"):
+                hSchoolElement = h.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id")
+                hSchoolName = hSchoolElement.get_attribute("innerText")
+                hSchoolUrlElement = hSchoolElement.find_elements_by_css_selector("[role='link']")
+                if hSchoolUrlElement:
+                    facebookPageUrlH = hSchoolUrlElement[0].get_attribute("href")
+                hSYear_element = h.find_elements_by_css_selector(".j5wam9gi.e9vueds3.m9osqain")
+                if hSYear_element:
+                    hSYear = hSYear_element[0].get_attribute("innerText")
+                    print(hSYear)
+            else:
                 continue
+
             if " at " in hSchoolName:
                 hSchoolName = hSchoolName.split(" at ")[1]
             if " to " in hSchoolName:
                 hSchoolName = hSchoolName.split(" to ")[1]
+            print(f'hsYear: {hSYear}')
             list_of_years = generate_list_of_years(hSYear)
             tempDict = {
                 "title": hSchoolName,
@@ -310,6 +310,10 @@ class FBdriver(webdriver.Chrome):
                 "highSchoolUrl": facebookPageUrlH
             }
             highSchoolList.append(tempDict)
+        
+        print(highSchoolList)
+
+        completionCount = 3
         completionCount = 2
         if not workList:
             workList = "NA"
@@ -464,39 +468,12 @@ class FBdriver(webdriver.Chrome):
         self.get(format_url(friend, "about_family_and_relationships"))
         sections = self.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt")
         rel = sections[0]
-        tempDictRel = {}
-        relName = "NA"
-        relUrl = "NA"
-        relDescription = "NA"
 
-        try:
-            relStatus = rel.find_elements_by_css_selector("* > div")[0].get_attribute("innerText")
-            if relStatus == "No relationship info to show":
-                tempDictRel = "NA"
-            elif relStatus != "Single":
-                relName = relStatus
-                try:
-                    relUrl = rel.find_elements_by_css_selector("* > div > a")[0].get_attribute("href")
-                except:
-                    pass
-                try:
-                    relDescription = rel.find_elements_by_css_selector("* > div + div")[0].get_attribute("innerText")
-                except:
-                    pass
-                tempDictRel = {
-                    "name": relName,
-                    "url": relUrl,
-                    "description": relDescription
-                }
-        except:
-            pass
-        
-        if tempDictRel != "NA":
-            tempDictRel = {
-                "name": relName,
-                "url": relUrl,
-                "description": relDescription
-            }
+        relStatus = rel.get_attribute("innerText")
+        if "No relationship info to show" in relStatus or "Add a " in relStatus:
+            relStatus = "NA"
+        else:
+            relStatus = rel.get_attribute("innerText")
         
         fam = sections[1:]
         famList = []
@@ -508,12 +485,17 @@ class FBdriver(webdriver.Chrome):
                 break
             famRel = famPart[2]
             famUrl = "NA"
-            try:
-                famUrl = f.find_elements_by_css_selector("* > div > a")[0].get_attribute("href")
-            except:
-                pass
-            if famRel == "NA":
-                continue   
+
+            famUrlElement = f.find_elements_by_class_name("oajrlxb2 g5ia77u1 qu0x051f esr5mh6w e9989ue4 r7d6kgcz rq0escxv nhd2j8a9 nc684nl6 p7hjln8o kvgmc6g5 cxmmr5t8 oygrvhab hcukyx3x jb3vyjys rz4wbd8a qt6c0cv9 a8nywdso i1ao9s8h esuyzwwr f1sip0of lzcic4wl gmql0nx0 gpro0wi8")
+
+            if famUrlElement:
+                famUrl = famUrlElement[0].get_attribute("href")
+            # try:
+            #     famUrl = f.find_elements_by_css_selector("* > div > a")[0].get_attribute("href")
+            # except:
+            #     pass
+            # if famRel == "NA":
+            #     continue   
             famList.append(
                 {
                     "relation": famRel,
@@ -523,14 +505,14 @@ class FBdriver(webdriver.Chrome):
             )
 
         relAndFamDict = {
-            "relationship": tempDictRel,
+            "relationship": relStatus,
             "family members": famList
         }
         completionCount = 1
         if famList == "NA":
             completionCount-=1
         totalCount = 1
-        if tempDictRel == "NA":
+        if relStatus == "NA":
             totalCount-=1
         print("relationship and family")
         print(relAndFamDict)
