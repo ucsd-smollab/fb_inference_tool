@@ -1,6 +1,7 @@
 from sys import set_asyncgen_hooks
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+#from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.options import Options
 from time import sleep
 import time
 from friend import Friend
@@ -82,7 +83,8 @@ def generate_list_of_years(string_years, default_year=4):
         list_of_years.append(f'{start_year+i}')
     return list_of_years
 
-class FBdriver(webdriver.Chrome):
+#lass FBdriver(webdriver.Chrome):
+class FBdriver(webdriver.Firefox):
     def __init__(self, executable_path, options=None):
         if options is None:
             options = Options()
