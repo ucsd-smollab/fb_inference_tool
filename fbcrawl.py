@@ -128,12 +128,13 @@ for p, f in friends.items():
     f.percent_complete = round(f.percent_complete/8, 3)
     f.percent_total_complete = round(f.percent_total_complete/14, 3)
     #print(f.percent_complete, f.percent_total_complete)
-    c+=1
-    if c == 10:
-        print(category_groups)
     print(f.name)
     print(len(f.mutual_friends))
     print("--- %s seconds ---" % (time.time() - start_time))
+
+    c+=1
+    if c == 10:
+        print(category_groups)
 
 #scrape user info
 participant = Friend(driver.participant_path)

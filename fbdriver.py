@@ -2,6 +2,7 @@ from sys import set_asyncgen_hooks
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from time import sleep
+import time
 from friend import Friend
 
 def format_url(friend, sub_path):
@@ -115,6 +116,7 @@ class FBdriver(webdriver.Chrome):
         sleep(time)
 
     def full_friend_lookup_table(self):
+        start_time = time.time()
         if self.friend_lookup_table:
             return self.friend_lookup_table
 
@@ -141,9 +143,11 @@ class FBdriver(webdriver.Chrome):
         friend_elements = self.find_elements_by_css_selector("._5pxa ._5pxc a")
         friend_urls = [f.get_attribute("href") for f in friend_elements]
         friend_paths = [f.split("/")[-1] for f in friend_urls if f]
-        print(len(friend_urls))
         friend_lookup_table = {p:Friend(p) for p in friend_paths}
         self.friend_lookup_table = friend_lookup_table
+        print("friends")
+        print(len(friend_urls))
+        print("--- %s seconds ---" % (time.time() - start_time))
         return friend_lookup_table
 
     def full_mutual_friend_list(self, friend):
