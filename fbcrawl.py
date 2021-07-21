@@ -5,6 +5,7 @@ import urllib
 import random
 from collections import Counter
 import time
+import pprint
 
 from fbInferences import compute_frequency_category_data
 
@@ -97,6 +98,7 @@ def populate_category_groups(data, person_url, category_name):
         else:
             category_groups[category_name][entry_name] = [person_url]
 
+total_time = time.time()
 # fetching all url paths to the user's friends' profiles
 friends = driver.full_friend_lookup_table()
 #scrape users friends info
@@ -133,8 +135,8 @@ for p, f in friends.items():
         print(len(f.mutual_friends))
         print("--- %s seconds ---" % (time.time() - start_time))
         c+=1
-        if c == 100:
-            print(compute_frequency_category_data(category_groups))
+        if c == 2:
+            pprint.pprint(compute_frequency_category_data(category_groups))
             break
     except:
         print(compute_frequency_category_data(category_groups))
@@ -164,8 +166,8 @@ participant.percent_complete/=9
 participant.percent_complete = round(participant.percent_complete/8, 3)
 participant.percent_total_complete = round(participant.percent_total_complete/14, 3)
 #print(category_groups)
-
-
+print("total runtime")
+print("--- %s seconds ---" % (time.time() - total_time))
 
 # keep key value pairs that appear at least 3 times
 #place_counts = Counter(key_value_pairs["places lived"])
