@@ -6,6 +6,8 @@ import random
 from collections import Counter
 import time
 
+from fbInferences import compute_frequency_category_data
+
 # Some helpful resources I consulted:
 # https://medium.com/@ali.raza.nisar/crawling-your-facebook-friends-data-31a2d8fc0c6d
 # https://medium.com/analytics-vidhya/the-art-of-not-getting-blocked-how-i-used-selenium-python-to-scrape-facebook-and-tiktok-fd6b31dbe85f
@@ -52,7 +54,7 @@ key_value_pairs = {
     "family and rel": []
 }
 
-category_group_template = {
+category_groups = {
     "work": {
         "no_data": []
     },
@@ -75,8 +77,6 @@ category_group_template = {
         "no_data": []
     },
 }
-
-category_groups = category_group_template.copy()
 
 def populate_category_groups(data, person_url, category_name):
     if data == "NA":
@@ -102,39 +102,44 @@ friends = driver.full_friend_lookup_table()
 #scrape users friends info
 c = 0
 for p, f in friends.items():
-    #to check runtime
-    start_time = time.time()
-    #completion count is out of 8
-    #total count is out of 14
-    count = 0
-    f.name = driver.scrape_name(f)
-    f.mutual_friends = driver.full_mutual_friend_list(f)
-    (count, f.attributes["work"], f.attributes["college"], f.attributes["highschool"], f.profile_picture_url) = driver.scrape_work_and_ed(f)
-    f.percent_complete+=count    
-    populate_category_groups(f.attributes["work"], f.url, "work")
-    populate_category_groups(f.attributes["college"], f.url, "college")
-    populate_category_groups(f.attributes["highschool"], f.url, "highschool")
-    (count, f.attributes["places lived"]) = driver.scrape_places_lived(f)
-    f.percent_complete+=count    
-    populate_category_groups(f.attributes["places lived"]["list_of_cities"], f.url, "cities")
-    (f.percent_total_complete, count, f.attributes["contact and basic"]) = driver.scrape_contact_and_basic(f)
-    populate_category_groups(f.attributes["contact and basic"]["basic_info"]["religiousviews"], f.url, "religious_views")
-    populate_category_groups(f.attributes["contact and basic"]["basic_info"]["politicalviews"], f.url, "political_views")
-    populate_category_groups(f.attributes["contact and basic"]["basic_info"]["birthyear"], f.url, "birthyear")
-    (tempCount, count, f.attributes["family and rel"]) = driver.scrape_family_and_rel(f)
-    f.percent_complete+=count
-    f.percent_total_complete+=f.percent_complete
-    f.percent_total_complete+=tempCount
-    f.percent_complete = round(f.percent_complete/8, 3)
-    f.percent_total_complete = round(f.percent_total_complete/14, 3)
-    #print(f.percent_complete, f.percent_total_complete)
-    print(f.name)
-    print(len(f.mutual_friends))
-    print("--- %s seconds ---" % (time.time() - start_time))
+    try:
+        #to check runtime
+        start_time = time.time()
+        #completion count is out of 8
+        #total count is out of 14
+        count = 0
+        f.name = driver.scrape_name(f)
+        f.mutual_friends = driver.full_mutual_friend_list(f)
+        (count, f.attributes["work"], f.attributes["college"], f.attributes["highschool"], f.profile_picture_url) = driver.scrape_work_and_ed(f)
+        f.percent_complete+=count    
+        populate_category_groups(f.attributes["work"], f.url, "work")
+        populate_category_groups(f.attributes["college"], f.url, "college")
+        populate_category_groups(f.attributes["highschool"], f.url, "highschool")
+        (count, f.attributes["places lived"]) = driver.scrape_places_lived(f)
+        f.percent_complete+=count    
+        populate_category_groups(f.attributes["places lived"]["list_of_cities"], f.url, "cities")
+        (f.percent_total_complete, count, f.attributes["contact and basic"]) = driver.scrape_contact_and_basic(f)
+        populate_category_groups(f.attributes["contact and basic"]["basic_info"]["religiousviews"], f.url, "religious_views")
+        populate_category_groups(f.attributes["contact and basic"]["basic_info"]["politicalviews"], f.url, "political_views")
+        populate_category_groups(f.attributes["contact and basic"]["basic_info"]["birthyear"], f.url, "birthyear")
+        (tempCount, count, f.attributes["family and rel"]) = driver.scrape_family_and_rel(f)
+        f.percent_complete+=count
+        f.percent_total_complete+=f.percent_complete
+        f.percent_total_complete+=tempCount
+        f.percent_complete = round(f.percent_complete/8, 3)
+        f.percent_total_complete = round(f.percent_total_complete/14, 3)
+        print(f.name)
+        print(f.percent_complete, f.percent_total_complete)
+        print(len(f.mutual_friends))
+        print("--- %s seconds ---" % (time.time() - start_time))
+        c+=1
+        if c == 100:
+            print(compute_frequency_category_data(category_groups))
+            break
+    except:
+        print(compute_frequency_category_data(category_groups))
+        break
 
-    c+=1
-    if c == 10:
-        print(category_groups)
 
 #scrape user info
 participant = Friend(driver.participant_path)
@@ -159,6 +164,8 @@ participant.percent_complete/=9
 participant.percent_complete = round(participant.percent_complete/8, 3)
 participant.percent_total_complete = round(participant.percent_total_complete/14, 3)
 #print(category_groups)
+
+
 
 # keep key value pairs that appear at least 3 times
 #place_counts = Counter(key_value_pairs["places lived"])

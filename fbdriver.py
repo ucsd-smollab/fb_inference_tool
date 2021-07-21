@@ -86,7 +86,12 @@ class FBdriver(webdriver.Chrome):
     def __init__(self, executable_path, options=None):
         if options is None:
             options = Options()
+            option = webdriver.ChromeOptions()
+            chrome_prefs = {}
+            option.experimental_options["prefs"] = chrome_prefs
             options.add_argument(" - window-size=1920x1080")
+            chrome_prefs["profile.default_content_settings"] = {"images": 2}
+            chrome_prefs["profile.managed_default_content_settings"] = {"images": 2}
         self.friend_lookup_table = None
         super(FBdriver, self).__init__(executable_path=executable_path, options=options)
 
@@ -112,7 +117,7 @@ class FBdriver(webdriver.Chrome):
 
     def scroll(self, time):
         #remove if not testing
-        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        #self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         sleep(time)
 
     def full_friend_lookup_table(self):
@@ -243,8 +248,6 @@ class FBdriver(webdriver.Chrome):
         collegeList = []
         for c in college.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt"):
             schoolName = "NA"
-            degree = "NA"
-            otherConcentrations = "NA"
             year = "NA"
             list_of_years = []
             facebookPageUrlC = "NA"
@@ -256,36 +259,24 @@ class FBdriver(webdriver.Chrome):
                 if schoolUrlElement:
                     facebookPageUrlC = schoolUrlElement[0].get_attribute("href")
                 elements = c.find_elements_by_css_selector(".j5wam9gi.e9vueds3.m9osqain")
+
                 if len(elements) == 1:
-                    degree = elements[0].get_attribute("innerText")
+                    year = elements[0].get_attribute("innerText")
                 elif len(elements) == 3:
-                    degree = elements[0].get_attribute("innerText")
-                    otherConcentrations = elements[2].get_attribute("innerText")
+                    year = elements[2].get_attribute("innerText")
                 elif len(elements) == 5:
-                    degree = elements[0].get_attribute("innerText")
-                    otherConcentrations = elements[2].get_attribute("innerText")
                     year = elements[4].get_attribute("innerText")
             else:
                 continue
 
-            if degree and not any(str.isdigit(c) for c in year):  
-                if any(str.isdigit(c) for c in degree):
-                    year = degree
-                    degree = "NA"
-                elif degree[:4]=="Also" and otherConcentrations:
-                    year = otherConcentrations
-                    otherConcentrations = degree
-                    degree = "NA"
-                elif any(str.isdigit(c) for c in otherConcentrations):
-                    year = otherConcentrations
-                    otherConcentrations = "NA"
+            if not any(str.isdigit(c) for c in year): 
+                year = "NA" 
+                
             if " at " in schoolName:
                 schoolName = schoolName.split("at ")[1]
             list_of_years = generate_list_of_years(year)
             tempDict = {
                 "title": schoolName,
-                "degree": degree.replace("\n", ""),
-                "concentrations": otherConcentrations.replace("\n", ""),
                 "list_of_years": list_of_years,
                 "year": year,
                 "collegeUrl": facebookPageUrlC
