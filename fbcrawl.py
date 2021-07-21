@@ -162,7 +162,6 @@ populate_category_groups(participant.attributes["contact and basic"]["basic_info
 participant.percent_total_complete+=tempCount
 participant.percent_complete+=count
 participant.percent_total_complete+=participant.percent_complete
-participant.percent_complete/=9
 participant.percent_complete = round(participant.percent_complete/8, 3)
 participant.percent_total_complete = round(participant.percent_total_complete/14, 3)
 #print(category_groups)
