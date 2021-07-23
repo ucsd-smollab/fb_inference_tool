@@ -117,7 +117,7 @@ class FBdriver(webdriver.Chrome):
 
     def scroll(self, time):
         #remove if not testing
-        #self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         sleep(time)
 
     def full_friend_lookup_table(self):
@@ -161,12 +161,16 @@ class FBdriver(webdriver.Chrome):
         # getting all of user's friends loaded on screen
         all_friends_loaded = False
         last_height = self.execute_script("return document.body.scrollHeight;")
+        counter = 0
         while (not all_friends_loaded):
             self.scroll(3)
             new_height = self.execute_script("return document.body.scrollHeight;")
             if new_height == last_height:
                 all_friends_loaded = True
             last_height = new_height
+            counter+=1
+            if counter*8 > 50:
+                break
         try:
             mutual_friends_elements = self.find_element_by_class_name("j83agx80.btwxx1t3.lhclo0ds.i1fnvgqd")
             if "No friends" in mutual_friends_elements.get_attribute("innerText"):
