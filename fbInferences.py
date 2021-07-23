@@ -1,14 +1,22 @@
 from friend import Friend
+import copy
 
-def get_number_of_people(mutual_friends, current_friend, participant, category, specified_data, category_group_data):
-    list_of_friends = category_group_data[category][specified_data]
-    total_people = mutual_friends.append(participant).append(current_friend)
-    list_of_intersected_friends = [friend for friend in list_of_friends if friend in total_people]
-    return len(list_of_intersected_friends)
-
+def get_list_of_people(mutual_friends, current_friend, participant, category, specified_data, list_of_urls):
+    if not list_of_urls or not mutual_friends:
+        return []
+    if not mutual_friends:
+        print("empty list")
+    total_people = copy.deepcopy(mutual_friends)
+    if not participant in mutual_friends:
+        total_people.append(participant)
+    total_people.append(current_friend)
+    #print(total_people)
+    print(list_of_urls)
+    list_of_intersected_friends = [friend for friend in list_of_urls if friend in total_people]
+    return list_of_intersected_friends
 
 def compute_frequency_category_data(category_data):
-    frequency_category_data = category_data.copy()
+    frequency_category_data = copy.deepcopy(category_data)
     for category, data in category_data.items():
         for k, list_of_urls in data.items():
             frequency_category_data[category][k] = len(list_of_urls)

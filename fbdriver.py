@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.options import Options
 from time import sleep
 import time
 from friend import Friend
+import random
 
 def format_url(friend, sub_path):
     places_url = f'https://facebook.com/{friend.url}'
@@ -139,7 +140,8 @@ class FBdriver(webdriver.Chrome):
         last_height = self.execute_script("return document.body.scrollHeight;")
         while (not all_friends_loaded):
             for i in range(0, 5):
-                self.scroll(0.5)
+                r = random.randint(0, 5)/10
+                self.scroll(0.5+r)
                 new_height = self.execute_script("return document.body.scrollHeight;")
                 if new_height == last_height:
                     all_friends_loaded = True
@@ -168,8 +170,9 @@ class FBdriver(webdriver.Chrome):
         all_friends_loaded = False
         last_height = self.execute_script("return document.body.scrollHeight;")
         while (not all_friends_loaded):
-            for i in range(0, 8):
-                self.scroll(0.5)
+            for i in range(0, 5):
+                r = random.randint(0, 5)/10
+                self.scroll(0.5+r)
                 new_height = self.execute_script("return document.body.scrollHeight;")
                 if new_height == last_height:
                     all_friends_loaded = True
