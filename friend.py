@@ -7,3 +7,4 @@ class Friend:
         self.profile_picture_url = ""
         self.mutual_friends = None
         self.name = None
+        self.inference_count = None

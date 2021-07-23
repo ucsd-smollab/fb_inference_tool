@@ -138,10 +138,11 @@ class FBdriver(webdriver.Chrome):
         all_friends_loaded = False
         last_height = self.execute_script("return document.body.scrollHeight;")
         while (not all_friends_loaded):
-            self.scroll(3)
-            new_height = self.execute_script("return document.body.scrollHeight;")
-            if new_height == last_height:
-                all_friends_loaded = True
+            for i in range(0, 5):
+                self.scroll(0.5)
+                new_height = self.execute_script("return document.body.scrollHeight;")
+                if new_height == last_height:
+                    all_friends_loaded = True
             last_height = new_height
         
         # getting all url to friends
@@ -156,33 +157,33 @@ class FBdriver(webdriver.Chrome):
         return friend_lookup_table
 
     def full_mutual_friend_list(self, friend):
-        self.get(format_url(friend, "friends_mutual"))
-        sleep(0.2)
+        start_time = time.time()
+        if "profile.php" in friend.url:
+            url = f"https://m.facebook.com/{friend.url}&v=friends&mutual=1"
+        else:
+            url = f"https://m.facebook.com/{friend.url}/friends?mutual=1"
+        self.get(url)
+
         # getting all of user's friends loaded on screen
         all_friends_loaded = False
         last_height = self.execute_script("return document.body.scrollHeight;")
-        counter = 0
         while (not all_friends_loaded):
-            self.scroll(3)
-            new_height = self.execute_script("return document.body.scrollHeight;")
-            if new_height == last_height:
-                all_friends_loaded = True
+            for i in range(0, 8):
+                self.scroll(0.5)
+                new_height = self.execute_script("return document.body.scrollHeight;")
+                if new_height == last_height:
+                    all_friends_loaded = True
             last_height = new_height
-            counter+=1
-            if counter*8 > 50:
-                break
-        try:
-            mutual_friends_elements = self.find_element_by_class_name("j83agx80.btwxx1t3.lhclo0ds.i1fnvgqd")
-            if "No friends" in mutual_friends_elements.get_attribute("innerText"):
-                return "NA"
-            mutual_friends_anchors = mutual_friends_elements.find_elements_by_css_selector("[tabindex='-1']")
-            mutual_friends_urls = [anchor.get_attribute("href") for anchor in mutual_friends_anchors]
-            mutual_friends_paths = [path.split("/")[-1] for path in mutual_friends_urls]
-            #print("mutual friends")
-            #print(mutual_friends_paths)
-            return mutual_friends_paths
-        except Exception:
-            return "NA"
+        
+        # getting all url to friends
+        friend_elements = self.find_elements_by_css_selector("._5pxa ._5pxc a")
+        friend_urls = [f.get_attribute("href") for f in friend_elements]
+        friend_paths = [f.split("/")[-1] for f in friend_urls if f]
+        friend_lookup_table = {p:Friend(p) for p in friend_paths}
+        print("mutual friends")
+        print(len(friend_lookup_table))
+        print("--- %s seconds ---" % (time.time() - start_time))
+        return friend_lookup_table
 
     def scrape_name(self, friend):
         #load friends facebook page
