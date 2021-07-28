@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.options import Options
 from time import sleep
 import time
 from friend import Friend
+import random
 
 def format_url(friend, sub_path):
     places_url = f'https://facebook.com/{friend.url}'
@@ -117,7 +118,7 @@ class FBdriver(webdriver.Chrome):
 
     def scroll(self, time):
         #remove if not testing
-        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        #self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         sleep(time)
 
     def full_friend_lookup_table(self):
@@ -139,7 +140,8 @@ class FBdriver(webdriver.Chrome):
         last_height = self.execute_script("return document.body.scrollHeight;")
         while (not all_friends_loaded):
             for i in range(0, 5):
-                self.scroll(0.5)
+                r = random.randint(0, 5)/10
+                self.scroll(0.5+r)
                 new_height = self.execute_script("return document.body.scrollHeight;")
                 if new_height == last_height:
                     all_friends_loaded = True
@@ -151,9 +153,9 @@ class FBdriver(webdriver.Chrome):
         friend_paths = [f.split("/")[-1] for f in friend_urls if f]
         friend_lookup_table = {p:Friend(p) for p in friend_paths}
         self.friend_lookup_table = friend_lookup_table
-        print("friends")
-        print(len(friend_urls))
-        print("--- %s seconds ---" % (time.time() - start_time))
+        # print("friends")
+        # print(len(friend_urls))
+        # print("--- %s seconds ---" % (time.time() - start_time))
         return friend_lookup_table
 
     def full_mutual_friend_list(self, friend):
@@ -168,8 +170,9 @@ class FBdriver(webdriver.Chrome):
         all_friends_loaded = False
         last_height = self.execute_script("return document.body.scrollHeight;")
         while (not all_friends_loaded):
-            for i in range(0, 8):
-                self.scroll(0.5)
+            for i in range(0, 5):
+                r = random.randint(0, 5)/10
+                self.scroll(0.5+r)
                 new_height = self.execute_script("return document.body.scrollHeight;")
                 if new_height == last_height:
                     all_friends_loaded = True
@@ -177,13 +180,21 @@ class FBdriver(webdriver.Chrome):
         
         # getting all url to friends
         friend_elements = self.find_elements_by_css_selector("._5pxa ._5pxc a")
+        if not friend_elements:
+            return []
         friend_urls = [f.get_attribute("href") for f in friend_elements]
-        friend_paths = [f.split("/")[-1] for f in friend_urls if f]
-        friend_lookup_table = {p:Friend(p) for p in friend_paths}
-        print("mutual friends")
-        print(len(friend_lookup_table))
-        print("--- %s seconds ---" % (time.time() - start_time))
-        return friend_lookup_table
+        friend_paths = []
+        for f in friend_urls:
+            if not f:
+                continue
+            path = f.split("/")[-1]
+            if not "profile.php" in path:
+                path = path.split("?")[0]
+            friend_paths.append(path)
+        # print("mutual friends")
+        # print(len(friend_paths))
+        # print("--- %s seconds ---" % (time.time() - start_time))
+        return friend_paths
 
     def scrape_name(self, friend):
         #load friends facebook page

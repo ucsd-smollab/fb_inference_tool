@@ -27,16 +27,82 @@ def infer(friend, key, value, participant, mutual_friends, total_friends):
     # (to indicate whether or not we think this friend has lived in San Diego)
     return random.choice([True, False]) # placeholder
 
-# def generate_inferences(friends, participant, key_value_pairs):
-#     total_friends = len(friends.keys())
-#     inferences = []
-#     # this double for loop might be too slow and is not necessarily the best
-#     # approach but it's a starting point
-#     for k, v in key_value_pairs.items():
-#         for friend in friends.values():
-#             if infer(friend, k, v, participant, friend.mutual_friends, total_friends):
-#                 inferences.append((friend.name, k, v))
-#     return inferences
+'''
+attributes: {
+    work: [ {} {} {} {} ] -> f.attributes[work][0][name]
+    highschool: [ {} {} ] -> f.attributes[highschool][0][name]
+    college: [ {} {} {} ] -> f.attributes[college][0][name]
+    places lived: { list_of_cities: [] } -> f.attributes[places lived][list_of_cities]
+    contact_basic_info: { basic_info: { politicalViews: "", religiousViews: "", birthYear: "" } } -> f.attributes[contact_basic_info][basic_info][politicalViews]
+}
+'''
+inference_count_dict = {
+    "Right": 0,
+    "Wrong": 0,
+    "Tie": 0,
+    "No Data": 0,
+    "Not Scraped": 0,
+    "Below Threshold": 0
+}
+def generate_inferences(friends, participant):
+    for p, f in friends.items():
+        if not f.attributes:
+            inference_count_dict["Not Scraped"]+=1
+            continue
+        c = -1
+        for category, category_data in f.inference_count.items():
+            c+=1
+            #initilize temp variables
+            temp_count = 5 #sets threshold
+            threshold = 5 #for printing purposes
+            temp_name = "threshold"
+            tie = False
+            to_predict = []
+            #get data
+            #print(f"category: {category}, Count: {c}")
+            if c < 3:
+                #print(f.attributes)
+                if f.attributes[category] == "NA":
+                    inference_count_dict["No Data"] += 1
+                    continue
+                for cat in f.attributes[category]:
+                    to_predict.append(cat["title"])
+            elif c == 3:
+                if f.attributes["places lived"]["list_of_cities"] == "NA":
+                    inference_count_dict["No Data"] += 1
+                    continue
+                to_predict = f.attributes["places lived"]["list_of_cities"]
+            else:
+                if f.attributes["contact and basic"]["basic_info"][category] == "NA":
+                    inference_count_dict["No Data"] += 1
+                    continue
+                to_predict = f.attributes["contact and basic"]["basic_info"][category]
+            #iterate through dict and compare most frequent values to make inferences
+            for name, data_entries in category_data.items():
+                if name == "no_data":
+                    continue
+                #get most frequent data value
+                count = len(data_entries)
+                #print(name, count)
+                if count > temp_count:
+                    temp_count = count
+                    temp_name = name
+                    tie = False
+                elif count == temp_count:
+                    tie = True
+            #update accuracy counts
+            if tie == True:
+                inference_count_dict["Tie"]+=1
+            elif temp_name == "threshold":
+                inference_count_dict["Below Threshold"]+=1
+            else:
+                if temp_name in to_predict:
+                    inference_count_dict["Right"]+=1
+                else:
+                    inference_count_dict["Wrong"]+=1
+            print(f"guess: {temp_name}")
+            print(f"actual: {to_predict}")
+    print(f"threshold: {threshold}")
 
 #-------------------------------------------------------------------------------
 
@@ -62,10 +128,10 @@ category_groups_template = {
     "cities": {
         "no_data": []
     },
-    "religious_views": {
+    "religiousviews": {
         "no_data": []
     },
-    "political_views": {
+    "politicalviews": {
         "no_data": []
     },
     "birthyear": {
@@ -118,8 +184,8 @@ for p, f in friends.items():
         f.percent_complete+=count    
         populate_category_groups(f.attributes["places lived"]["list_of_cities"], f.url, "cities")
         (f.percent_total_complete, count, f.attributes["contact and basic"]) = driver.scrape_contact_and_basic(f)
-        populate_category_groups(f.attributes["contact and basic"]["basic_info"]["religiousviews"], f.url, "religious_views")
-        populate_category_groups(f.attributes["contact and basic"]["basic_info"]["politicalviews"], f.url, "political_views")
+        populate_category_groups(f.attributes["contact and basic"]["basic_info"]["religiousviews"], f.url, "religiousviews")
+        populate_category_groups(f.attributes["contact and basic"]["basic_info"]["politicalviews"], f.url, "politicalviews")
         populate_category_groups(f.attributes["contact and basic"]["basic_info"]["birthyear"], f.url, "birthyear")
         (tempCount, count, f.attributes["family and rel"]) = driver.scrape_family_and_rel(f)
         f.percent_complete+=count
@@ -132,9 +198,10 @@ for p, f in friends.items():
         #print("inference complete, total complete")
         #print(f.percent_complete, f.percent_total_complete)
         #print(len(f.mutual_friends))
+        #print(f.mutual_friends)
         #print("--- %s seconds ---" % (time.time() - start_time))
         c+=1
-        if c == 10:
+        if c == 25:
             #pprint.pprint(compute_frequency_category_data(category_groups))
             break
     except:
@@ -153,8 +220,8 @@ participant.percent_complete+=count
 populate_category_groups(participant.attributes["places lived"]["list_of_cities"], participant.url, "cities")
 (participant.percent_total_complete, count, participant.attributes["contact and basic"]) = driver.scrape_contact_and_basic(participant)
 participant.percent_complete+=count
-populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["religiousviews"], participant.url, "religious_views")
-populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["politicalviews"], participant.url, "political_views")
+populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["religiousviews"], participant.url, "religiousviews")
+populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["politicalviews"], participant.url, "politicalviews")
 populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["birthyear"], participant.url, "birthyear")
 #(tempCount, count, participant.attributes["family and rel"]) = driver.scrape_family_and_rel(participant)
 #participant.percent_total_complete+=tempCount
@@ -162,10 +229,10 @@ participant.percent_complete+=count
 participant.percent_total_complete+=participant.percent_complete
 participant.percent_complete = round(participant.percent_complete/8, 3)
 participant.percent_total_complete = round(participant.percent_total_complete/14, 3)
-print(category_groups)
-print(c)
-print("total runtime")
-print("--- %s seconds ---" % (time.time() - total_time))
+# print(category_groups)
+# print(c)
+# print("total runtime")
+# print("--- %s seconds ---" % (time.time() - total_time))
 
 #make inferences
 
@@ -187,12 +254,18 @@ for url, friend in friends.items():
     category_frequency_data = copy.deepcopy(category_groups_template)
     for category, category_data in category_groups.items():
         for name, list_of_urls in category_data.items():
-            category_frequency_data[category][name] = get_list_of_people(friend.mutual_friends, url, participant.url, category, name, list_of_urls)
+            category_frequency_data[category][name] = get_list_of_people(friend.mutual_friends, participant.url, list_of_urls)
     friend.inference_count = category_frequency_data
-print(friends['danielnewman21'].inference_count)
+# for _, friend in friends.items():
+#     print(friend.name)
+#     pprint.pprint(friend.inference_count)
+#     print("------------------------------------------------------")
+#print(friends['danielnewman21'].inference_count)
 
 
-#inferences = generate_inferences(friends, participant, key_value_pairs)
+generate_inferences(friends, participant)
+pprint.pprint(inference_count_dict)
+
 inferences = []
 data_to_send = {
     "friends": [f.attributes for f in friends.values()],
