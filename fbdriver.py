@@ -6,11 +6,11 @@ import time
 from friend import Friend
 import random
 
-def format_url(friend, sub_path):
-    places_url = f'https://facebook.com/{friend.url}'
+def format_url(friend):
+    places_url = f'https://m.facebook.com/{friend.url}'
     if "profile.php" in friend.url:
-        return f'{places_url}&sk={sub_path}'
-    return f'{places_url}/{sub_path}'
+        return f'{places_url}&v=info'
+    return f'{places_url}/about'
 
 def extract_data(data, formatted_data):
     splitted_data = data.split("\n")
@@ -545,3 +545,98 @@ class FBdriver(webdriver.Chrome):
         #print("relationship and family")
         #print(relAndFamDict)
         return totalCount, completionCount, relAndFamDict
+    
+    def get_education_elements(self, ed_element):
+        education_elements = ed_element.find_elements_by_css_selector("._5cds._2lcw")
+
+        for element in education_elements:
+            # title
+            title_element = element.find_element_by_css_selector("._52jd._52jb._52jh._3-8_")
+            title = title_element.get_attribute("innerText")
+            print(f"title: {title}")
+
+            # degree, concentration, or highschool
+            degree_or_school_elements = element.find_elements_by_css_selector("._52jc._52ja")
+            for e in degree_or_school_elements:
+                text = e.get_attribute("innerText")
+
+                # a concentration
+                concentrations = e.find_elements_by_tag_name("span")
+                if concentrations:
+                    print(f"concentration: {text}")
+                # a high school
+                elif "High School" in text:
+                    print(f"HighSchool: {text}")
+                # a degree
+                else:
+                    print(f"degree: {text}")
+
+            # date
+            date_element = element.find_elements_by_css_selector("._52jc._52j9")
+            if date_element:
+                date = date_element[0].get_attribute("innerText")
+                print(f"date: {date}")
+            print("---------------------------------------------------")
+    
+    def get_work_elements(self, work_element):
+        work_elements = work_element.find_elements_by_css_selector(".ib.cc.experience")
+
+        for element in work_elements:
+            title_element = element.find_element_by_css_selector("._52jd._52jb._52jh._3-8_")
+            title = title_element.get_attribute("innerText")
+            print(f"title: {title}")
+
+            position_element = element.find_elements_by_css_selector("._52jc._52ja")
+            if position_element:
+                position = position_element[0].get_attribute("innerText")
+                print(f"position: {position}")
+            
+            dateOrLocation = element.find_elements_by_css_selector("._52jc._52j9")
+            for e in dateOrLocation:
+                text = e.get_attribute("innerText")
+                if any(str.isdigit(c) for c in text):
+                    print(f"date: {text}")
+                else:
+                    print(f"location: {text}")
+            print("---------------------------------------------------")
+    
+    def get_places_lived(self, places_element):
+        places_elements = places_element.find_elements_by_css_selector("._55wr._7om2._5b6o.touchable._592p._25mv")
+        
+        for element in places_elements:
+            header = element.find_element_by_css_selector("._4g34._5b6q._5b6p._5i2i._52we")
+            text_elements = header.get_attribute("innerText").split("\n")
+            print(text_elements)
+            print("---------------------------------------------------")
+    
+    def get_contact_info(self, contact_element):
+        contact_elements = contact_element.find_elements_by_css_selector("._52ja._5ejs")
+        print(len(contact_elements))
+        for element in contact_elements:
+            text = element.get_attribute("innerText").split("\n")
+            print(text)
+            print("---------------------------------------------------")
+
+    def get_all_info(self, friend):
+        # TODO: navigate to the friends page
+        about_url = format_url(friend)
+        self.get(about_url)
+
+        all_info_element = self.find_element_by_css_selector(".timeline.aboutme")
+
+        # all_education_elements = all_info_element.find_elements_by_id("education")
+        # if all_education_elements:
+        #     self.get_education_elements(all_education_elements[0])
+        
+        # all_work_elements = all_info_element.find_elements_by_id("work")
+        # if all_work_elements:
+        #     self.get_work_elements(all_work_elements[0])
+        
+        # all_places_lived = all_info_element.find_elements_by_id("living")
+        # if all_places_lived:
+        #     self.get_places_lived(all_places_lived[0])
+
+        all_contact_info = all_info_element.find_elements_by_id("contact-info")
+        if all_contact_info:
+            self.get_contact_info(all_contact_info[0])
+        
