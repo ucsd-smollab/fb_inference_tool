@@ -62,10 +62,10 @@ category_groups_template = {
     "cities": {
         "no_data": []
     },
-    "religious_views": {
+    "religiousviews": {
         "no_data": []
     },
-    "political_views": {
+    "politicalviews": {
         "no_data": []
     },
     "birthyear": {
@@ -137,11 +137,12 @@ for p, f in friends.items():
         #print(f.mutual_friends)
         #print("--- %s seconds ---" % (time.time() - start_time))
         c+=1
-        if c == 25:
+        if c == 1:
             #pprint.pprint(compute_frequency_category_data(category_groups))
             break
     except:
         print("exception error")
+        print(f.name)
         break
 
 #scrape user info
@@ -156,8 +157,8 @@ participant.percent_complete+=count
 populate_category_groups(participant.attributes["places lived"]["list_of_cities"], participant.url, "cities")
 (participant.percent_total_complete, count, participant.attributes["contact and basic"]) = driver.scrape_contact_and_basic(participant)
 participant.percent_complete+=count
-populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["religiousviews"], participant.url, "religious_views")
-populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["politicalviews"], participant.url, "political_views")
+populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["religiousviews"], participant.url, "religiousviews")
+populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["politicalviews"], participant.url, "politicalviews")
 populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["birthyear"], participant.url, "birthyear")
 #(tempCount, count, participant.attributes["family and rel"]) = driver.scrape_family_and_rel(participant)
 #participant.percent_total_complete+=tempCount
@@ -165,10 +166,10 @@ participant.percent_complete+=count
 participant.percent_total_complete+=participant.percent_complete
 participant.percent_complete = round(participant.percent_complete/8, 3)
 participant.percent_total_complete = round(participant.percent_total_complete/14, 3)
-print(category_groups)
-print(c)
-print("total runtime")
-print("--- %s seconds ---" % (time.time() - total_time))
+# print(category_groups)
+# print(f"number of freinds: {c}")
+# print("total runtime")
+# print("--- %s seconds ---" % (time.time() - total_time))
 
 #make inferences
 

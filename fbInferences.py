@@ -11,7 +11,7 @@ def get_list_of_people(mutual_friends, current_friend, participant, category, sp
         total_people.append(participant)
 
     list_of_intersected_friends = [friend for friend in list_of_urls if friend in total_people]
-    print(list_of_intersected_friends)
+    #print(list_of_intersected_friends)
     return list_of_intersected_friends
 
 def compute_frequency_category_data(category_data):

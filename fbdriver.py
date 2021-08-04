@@ -14,7 +14,7 @@ def format_url(friend, sub_path):
 
 def extract_data(data, formatted_data):
     splitted_data = data.split("\n")
-    correct_data = [split_data for split_data in splitted_data if not "Shared " in split_data and not "Only " in split_data and not "Add a" in split_data]
+    correct_data = [split_data for split_data in splitted_data if not "Shared " in split_data and not "Only " in split_data and not "Add a" in split_data and not "Friends" in split_data]
     for i in range(1, len(correct_data), 2):
         category = correct_data[i+1].replace(" ", "").lower()
         if category in formatted_data:
@@ -206,8 +206,6 @@ class FBdriver(webdriver.Chrome):
         return name
 
     def scrape_work_and_ed(self, friend):
-        print("Start web version")
-        start_time = time.time()
         self.get(format_url(friend, "about_work_and_education"))
 
         # getting profile image url
@@ -358,7 +356,6 @@ class FBdriver(webdriver.Chrome):
         #print(collegeList)
         #print("high school")
         #print(highSchoolList)
-        print("--- %s seconds ---" % (time.time() - start_time))
         return (completionCount, workList, collegeList, highSchoolList, profile_picture_url)
 
     def scrape_places_lived(self, friend):
@@ -376,8 +373,8 @@ class FBdriver(webdriver.Chrome):
             index_city = 0
             if "no places to show" in place.lower():
                 break
-            place_info = place.split("\n")
-            if "Add " in place_info[index_city]:
+            place_info = place.split("\n")[:2]
+            if "Add " in place_info[-1] or "Shared " in place_info[index_city] or "Only " in place_info[index_city]:
                 continue
             elif "Current" in place_info[-1]:
                 places_lived["currentCity"] = place_info[index_city]
