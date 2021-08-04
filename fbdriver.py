@@ -6,15 +6,15 @@ import time
 from friend import Friend
 import random
 
-def format_url(friend):
-    places_url = f'https://m.facebook.com/{friend.url}'
+def format_url(friend, sub_path):
+    places_url = f'https://facebook.com/{friend.url}'
     if "profile.php" in friend.url:
-        return f'{places_url}&v=info'
-    return f'{places_url}/about'
+        return f'{places_url}&sk={sub_path}'
+    return f'{places_url}/{sub_path}'
 
 def extract_data(data, formatted_data):
     splitted_data = data.split("\n")
-    correct_data = [split_data for split_data in splitted_data if not "Shared " in split_data and not "Only " in split_data]
+    correct_data = [split_data for split_data in splitted_data if not "Shared " in split_data and not "Only " in split_data and not "Add a" in split_data]
     for i in range(1, len(correct_data), 2):
         category = correct_data[i+1].replace(" ", "").lower()
         if category in formatted_data:
@@ -118,7 +118,7 @@ class FBdriver(webdriver.Chrome):
 
     def scroll(self, time):
         #remove if not testing
-        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        #self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         sleep(time)
 
     def full_friend_lookup_table(self):

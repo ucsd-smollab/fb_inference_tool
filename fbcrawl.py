@@ -40,8 +40,8 @@ def infer(friend, key, value, participant, mutual_friends, total_friends):
 
 #-------------------------------------------------------------------------------
 
-path_to_chrome_driver = "C:\\Users\\tanst\\chromedriver.exe"
-username = "sttan@ucsd.edu"
+path_to_chrome_driver = "/Users/aaron/opt/WebDriver/bin/chromedriver"
+username = "aaronbroukhim@aol.com"
 url = "https://mobile.facebook.com/home.php"
 
 driver = FBdriver(executable_path=path_to_chrome_driver)
@@ -103,7 +103,6 @@ c = 0
 for p, f in friends.items():
     f.name = driver.scrape_name(f)
     f.mutual_friends = driver.full_mutual_friend_list(f)
-    driver.get_all_info(f)
     try:
         # to check runtime
         start_time = time.time()
@@ -145,7 +144,6 @@ for p, f in friends.items():
         print("exception error")
         break
 
-'''
 #scrape user info
 participant = Friend(driver.participant_path)
 (count, participant.attributes["work"], participant.attributes["college"], participant.attributes["highschool"], participant.profile_picture_url) = driver.scrape_work_and_ed(participant)
@@ -173,7 +171,6 @@ print("total runtime")
 print("--- %s seconds ---" % (time.time() - total_time))
 
 #make inferences
-'''
 
 '''
 look through each friends dcitionary
