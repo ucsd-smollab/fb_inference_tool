@@ -118,7 +118,7 @@ class FBdriver(webdriver.Chrome):
 
     def scroll(self, time):
         #remove if not testing
-        #self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         sleep(time)
 
     def full_friend_lookup_table(self):
@@ -206,7 +206,9 @@ class FBdriver(webdriver.Chrome):
         return name
 
     def scrape_work_and_ed(self, friend):
-        self.get(format_url(friend, "about_work_and_education"))
+        print("Start web version")
+        start_time = time.time()
+        self.get(format_url_web(friend, "about_work_and_education"))
 
         # getting profile image url
         profile_picture_section = self.find_element_by_class_name("oajrlxb2.gs1a9yip.g5ia77u1.mtkw9kbi.tlpljxtp.qensuy8j.ppp5ayq2.goun2846.ccm00jje.s44p3ltw.mk2mc5f4.rt8b4zig.n8ej3o3l.agehan2d.sk4xxmp2.rq0escxv.nhd2j8a9.q9uorilb.mg4g778l.btwxx1t3.pfnyh3mw.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.tgvbjcpo.hpfvmrgz.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.l9j0dhe7.i1ao9s8h.esuyzwwr.f1sip0of.du4w35lb.lzcic4wl.abiwlrkh.p8dawk7l.oo9gr5id")
@@ -356,6 +358,7 @@ class FBdriver(webdriver.Chrome):
         #print(collegeList)
         #print("high school")
         #print(highSchoolList)
+        print("--- %s seconds ---" % (time.time() - start_time))
         return (completionCount, workList, collegeList, highSchoolList, profile_picture_url)
 
     def scrape_places_lived(self, friend):
@@ -553,30 +556,31 @@ class FBdriver(webdriver.Chrome):
             # title
             title_element = element.find_element_by_css_selector("._52jd._52jb._52jh._3-8_")
             title = title_element.get_attribute("innerText")
-            print(f"title: {title}")
+            #print(f"title: {title}")
 
             # degree, concentration, or highschool
             degree_or_school_elements = element.find_elements_by_css_selector("._52jc._52ja")
+
             for e in degree_or_school_elements:
                 text = e.get_attribute("innerText")
 
                 # a concentration
                 concentrations = e.find_elements_by_tag_name("span")
-                if concentrations:
-                    print(f"concentration: {text}")
+                #if concentrations:
+                    #print(f"concentration: {text}")
                 # a high school
-                elif "High School" in text:
-                    print(f"HighSchool: {text}")
+                #elif "High School" in text:
+                    #print(f"HighSchool: {text}")
                 # a degree
-                else:
-                    print(f"degree: {text}")
+                #else:
+                    #print(f"degree: {text}")
 
             # date
             date_element = element.find_elements_by_css_selector("._52jc._52j9")
             if date_element:
                 date = date_element[0].get_attribute("innerText")
-                print(f"date: {date}")
-            print("---------------------------------------------------")
+                #print(f"date: {date}")
+            #print("---------------------------------------------------")
     
     def get_work_elements(self, work_element):
         work_elements = work_element.find_elements_by_css_selector(".ib.cc.experience")
@@ -584,21 +588,21 @@ class FBdriver(webdriver.Chrome):
         for element in work_elements:
             title_element = element.find_element_by_css_selector("._52jd._52jb._52jh._3-8_")
             title = title_element.get_attribute("innerText")
-            print(f"title: {title}")
+            #print(f"title: {title}")
 
             position_element = element.find_elements_by_css_selector("._52jc._52ja")
             if position_element:
                 position = position_element[0].get_attribute("innerText")
-                print(f"position: {position}")
+                #print(f"position: {position}")
             
             dateOrLocation = element.find_elements_by_css_selector("._52jc._52j9")
             for e in dateOrLocation:
                 text = e.get_attribute("innerText")
-                if any(str.isdigit(c) for c in text):
-                    print(f"date: {text}")
-                else:
-                    print(f"location: {text}")
-            print("---------------------------------------------------")
+            #     if any(str.isdigit(c) for c in text):
+            #         print(f"date: {text}")
+            #     else:
+            #         print(f"location: {text}")
+            # print("---------------------------------------------------")
     
     def get_places_lived(self, places_element):
         places_elements = places_element.find_elements_by_css_selector("._55wr._7om2._5b6o.touchable._592p._25mv")
@@ -606,37 +610,38 @@ class FBdriver(webdriver.Chrome):
         for element in places_elements:
             header = element.find_element_by_css_selector("._4g34._5b6q._5b6p._5i2i._52we")
             text_elements = header.get_attribute("innerText").split("\n")
-            print(text_elements)
-            print("---------------------------------------------------")
+            #print(text_elements)
+            #print("---------------------------------------------------")
     
     def get_contact_info(self, contact_element):
         contact_elements = contact_element.find_elements_by_css_selector("._52ja._5ejs")
-        print(len(contact_elements))
+        #print(len(contact_elements))
         for element in contact_elements:
             text = element.get_attribute("innerText").split("\n")
-            print(text)
-            print("---------------------------------------------------")
+            #print(text)
+            #print("---------------------------------------------------")
 
     def get_all_info(self, friend):
+        print("Start mobile version")
+        start_time = time.time()
         # TODO: navigate to the friends page
         about_url = format_url(friend)
         self.get(about_url)
 
         all_info_element = self.find_element_by_css_selector(".timeline.aboutme")
 
-        # all_education_elements = all_info_element.find_elements_by_id("education")
-        # if all_education_elements:
-        #     self.get_education_elements(all_education_elements[0])
+        all_education_elements = all_info_element.find_elements_by_id("education")
+        if all_education_elements:
+            self.get_education_elements(all_education_elements[0])
         
-        # all_work_elements = all_info_element.find_elements_by_id("work")
-        # if all_work_elements:
-        #     self.get_work_elements(all_work_elements[0])
-        
+        all_work_elements = all_info_element.find_elements_by_id("work")
+        if all_work_elements:
+            self.get_work_elements(all_work_elements[0])
+        print("--- %s seconds ---" % (time.time() - start_time))
         # all_places_lived = all_info_element.find_elements_by_id("living")
         # if all_places_lived:
         #     self.get_places_lived(all_places_lived[0])
 
-        all_contact_info = all_info_element.find_elements_by_id("contact-info")
-        if all_contact_info:
-            self.get_contact_info(all_contact_info[0])
-        
+        # all_contact_info = all_info_element.find_elements_by_id("contact-info")
+        # if all_contact_info:
+        #     self.get_contact_info(all_contact_info[0])
