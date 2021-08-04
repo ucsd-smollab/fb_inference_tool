@@ -137,7 +137,7 @@ for p, f in friends.items():
         #print(f.mutual_friends)
         #print("--- %s seconds ---" % (time.time() - start_time))
         c+=1
-        if c == 10:
+        if c == 0:
             #pprint.pprint(compute_frequency_category_data(category_groups))
             break
     except:
