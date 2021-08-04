@@ -14,7 +14,7 @@ def format_url(friend, sub_path):
 
 def extract_data(data, formatted_data):
     splitted_data = data.split("\n")
-    correct_data = [split_data for split_data in splitted_data if not "Shared " in split_data and not "Only " in split_data and not "Add a" in split_data and not "Friends" in split_data]
+    correct_data = [split_data for split_data in splitted_data if not "Shared " in split_data and not "Only " in split_data and not "Add " in split_data and not "Friends" in split_data]
     print(f"correct data: {correct_data}")
     for i in range(1, len(correct_data), 2):
         category = correct_data[i+1].replace(" ", "").lower()
