@@ -193,7 +193,7 @@ for url, friend in friends.items():
         for name, list_of_urls in category_data.items():
             category_frequency_data[category][name] = get_list_of_people(friend.mutual_friends, url, participant.url, category, name, list_of_urls)
     friend.inference_count = category_frequency_data
-print(friends['danielnewman21'].inference_count)
+#print(friends['danielnewman21'].inference_count)
 
 
 #inferences = generate_inferences(friends, participant, key_value_pairs)
