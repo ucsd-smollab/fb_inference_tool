@@ -137,7 +137,7 @@ for p, f in friends.items():
         #print(f.mutual_friends)
         #print("--- %s seconds ---" % (time.time() - start_time))
         c+=1
-        if c == 0:
+        if c == 1:
             #pprint.pprint(compute_frequency_category_data(category_groups))
             break
     except:
@@ -166,7 +166,7 @@ participant.percent_complete+=count
 participant.percent_total_complete+=participant.percent_complete
 participant.percent_complete = round(participant.percent_complete/8, 3)
 participant.percent_total_complete = round(participant.percent_total_complete/14, 3)
-pprint.pprint(category_groups)
+#pprint.pprint(category_groups)
 # print(f"number of freinds: {c}")
 # print("total runtime")
 # print("--- %s seconds ---" % (time.time() - total_time))
