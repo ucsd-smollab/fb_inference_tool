@@ -7,6 +7,8 @@ from collections import Counter
 import time
 import copy
 import pprint
+import json
+import pickle
 
 from fbInferences import compute_frequency_category_data, get_list_of_people
 
@@ -74,7 +76,6 @@ category_groups_template = {
 }
 
 category_groups = copy.deepcopy(category_groups_template)
-
 def populate_category_groups(data, person_url, category_name):
     if data == "NA":
         category_groups[category_name]["no_data"].append(person_url)
@@ -94,82 +95,114 @@ def populate_category_groups(data, person_url, category_name):
         else:
             category_groups[category_name][entry_name] = [person_url]
 
-#keep track of time
-total_time = time.time()
-# fetching all url paths to the user's friends' profiles
-friends = driver.full_friend_lookup_table()
-#scrape users friends info
-c = 0
-for p, f in friends.items():
+def get_participant_data():
+    #scrape user info
+    participant = Friend(driver.participant_path)
+    (count, participant.attributes["work"], participant.attributes["college"], participant.attributes["highschool"], participant.profile_picture_url) = driver.scrape_work_and_ed(participant)
+    participant.percent_complete+=count
+    populate_category_groups(participant.attributes["work"], participant.url, "work")
+    populate_category_groups(participant.attributes["college"], participant.url, "college")
+    populate_category_groups(participant.attributes["highschool"], participant.url, "highschool")
+    (count, participant.attributes["places lived"]) = driver.scrape_places_lived(participant)
+    participant.percent_complete+=count
+    populate_category_groups(participant.attributes["places lived"]["list_of_cities"], participant.url, "cities")
+    (participant.percent_total_complete, count, participant.attributes["contact and basic"]) = driver.scrape_contact_and_basic(participant)
+    participant.percent_complete+=count
+    populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["religiousviews"], participant.url, "religiousviews")
+    populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["politicalviews"], participant.url, "politicalviews")
+    populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["birthyear"], participant.url, "birthyear")
+    #(tempCount, count, participant.attributes["family and rel"]) = driver.scrape_family_and_rel(participant)
+    #participant.percent_total_complete+=tempCount
+    participant.percent_complete+=count
+    participant.percent_total_complete+=participant.percent_complete
+    participant.percent_complete = round(participant.percent_complete/8, 3)
+    participant.percent_total_complete = round(participant.percent_total_complete/14, 3)
+    return participant
+
+def scrape_friend_info(f):
     f.name = driver.scrape_name(f)
     f.mutual_friends = driver.full_mutual_friend_list(f)
-    try:
-        # to check runtime
-        start_time = time.time()
-        # completion count is out of 8
-        # total count is out of 14
-        count = 0
-        f.name = driver.scrape_name(f)
-        f.mutual_friends = driver.full_mutual_friend_list(f)
-        (count, f.attributes["work"], f.attributes["college"], f.attributes["highschool"], f.profile_picture_url) = driver.scrape_work_and_ed(f)
-        f.percent_complete+=count    
-        populate_category_groups(f.attributes["work"], f.url, "work")
-        populate_category_groups(f.attributes["college"], f.url, "college")
-        populate_category_groups(f.attributes["highschool"], f.url, "highschool")
-        (count, f.attributes["places lived"]) = driver.scrape_places_lived(f)
-        f.percent_complete+=count    
-        populate_category_groups(f.attributes["places lived"]["list_of_cities"], f.url, "cities")
-        (f.percent_total_complete, count, f.attributes["contact and basic"]) = driver.scrape_contact_and_basic(f)
-        populate_category_groups(f.attributes["contact and basic"]["basic_info"]["religiousviews"], f.url, "religiousviews")
-        populate_category_groups(f.attributes["contact and basic"]["basic_info"]["politicalviews"], f.url, "politicalviews")
-        populate_category_groups(f.attributes["contact and basic"]["basic_info"]["birthyear"], f.url, "birthyear")
-        (tempCount, count, f.attributes["family and rel"]) = driver.scrape_family_and_rel(f)
-        f.percent_complete+=count
-        f.percent_total_complete+=f.percent_complete
-        f.percent_total_complete+=tempCount
-        f.percent_complete = round(f.percent_complete/8, 3)
-        f.percent_total_complete = round(f.percent_total_complete/14, 3)
-        #print("name")
-        #print(f.name)
-        #print("inference complete, total complete")
-        #print(f.percent_complete, f.percent_total_complete)
-        #print(len(f.mutual_friends))
-        #print(f.mutual_friends)
-        #print("--- %s seconds ---" % (time.time() - start_time))
-        c+=1
-        if c == 1:
-            #pprint.pprint(compute_frequency_category_data(category_groups))
-            break
-    except:
-        print("exception error")
-        print(f.name)
-        break
+    (count, f.attributes["work"], f.attributes["college"], f.attributes["highschool"], f.profile_picture_url) = driver.scrape_work_and_ed(f)
+    f.percent_complete+=count    
+    populate_category_groups(f.attributes["work"], f.url, "work")
+    populate_category_groups(f.attributes["college"], f.url, "college")
+    populate_category_groups(f.attributes["highschool"], f.url, "highschool")
+    (count, f.attributes["places lived"]) = driver.scrape_places_lived(f)
+    f.percent_complete+=count    
+    populate_category_groups(f.attributes["places lived"]["list_of_cities"], f.url, "cities")
+    (f.percent_total_complete, count, f.attributes["contact and basic"]) = driver.scrape_contact_and_basic(f)
+    populate_category_groups(f.attributes["contact and basic"]["basic_info"]["religiousviews"], f.url, "religiousviews")
+    populate_category_groups(f.attributes["contact and basic"]["basic_info"]["politicalviews"], f.url, "politicalviews")
+    populate_category_groups(f.attributes["contact and basic"]["basic_info"]["birthyear"], f.url, "birthyear")
+    (tempCount, count, f.attributes["family and rel"]) = driver.scrape_family_and_rel(f)
+    f.percent_complete+=count
+    f.percent_total_complete+=f.percent_complete
+    f.percent_total_complete+=tempCount
+    f.percent_complete = round(f.percent_complete/8, 3)
+    f.percent_total_complete = round(f.percent_total_complete/14, 3)
+
+#keep track of time
+total_time = time.time()
+
+#load in previously scraped data
+objects = []
+try:
+    with (open("file.pkl", "rb")) as openfile:
+        while True:
+            try:
+                objects.append(pickle.load(openfile))
+            except EOFError:
+                break
+except:
+    print("No pickle file")
+old_data = {}
+old_count = 0
+if objects:
+    old_data = objects[0]
+    if "count" in old_data:
+        old_count = old_data["count"]
 
 #scrape user info
-participant = Friend(driver.participant_path)
-(count, participant.attributes["work"], participant.attributes["college"], participant.attributes["highschool"], participant.profile_picture_url) = driver.scrape_work_and_ed(participant)
-participant.percent_complete+=count
-populate_category_groups(participant.attributes["work"], participant.url, "work")
-populate_category_groups(participant.attributes["college"], participant.url, "college")
-populate_category_groups(participant.attributes["highschool"], participant.url, "highschool")
-(count, participant.attributes["places lived"]) = driver.scrape_places_lived(participant)
-participant.percent_complete+=count
-populate_category_groups(participant.attributes["places lived"]["list_of_cities"], participant.url, "cities")
-(participant.percent_total_complete, count, participant.attributes["contact and basic"]) = driver.scrape_contact_and_basic(participant)
-participant.percent_complete+=count
-populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["religiousviews"], participant.url, "religiousviews")
-populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["politicalviews"], participant.url, "politicalviews")
-populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["birthyear"], participant.url, "birthyear")
-#(tempCount, count, participant.attributes["family and rel"]) = driver.scrape_family_and_rel(participant)
-#participant.percent_total_complete+=tempCount
-participant.percent_complete+=count
-participant.percent_total_complete+=participant.percent_complete
-participant.percent_complete = round(participant.percent_complete/8, 3)
-participant.percent_total_complete = round(participant.percent_total_complete/14, 3)
-#pprint.pprint(category_groups)
-# print(f"number of freinds: {c}")
-# print("total runtime")
-# print("--- %s seconds ---" % (time.time() - total_time))
+if not old_data and not "participant" in old_data:
+    participant = get_participant_data()
+else:
+    participant = old_data["participant"]
+
+#fetching all url paths to the user's friends' profiles
+if not old_data and not "friends" in old_data:
+    friends = driver.full_friend_lookup_table()
+else:
+    friends = old_data["friends"]
+
+#scrape users friends info
+c = 0
+print(f"old count: {old_count}")
+for p, f in friends.items():
+    #update data with old
+    if c < old_count:
+        f = old_data["friends"][p]
+        c+=1
+        continue
+    #get current friend data
+    scrape_friend_info(f)
+    c+=1
+    print(c)
+    print(f.name)
+    # updating local data
+    if c >= 15:
+        f = open("file.pkl","wb")
+        formatted_data = {
+            "count": c,
+            "friends": friends,
+            "participant": participant
+        }
+        pickle.dump(formatted_data,f)
+        f.close()
+        break
+
+print(f"number of friends: {c}")
+print("total runtime")
+print("--- %s seconds ---" % (time.time() - total_time))
 
 #make inferences
 
@@ -193,7 +226,11 @@ for url, friend in friends.items():
         for name, list_of_urls in category_data.items():
             category_frequency_data[category][name] = get_list_of_people(friend.mutual_friends, url, participant.url, category, name, list_of_urls)
     friend.inference_count = category_frequency_data
-#print(friends['danielnewman21'].inference_count)
+#     print(f"Name: {friend.name}")
+#     pprint.pprint(friend.inference_count)
+#     print("------------------------")
+# print("Daniel Newman")
+# print(friends['danielnewman21'].inference_count)
 
 
 #inferences = generate_inferences(friends, participant, key_value_pairs)
