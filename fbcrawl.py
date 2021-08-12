@@ -190,7 +190,7 @@ time_df = pd.DataFrame(columns=["mutual friends", "Word and ed", "Places lived",
 "contact and basic info", "relationship and family", "total time"])
 
 num_friends_scraped = 0
-num_to_scrape = 1
+num_to_scrape = 3
 num_mutual_pages = 5
 time_df = pd.DataFrame(columns=[str(num_mutual_pages*8)+" mutual friends", "Word and ed", \
 "Places lived", "contact and basic info", "relationship and family", "friend total time"])
@@ -209,7 +209,7 @@ for p, f in friends.items():
     #print time and append time array to df
     #print("friend total time: "+str(time.time()-start_time))
     #print("-------NEW FRIEND-------")
-    time_array.append(str(time.time()-start_time))
+    time_array.append(float(time.time()-start_time))
     time_df.loc[len(time_df.index)] = time_array
     #updating local data, breaking after number of friends achieved
     if num_friends_scraped >= num_to_scrape:

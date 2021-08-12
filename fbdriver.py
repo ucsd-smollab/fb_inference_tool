@@ -246,7 +246,7 @@ class FBdriver(webdriver.Chrome):
             mutual_friends_urls = [anchor.get_attribute("href") for anchor in mutual_friends_anchors]
             mutual_friends_paths = [path.split("/")[-1] for path in mutual_friends_urls]
             #print(f"{len(mutual_friends_urls)} mutual friends: "+str(time.time() - start_time))
-            return mutual_friends_paths, str(time.time() - start_time)
+            return mutual_friends_paths, float(time.time() - start_time)
         except Exception:
             return "NA", 0
 
@@ -400,7 +400,7 @@ class FBdriver(webdriver.Chrome):
         if not highSchoolList:
             highSchoolList = "NA"
         #print("Work and ed: "+str(time.time() - start_time))
-        return (completionCount, workList, collegeList, highSchoolList, profile_picture_url, str(time.time() - start_time))
+        return (completionCount, workList, collegeList, highSchoolList, profile_picture_url, float(time.time() - start_time))
 
     def scrape_places_lived(self, friend):
         start_time = time.time()
@@ -450,7 +450,7 @@ class FBdriver(webdriver.Chrome):
         if all(value == "NA" for value in places_lived.values()):
             completionCount = 0
         #print("Places lived: "+str(time.time() - start_time))
-        return completionCount, places_lived, str(time.time() - start_time)
+        return completionCount, places_lived, float(time.time() - start_time)
 
     def scrape_contact_and_basic(self, friend):
         start_time = time.time()
@@ -534,7 +534,7 @@ class FBdriver(webdriver.Chrome):
             totalCount-=1
 
         #print("contact and basic info: "+str(time.time()-start_time))
-        return totalCount, completionCount, contact_and_basic_info, str(time.time()-start_time)
+        return totalCount, completionCount, contact_and_basic_info, float(time.time()-start_time)
 
     def scrape_family_and_rel(self, friend):
         start_time = time.time()
@@ -587,4 +587,4 @@ class FBdriver(webdriver.Chrome):
         if relStatus == "NA":
             totalCount-=1
         #print("relationship and family: "+str(time.time()-start_time))
-        return totalCount, completionCount, relAndFamDict, str(time.time()-start_time)
+        return totalCount, completionCount, relAndFamDict, float(time.time()-start_time)
