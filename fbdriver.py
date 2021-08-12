@@ -139,7 +139,7 @@ class FBdriver(webdriver.Chrome):
                     return (href, total_mutual_friends, True)
         return (href, 0, True)
 
-    def full_friend_lookup_table(self):
+    def full_friend_lookup_table(self, to_load=-1):
         start_time = time.time()
         if self.friend_lookup_table:
             return self.friend_lookup_table
@@ -156,12 +156,16 @@ class FBdriver(webdriver.Chrome):
         # getting all of user's friends loaded on screen
         all_friends_loaded = False
         last_height = self.execute_script("return document.body.scrollHeight;")
+        load_num = 0
         while (not all_friends_loaded):
+            if load_num==to_load:
+                 break
             for i in range(0, 12):
                 self.scroll(0.25)
                 new_height = self.execute_script("return document.body.scrollHeight;")
                 if new_height != last_height:
                     all_friends_loaded = False
+                    load_num+=1
                     break
                 else:
                      all_friends_loaded = True
@@ -175,6 +179,7 @@ class FBdriver(webdriver.Chrome):
         friend_lookup_table = {p:Friend(p, num) for (p, num, doesExist) in friend_urls if doesExist}
         self.friend_lookup_table = friend_lookup_table
         print(f"{len(friend_urls)} friends: "+str(time.time() - start_time))
+        #print("-------BEGIN FRIENDS-------")
         return friend_lookup_table
 
     def full_mutual_friend_list_mobile(self, friend):
@@ -211,19 +216,26 @@ class FBdriver(webdriver.Chrome):
             friend_paths.append(path)
         return friend_paths
 
-    def full_mutual_friend_list(self, friend):
+    def full_mutual_friend_list(self, friend, to_load=-1):
         start_time = time.time()
         self.get(format_url(friend, "friends_mutual"))
 
         # getting all of user's friends loaded on screen
         all_friends_loaded = False
         last_height = self.execute_script("return document.body.scrollHeight;")
+        load_num = 0
         while (not all_friends_loaded):
-            for i in range(0, 5):
-                self.scroll(3)
+            if load_num==to_load:
+                break
+            for i in range(0, 12):
+                self.scroll(0.25)
                 new_height = self.execute_script("return document.body.scrollHeight;")
-                if new_height == last_height:
-                    all_friends_loaded = True
+                if new_height != last_height:
+                    all_friends_loaded = False
+                    load_num+=1
+                    break
+                else:
+                     all_friends_loaded = True
             last_height = new_height
 
         try:
@@ -233,10 +245,10 @@ class FBdriver(webdriver.Chrome):
             mutual_friends_anchors = mutual_friends_elements.find_elements_by_css_selector("[tabindex='-1']")
             mutual_friends_urls = [anchor.get_attribute("href") for anchor in mutual_friends_anchors]
             mutual_friends_paths = [path.split("/")[-1] for path in mutual_friends_urls]
-            print(f"{len(mutual_friends_urls)} mutual friends: "+str(time.time() - start_time))
-            return mutual_friends_paths
+            #print(f"{len(mutual_friends_urls)} mutual friends: "+str(time.time() - start_time))
+            return mutual_friends_paths, str(time.time() - start_time)
         except Exception:
-            return "NA"
+            return "NA", 0
 
     def scrape_name(self, friend):
         #load friends facebook page
@@ -387,8 +399,8 @@ class FBdriver(webdriver.Chrome):
             collegeList = "NA"
         if not highSchoolList:
             highSchoolList = "NA"
-        print("Work and ed: "+str(time.time() - start_time))
-        return (completionCount, workList, collegeList, highSchoolList, profile_picture_url)
+        #print("Work and ed: "+str(time.time() - start_time))
+        return (completionCount, workList, collegeList, highSchoolList, profile_picture_url, str(time.time() - start_time))
 
     def scrape_places_lived(self, friend):
         start_time = time.time()
@@ -437,8 +449,8 @@ class FBdriver(webdriver.Chrome):
         completionCount = 1
         if all(value == "NA" for value in places_lived.values()):
             completionCount = 0
-        print("Places lived: "+str(time.time() - start_time))
-        return completionCount, places_lived
+        #print("Places lived: "+str(time.time() - start_time))
+        return completionCount, places_lived, str(time.time() - start_time)
 
     def scrape_contact_and_basic(self, friend):
         start_time = time.time()
@@ -521,8 +533,8 @@ class FBdriver(webdriver.Chrome):
         if contact_info["email"] == "NA":
             totalCount-=1
 
-        print("contact and basic info: "+str(time.time()-start_time))
-        return totalCount, completionCount, contact_and_basic_info
+        #print("contact and basic info: "+str(time.time()-start_time))
+        return totalCount, completionCount, contact_and_basic_info, str(time.time()-start_time)
 
     def scrape_family_and_rel(self, friend):
         start_time = time.time()
@@ -574,5 +586,5 @@ class FBdriver(webdriver.Chrome):
         totalCount = 1
         if relStatus == "NA":
             totalCount-=1
-        print("relationship and family: "+str(time.time()-start_time))
-        return totalCount, completionCount, relAndFamDict
+        #print("relationship and family: "+str(time.time()-start_time))
+        return totalCount, completionCount, relAndFamDict, str(time.time()-start_time)
