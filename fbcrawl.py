@@ -173,10 +173,11 @@ if not old_data and not "friends" in old_data:
     friends = driver.full_friend_lookup_table()
 else:
     friends = old_data["friends"]
+friends = driver.full_friend_lookup_table()
 
 #scrape users friends info
 c = 0
-print(f"old count: {old_count}")
+#print(f"old count: {old_count}")
 for p, f in friends.items():
     #update data with old
     if c < old_count:
@@ -186,23 +187,23 @@ for p, f in friends.items():
     #get current friend data
     scrape_friend_info(f)
     c+=1
-    print(c)
-    print(f.name)
+    # print(c)
+    # print(f.name)
     # updating local data
-    if c >= 15:
-        f = open("file.pkl","wb")
-        formatted_data = {
-            "count": c,
-            "friends": friends,
-            "participant": participant
-        }
-        pickle.dump(formatted_data,f)
-        f.close()
+    if c >= 40:
+        # f = open("file.pkl","wb")
+        # formatted_data = {
+        #     "count": c,
+        #     "friends": friends,
+        #     "participant": participant
+        # }
+        # pickle.dump(formatted_data,f)
+        # f.close()
         break
 
-print(f"number of friends: {c}")
-print("total runtime")
-print("--- %s seconds ---" % (time.time() - total_time))
+# print(f"number of friends: {c}")
+# print("total runtime")
+# print("--- %s seconds ---" % (time.time() - total_time))
 
 #make inferences
 

@@ -8,7 +8,6 @@ import random
 
 def format_url(friend, sub_path):
     places_url = f'https://facebook.com/{friend.url}'
-    time.sleep(random.randint(0, 40)/10)
     if "profile.php" in friend.url:
         return f'{places_url}&sk={sub_path}'
     return f'{places_url}/{sub_path}'
@@ -121,20 +120,24 @@ class FBdriver(webdriver.Chrome):
     def scroll(self, time):
         #remove if not testing
         self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        r = random.randint(0, 35+time*10)/10
-        sleep(r)
+        # r = random.randint(5, 2*time-5)/10
+        # sleep(r)
+        sleep(time)
+        return 0
 
-    def enough_mutual_friends(self, element, threshold):
-        full_text = element.get_attribute("innerText")
+    def get_link_and_mutual_friends(self, f):
+        full_text = f.get_attribute("innerText")
+        href = f.find_element_by_css_selector("._5pxa ._5pxc a").get_attribute("href")
+        if not href:
+            return ("", 0, False)
+        href = href.split("/")[-1]
         if "mutual friends" in full_text:
             formatted_text = full_text.split(" ")
             for i in range(len(formatted_text)):
                 if formatted_text[i] == "mutual":
                     total_mutual_friends = int(formatted_text[i-1].split("\n")[-1])
-                    if total_mutual_friends > threshold:
-                        return True
-                    return False
-        return False
+                    return (href, total_mutual_friends, True)
+        return (href, 0, True)
 
     def full_friend_lookup_table(self):
         start_time = time.time()
@@ -154,25 +157,24 @@ class FBdriver(webdriver.Chrome):
         all_friends_loaded = False
         last_height = self.execute_script("return document.body.scrollHeight;")
         while (not all_friends_loaded):
-            for i in range(0, 5):
-                r = random.randint(0, 5)/10
-                self.scroll(0.5+r)
+            for i in range(0, 12):
+                self.scroll(0.25)
                 new_height = self.execute_script("return document.body.scrollHeight;")
-                if new_height == last_height:
-                    all_friends_loaded = True
+                if new_height != last_height:
+                    all_friends_loaded = False
+                    break
+                else:
+                     all_friends_loaded = True
             last_height = new_height
         
         # getting all url to friends
         #friend_elements = self.find_elements_by_css_selector("._5pxa ._5pxc a")
         friend_elements = self.find_elements_by_css_selector("._55wp._7om2._5pxa._8yo0")
 
-        friend_urls = [f.find_element_by_css_selector("._5pxa ._5pxc a").get_attribute("href") for f in friend_elements if self.enough_mutual_friends(f, 2)]
-        friend_paths = [f.split("/")[-1] for f in friend_urls if f]
-        friend_lookup_table = {p:Friend(p) for p in friend_paths}
+        friend_urls = [self.get_link_and_mutual_friends(f) for f in friend_elements]
+        friend_lookup_table = {p:Friend(p, num) for (p, num, doesExist) in friend_urls if doesExist}
         self.friend_lookup_table = friend_lookup_table
-        # print("friends")
-        # print(len(friend_urls))
-        # print("--- %s seconds ---" % (time.time() - start_time))
+        print(f"{len(friend_urls)} friends: "+str(time.time() - start_time))
         return friend_lookup_table
 
     def full_mutual_friend_list_mobile(self, friend):
@@ -207,12 +209,10 @@ class FBdriver(webdriver.Chrome):
             if not "profile.php" in path:
                 path = path.split("?")[0]
             friend_paths.append(path)
-        # print("mutual friends")
-        # print(len(friend_paths))
-        # print("--- %s seconds ---" % (time.time() - start_time))
         return friend_paths
 
     def full_mutual_friend_list(self, friend):
+        start_time = time.time()
         self.get(format_url(friend, "friends_mutual"))
 
         # getting all of user's friends loaded on screen
@@ -233,8 +233,7 @@ class FBdriver(webdriver.Chrome):
             mutual_friends_anchors = mutual_friends_elements.find_elements_by_css_selector("[tabindex='-1']")
             mutual_friends_urls = [anchor.get_attribute("href") for anchor in mutual_friends_anchors]
             mutual_friends_paths = [path.split("/")[-1] for path in mutual_friends_urls]
-            print("mutual friends")
-            print(len(mutual_friends_paths))
+            print(f"{len(mutual_friends_urls)} mutual friends: "+str(time.time() - start_time))
             return mutual_friends_paths
         except Exception:
             return "NA"
@@ -249,6 +248,7 @@ class FBdriver(webdriver.Chrome):
         return name
 
     def scrape_work_and_ed(self, friend):
+        start_time = time.time()
         self.get(format_url(friend, "about_work_and_education"))
 
         # getting profile image url
@@ -270,9 +270,9 @@ class FBdriver(webdriver.Chrome):
             if not "Add a " in w.get_attribute("innerText") and not " to show" in w.get_attribute("innerText"):
                 workElement = w.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id")
                 workName = workElement.get_attribute("innerText")
-                workUrlElement = workElement.find_elements_by_css_selector("[role='link']")
-                if workUrlElement:
-                    facebookPageUrl = workUrlElement[0].get_attribute("href")
+                # workUrlElement = workElement.find_elements_by_css_selector("[role='link']")
+                # if workUrlElement:
+                #     facebookPageUrl = workUrlElement[0].get_attribute("href")
                 dateOrLocations = w.find_elements_by_class_name("j5wam9gi.e9vueds3.m9osqain")
                 if len(dateOrLocations) > 1:
                     dateOrLocationName = dateOrLocations[0].get_attribute("innerText")
@@ -300,7 +300,6 @@ class FBdriver(webdriver.Chrome):
                 "workUrl": facebookPageUrl
             }
             workList.append(tempDict)
-        #print(workList)
 
         #college scraping
         college = sections[1]
@@ -314,9 +313,9 @@ class FBdriver(webdriver.Chrome):
             if not "Add a " in c.get_attribute("innerText") and not " to show" in c.get_attribute("innerText"):
                 schoolElement = c.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id")
                 schoolName = schoolElement.get_attribute("innerText")
-                schoolUrlElement = schoolElement.find_elements_by_css_selector("[role='link']")
-                if schoolUrlElement:
-                    facebookPageUrlC = schoolUrlElement[0].get_attribute("href")
+                # schoolUrlElement = schoolElement.find_elements_by_css_selector("[role='link']")
+                # if schoolUrlElement:
+                #     facebookPageUrlC = schoolUrlElement[0].get_attribute("href")
                 elements = c.find_elements_by_css_selector(".j5wam9gi.e9vueds3.m9osqain")
 
                 if len(elements) == 1:
@@ -341,7 +340,6 @@ class FBdriver(webdriver.Chrome):
                 "collegeUrl": facebookPageUrlC
             }
             collegeList.append(tempDict)
-        #print(collegeList)
 
         #high school scraping
         highSchool = sections[2]
@@ -355,13 +353,12 @@ class FBdriver(webdriver.Chrome):
             if not "Add a " in h.get_attribute("innerText") and not " to show" in h.get_attribute("innerText"):
                 hSchoolElement = h.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id")
                 hSchoolName = hSchoolElement.get_attribute("innerText")
-                hSchoolUrlElement = hSchoolElement.find_elements_by_css_selector("[role='link']")
-                if hSchoolUrlElement:
-                    facebookPageUrlH = hSchoolUrlElement[0].get_attribute("href")
+                # hSchoolUrlElement = hSchoolElement.find_elements_by_css_selector("[role='link']")
+                # if hSchoolUrlElement:
+                #     facebookPageUrlH = hSchoolUrlElement[0].get_attribute("href")
                 hSYear_element = h.find_elements_by_css_selector(".j5wam9gi.e9vueds3.m9osqain")
                 if hSYear_element:
                     hSYear = hSYear_element[0].get_attribute("innerText")
-                    #print(hSYear)
             else:
                 continue
 
@@ -369,7 +366,6 @@ class FBdriver(webdriver.Chrome):
                 hSchoolName = hSchoolName.split(" at ")[1]
             if " to " in hSchoolName:
                 hSchoolName = hSchoolName.split(" to ")[1]
-            #print(f'hsYear: {hSYear}')
             list_of_years = generate_list_of_years(hSYear)
             tempDict = {
                 "title": hSchoolName,
@@ -378,8 +374,6 @@ class FBdriver(webdriver.Chrome):
                 "highSchoolUrl": facebookPageUrlH
             }
             highSchoolList.append(tempDict)
-        
-        #print(highSchoolList)
 
         #update profile completion counts
         completionCount = 3
@@ -393,17 +387,12 @@ class FBdriver(webdriver.Chrome):
             collegeList = "NA"
         if not highSchoolList:
             highSchoolList = "NA"
-        #print("work")
-        #print(workList)
-        #print("college")
-        #print(collegeList)
-        #print("high school")
-        #print(highSchoolList)
+        print("Work and ed: "+str(time.time() - start_time))
         return (completionCount, workList, collegeList, highSchoolList, profile_picture_url)
 
     def scrape_places_lived(self, friend):
+        start_time = time.time()
         self.get(format_url(friend, "about_places"))
-        sleep(0.2)
         places_lived = {
             "hometown": "NA",
             "currentCity": "NA",
@@ -448,11 +437,11 @@ class FBdriver(webdriver.Chrome):
         completionCount = 1
         if all(value == "NA" for value in places_lived.values()):
             completionCount = 0
-        #print("places lived")
-        #print(places_lived)
+        print("Places lived: "+str(time.time() - start_time))
         return completionCount, places_lived
 
     def scrape_contact_and_basic(self, friend):
+        start_time = time.time()
         self.get(format_url(friend, "about_contact_and_basic_info"))
         elts = self.find_elements_by_css_selector(".dati1w0a.tu1s4ah4.f7vcsfb0.discj3wi > div")
         text_elements = []
@@ -532,11 +521,11 @@ class FBdriver(webdriver.Chrome):
         if contact_info["email"] == "NA":
             totalCount-=1
 
-        #print("contact and basic info")
-        #print(contact_and_basic_info)
+        print("contact and basic info: "+str(time.time()-start_time))
         return totalCount, completionCount, contact_and_basic_info
 
     def scrape_family_and_rel(self, friend):
+        start_time = time.time()
         self.get(format_url(friend, "about_family_and_relationships"))
         sections = self.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt")
         rel = sections[0]
@@ -585,6 +574,5 @@ class FBdriver(webdriver.Chrome):
         totalCount = 1
         if relStatus == "NA":
             totalCount-=1
-        #print("relationship and family")
-        #print(relAndFamDict)
+        print("relationship and family: "+str(time.time()-start_time))
         return totalCount, completionCount, relAndFamDict
