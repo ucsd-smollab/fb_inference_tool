@@ -6,6 +6,8 @@ import time
 from friend import Friend
 import random
 
+#kowegkweog
+
 def format_url(friend, sub_path):
     places_url = f'https://facebook.com/{friend.url}'
     if "profile.php" in friend.url:
