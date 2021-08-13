@@ -1,5 +1,4 @@
 from time import sleep
-
 from pandas.core.indexes.base import Index
 from fbdriver import FBdriver
 from friend import Friend
@@ -12,7 +11,6 @@ import pprint
 import json
 import pickle
 import pandas as pd
-
 from fbInferences import compute_frequency_category_data, get_list_of_people
 
 # Some helpful resources I consulted:
@@ -51,7 +49,8 @@ url = "https://mobile.facebook.com/home.php"
 
 driver = FBdriver(executable_path=path_to_chrome_driver)
 driver.set_page_load_timeout(60)
-driver.implicitly_wait(10)
+#testing set implicit to 5 instead of 10 to speed up
+driver.implicitly_wait(5)
 driver.login(url, username) # type pw manually
 
 category_groups_template = {
@@ -151,6 +150,7 @@ def scrape_friend_info(f, num_mutual):
     f.percent_total_complete = round(f.percent_total_complete/14, 3)
     return time_array
 
+
 #keep track of time
 total_time = time.time()
 
@@ -190,8 +190,8 @@ time_df = pd.DataFrame(columns=["mutual friends", "Word and ed", "Places lived",
 "contact and basic info", "relationship and family", "total time"])
 
 num_friends_scraped = 0
-num_to_scrape = 3
-num_mutual_pages = 5
+num_to_scrape = 50
+num_mutual_pages = -1 #-1 for all, otherwise a 8* will be number of friends scraped
 time_df = pd.DataFrame(columns=[str(num_mutual_pages*8)+" mutual friends", "Word and ed", \
 "Places lived", "contact and basic info", "relationship and family", "friend total time"])
 #print(f"old count: {old_count}")
@@ -212,22 +212,22 @@ for p, f in friends.items():
     time_array.append(float(time.time()-start_time))
     time_df.loc[len(time_df.index)] = time_array
     #updating local data, breaking after number of friends achieved
+    f = open("file.pkl","wb")
+    formatted_data = {
+        "count": num_friends_scraped,
+        "friends": friends,
+        "participant": participant
+    }
+    pickle.dump(formatted_data,f)
+    f.close()
     if num_friends_scraped >= num_to_scrape:
-        # f = open("file.pkl","wb")
-        # formatted_data = {
-        #     "count": c,
-        #     "friends": friends,
-        #     "participant": participant
-        # }
-        # pickle.dump(formatted_data,f)
-        # f.close()
         break
 print(f"number of friends scraped: {num_friends_scraped}")
 print("total runtime: "+str(time.time() - total_time))
 print("time averages: ")
 time_df.loc['mean'] = time_df.mean()
 print(time_df.loc['mean'])
-time_df.to_csv("time_data.csv")
+time_df.to_csv("50friends_allmutual.csv")
 
 #make inferences
 '''

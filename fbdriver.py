@@ -15,7 +15,12 @@ def format_url(friend, sub_path):
 def extract_data(data, formatted_data):
     splitted_data = data.split("\n")
     correct_data = [split_data for split_data in splitted_data if not "Shared " in split_data and not "Only " in split_data and not "Add " in split_data and not "Friends" in split_data]
-    #print(f"correct data: {correct_data}")
+    if "gender" in formatted_data:
+        for i in range(1, len(correct_data)):
+            if "Gender" in correct_data[i] and not correct_data[i-1] in ["Male", "Female", "Agender", "Androgyne", "Androgynous", "Bigender", "Cis", "Cis Female", "Cis Male", "Cis Man", "Cis Woman", "Cisgender"]:
+                correct_data.remove("Gender")
+                break
+    #print(f"correct data: {correct_data}")  
     for i in range(1, len(correct_data), 2):
         category = correct_data[i+1].replace(" ", "").lower()
         if category in formatted_data:
