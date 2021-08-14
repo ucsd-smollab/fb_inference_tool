@@ -190,7 +190,7 @@ time_df = pd.DataFrame(columns=["mutual friends", "Word and ed", "Places lived",
 "contact and basic info", "relationship and family", "total time"])
 
 num_friends_scraped = 0
-num_to_scrape = 50
+num_to_scrape = 1000
 num_mutual_pages = -1 #-1 for all, otherwise a 8* will be number of friends scraped
 time_df = pd.DataFrame(columns=[str(num_mutual_pages*8)+" mutual friends", "Word and ed", \
 "Places lived", "contact and basic info", "relationship and family", "friend total time"])
@@ -201,6 +201,11 @@ for p, f in friends.items():
     #update data with old
     if num_friends_scraped < prev_friends_scraped:
         f = old_data["friends"][p]
+        # print(f.name)
+        # print(f.url)
+        # print(f.numMutualFriends)
+        # pprint.pprint(f.attributes)
+        # print("---------")
         num_friends_scraped+=1
         continue
     #get current friend data, mutual friends in batches of 8
@@ -212,14 +217,14 @@ for p, f in friends.items():
     time_array.append(float(time.time()-start_time))
     time_df.loc[len(time_df.index)] = time_array
     #updating local data, breaking after number of friends achieved
-    f = open("file.pkl","wb")
+    file = open("file.pkl","wb")
     formatted_data = {
         "count": num_friends_scraped,
         "friends": friends,
         "participant": participant
     }
-    pickle.dump(formatted_data,f)
-    f.close()
+    pickle.dump(formatted_data, file)
+    file.close()
     if num_friends_scraped >= num_to_scrape:
         break
 print(f"number of friends scraped: {num_friends_scraped}")
@@ -250,12 +255,6 @@ for url, friend in friends.items():
         for name, list_of_urls in category_data.items():
             category_frequency_data[category][name] = get_list_of_people(friend.mutual_friends, url, participant.url, category, name, list_of_urls)
     friend.inference_count = category_frequency_data
-#     print(f"Name: {friend.name}")
-#     pprint.pprint(friend.inference_count)
-#     print("------------------------")
-# print("Daniel Newman")
-# print(friends['danielnewman21'].inference_count)
-
 
 #inferences = generate_inferences(friends, participant, key_value_pairs)
 inferences = []

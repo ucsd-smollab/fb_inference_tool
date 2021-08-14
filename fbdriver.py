@@ -13,19 +13,22 @@ def format_url(friend, sub_path):
     return f'{places_url}/{sub_path}'
 
 def extract_data(data, formatted_data):
-    splitted_data = data.split("\n")
-    correct_data = [split_data for split_data in splitted_data if not "Shared " in split_data and not "Only " in split_data and not "Add " in split_data and not "Friends" in split_data]
-    if "gender" in formatted_data:
-        for i in range(1, len(correct_data)):
-            if "Gender" in correct_data[i] and not correct_data[i-1] in ["Male", "Female", "Agender", "Androgyne", "Androgynous", "Bigender", "Cis", "Cis Female", "Cis Male", "Cis Man", "Cis Woman", "Cisgender"]:
-                correct_data.remove("Gender")
-                break
-    #print(f"correct data: {correct_data}")  
-    for i in range(1, len(correct_data), 2):
-        category = correct_data[i+1].replace(" ", "").lower()
-        if category in formatted_data:
-            formatted_data[category] = correct_data[i]
-    return formatted_data
+    try:
+        splitted_data = data.split("\n")
+        correct_data = [split_data for split_data in splitted_data if not "Shared " in split_data and not "Only " in split_data and not "Add " in split_data and not "Friends" in split_data]
+        if "gender" in formatted_data:
+            for i in range(1, len(correct_data)):
+                if "Gender" in correct_data[i] and not correct_data[i-1] in ["Male", "Female", "Agender", "Androgyne", "Androgynous", "Bigender", "Cis", "Cis Female", "Cis Male", "Cis Man", "Cis Woman", "Cisgender"]:
+                    correct_data.remove("Gender")
+                    break
+        #print(f"correct data: {correct_data}")  
+        for i in range(1, len(correct_data), 2):
+            category = correct_data[i+1].replace(" ", "").lower()
+            if category in formatted_data:
+                formatted_data[category] = correct_data[i]
+        return formatted_data
+    except:
+        return {}
 
 def generate_list_of_years(string_years, default_year=4):
     '''
@@ -177,7 +180,6 @@ class FBdriver(webdriver.Chrome):
             last_height = new_height
         
         # getting all url to friends
-        #friend_elements = self.find_elements_by_css_selector("._5pxa ._5pxc a")
         friend_elements = self.find_elements_by_css_selector("._55wp._7om2._5pxa._8yo0")
 
         friend_urls = [self.get_link_and_mutual_friends(f) for f in friend_elements]
@@ -503,12 +505,22 @@ class FBdriver(webdriver.Chrome):
         basic_info = extract_data(text_elements[2], basic_info)
 
         #format for consistency - NA
-        if not basic_info["languages"]:
+        if not basic_info:
             basic_info["languages"] = "NA"
-        if not websites:
+            basic_info["religiousviews"] = "NA"
+            basic_info["politicalviews"] = "NA"
+            basic_info["birthyear"] = "NA"
+            basic_info["interestedin"] = "NA"
+            basic_info["gender"] = "NA"
             websites = "NA"
-        if not social_links:
             social_links = "NA"
+        else:
+            if not basic_info["languages"]:
+                basic_info["languages"] = "NA"
+            if not websites:
+                websites = "NA"
+            if not social_links:
+                social_links = "NA"
         contact_and_basic_info = {
             "contact_info": contact_info,
             "websites": websites,
