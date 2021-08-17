@@ -26,7 +26,7 @@ url = "https://mobile.facebook.com/home.php"
 driver = FBdriver(executable_path=path_to_chrome_driver)
 driver.set_page_load_timeout(60)
 #5 should work on fast computers, increase if getting Unable to locate element errors
-driver.implicitly_wait(15)
+driver.implicitly_wait(5)
 driver.login(url, username) # type pw manually
 
 category_groups_template = {
@@ -104,6 +104,8 @@ time_df = pd.DataFrame(columns=["mutual friends", "Word and ed", "Places lived",
 
 num_friends_scraped = 0
 num_to_scrape = 1000
+#manual override if didnt scrape properly
+#prev_friends_scraped = 60
 num_mutual_pages = -1 #-1 for all, otherwise a 8* will be number of friends scraped
 time_df = pd.DataFrame(columns=[str(num_mutual_pages*8)+" mutual friends", "Word and ed", \
 "Places lived", "contact and basic info", "friend total time"])
@@ -114,6 +116,7 @@ for p, f in friends.items():
     #update data with old
     if num_friends_scraped < prev_friends_scraped:
         f = old_data["friends"][p]
+        print(num_friends_scraped)        
         print(f.name)
         # print(f.url)
         print(f"Actual Mutual Friends: {f.numMutualFriends}")
@@ -122,8 +125,20 @@ for p, f in friends.items():
         # print("---------")
         num_friends_scraped+=1
         continue
+    if num_friends_scraped >= num_to_scrape:
+        break
     #get current friend data, mutual friends in batches of 8
     time_array = scrape_friend_info(f, num_mutual_pages, category_groups, driver)
+    mutual_tries = 0
+    while len(f.mutual_friends)/f.numMutualFriends < 0.6:
+        if mutual_tries >= 10:
+            break
+        f.mutual_friends, temp = driver.full_mutual_friend_list(f, num_mutual_pages)
+        mutual_tries+=1
+    print(num_friends_scraped)
+    print(f.name)
+    print(f"Actual Mutual Friends: {f.numMutualFriends}")
+    print(f"Scraped Mutual Friends: {len(f.mutual_friends)}")
     num_friends_scraped+=1
     #print time and append time array to df
     #print("friend total time: "+str(time.time()-start_time))
@@ -139,16 +154,13 @@ for p, f in friends.items():
     }
     pickle.dump(formatted_data, file)
     file.close()
-    print(f"Actual Mutual Friends: {f.numMutualFriends}")
-    print(f"Scraper Mutual Friends: {len(f.mutual_friends)}")
-    if num_friends_scraped >= num_to_scrape:
-        break
-# print(f"number of friends scraped: {num_friends_scraped}")
-# print("total runtime: "+str(time.time() - total_time))
-# print("time averages: ")
-# time_df.loc['mean'] = time_df.mean()
-# print(time_df.loc['mean'])
-# time_df.to_csv("20friends_160mutual_nourls.csv")
+
+print(f"number of friends scraped: {num_friends_scraped}")
+print("total runtime: "+str(time.time() - total_time))
+print("time averages: ")
+time_df.loc['mean'] = time_df.mean()
+print(time_df.loc['mean'])
+time_df.to_csv("20friends_160mutual_nourls.csv")
 
 #make inferences
 '''

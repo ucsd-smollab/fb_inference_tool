@@ -234,15 +234,16 @@ class FBdriver(webdriver.Chrome):
         while (not all_friends_loaded):
             if load_num==to_load:
                 break
-            for i in range(0, 12):
+            for i in range(0, 3*4):
                 self.scroll(0.25)
                 new_height = self.execute_script("return document.body.scrollHeight;")
                 if new_height != last_height:
                     all_friends_loaded = False
                     load_num+=1
                     break
+                #elif load_num*8/friend.numMutualFriends > 0.6:
                 else:
-                     all_friends_loaded = True
+                    all_friends_loaded = True
             last_height = new_height
 
         try:
