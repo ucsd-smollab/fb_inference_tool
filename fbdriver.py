@@ -264,7 +264,11 @@ class FBdriver(webdriver.Chrome):
         #load friends facebook page
         self.get("https://facebook.com/" + friend.url)
         #find name element by css selector and return attribute string value
-        elt = self.find_element_by_css_selector("h1.gmql0nx0.l94mrbxd.p1ri9a11.lzcic4wl")
+        elt = self.find_elements_by_css_selector("h1.gmql0nx0.l94mrbxd.p1ri9a11.lzcic4wl")
+        if len(elt) > 1:
+            elt = elt[1]
+        else:
+            elt = elt[0]
         name = elt.get_attribute("innerText")
         #print(name)
         return name
@@ -274,7 +278,7 @@ class FBdriver(webdriver.Chrome):
         self.get(format_url(friend, "about_work_and_education"))
 
         # getting profile image url
-        profile_picture_section = self.find_element_by_class_name("oajrlxb2.gs1a9yip.g5ia77u1.mtkw9kbi.tlpljxtp.qensuy8j.ppp5ayq2.goun2846.ccm00jje.s44p3ltw.mk2mc5f4.rt8b4zig.n8ej3o3l.agehan2d.sk4xxmp2.rq0escxv.nhd2j8a9.q9uorilb.mg4g778l.btwxx1t3.pfnyh3mw.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.tgvbjcpo.hpfvmrgz.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.l9j0dhe7.i1ao9s8h.esuyzwwr.f1sip0of.du4w35lb.lzcic4wl.abiwlrkh.p8dawk7l.oo9gr5id")
+        profile_picture_section = self.find_element_by_class_name("b3onmgus.e5nlhep0.ph5uu5jm.ecm0bbzt.spb7xbtv.bkmhp75w.emlxlaya.s45kfl79.cwj9ozl2")
         profile_picture_image = profile_picture_section.find_element_by_tag_name("image")
         profile_picture_url = profile_picture_image.get_attribute("xlink:href")
 

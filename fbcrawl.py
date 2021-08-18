@@ -19,7 +19,7 @@ from fbInferences import compute_frequency_category_data, get_list_of_people, ge
 # https://selenium-python.readthedocs.io/
 #-------------------------------------------------------------------------------
 
-path_to_chrome_driver = "/Users/aaron/opt/WebDriver/bin/chromedriver"
+path_to_chrome_driver = "C:\\Users\\tanst\\chromedriver.exe"
 username = "aaronbroukhim@aol.com"
 url = "https://mobile.facebook.com/home.php"
 
@@ -130,11 +130,12 @@ for p, f in friends.items():
     #get current friend data, mutual friends in batches of 8
     time_array = scrape_friend_info(f, num_mutual_pages, category_groups, driver)
     mutual_tries = 0
-    while len(f.mutual_friends)/f.numMutualFriends < 0.6:
-        if mutual_tries >= 10:
-            break
-        f.mutual_friends, temp = driver.full_mutual_friend_list(f, num_mutual_pages)
-        mutual_tries+=1
+    if f.numMutualFriends > 0:
+        while len(f.mutual_friends)/f.numMutualFriends < 0.6:
+            if mutual_tries >= 10:
+                break
+            f.mutual_friends, temp = driver.full_mutual_friend_list(f, num_mutual_pages)
+            mutual_tries+=1
     print(num_friends_scraped)
     print(f.name)
     print(f"Actual Mutual Friends: {f.numMutualFriends}")
