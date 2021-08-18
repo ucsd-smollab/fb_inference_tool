@@ -1,10 +1,10 @@
+import time
+import random
 from sys import set_asyncgen_hooks
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from time import sleep
-import time
 from friend import Friend
-import random
 
 #kowegkweog
 
@@ -15,14 +15,22 @@ def format_url(friend, sub_path):
     return f'{places_url}/{sub_path}'
 
 def extract_data(data, formatted_data):
-    splitted_data = data.split("\n")
-    correct_data = [split_data for split_data in splitted_data if not "Shared " in split_data and not "Only " in split_data and not "Add " in split_data and not "Friends" in split_data]
-    #print(f"correct data: {correct_data}")
-    for i in range(1, len(correct_data), 2):
-        category = correct_data[i+1].replace(" ", "").lower()
-        if category in formatted_data:
-            formatted_data[category] = correct_data[i]
-    return formatted_data
+    try:
+        splitted_data = data.split("\n")
+        correct_data = [split_data for split_data in splitted_data if not "Shared " in split_data and not "Only " in split_data and not "Add " in split_data and not "Friends" in split_data]
+        if "gender" in formatted_data:
+            for i in range(1, len(correct_data)):
+                if "Gender" in correct_data[i] and not correct_data[i-1] in ["Male", "Female", "Agender", "Androgyne", "Androgynous", "Bigender", "Cis", "Cis Female", "Cis Male", "Cis Man", "Cis Woman", "Cisgender"]:
+                    correct_data.remove("Gender")
+                    break
+        #print(f"correct data: {correct_data}")  
+        for i in range(1, len(correct_data), 2):
+            category = correct_data[i+1].replace(" ", "").lower()
+            if category in formatted_data:
+                formatted_data[category] = correct_data[i]
+        return formatted_data
+    except:
+        return {}
 
 def generate_list_of_years(string_years, default_year=4):
     '''
@@ -174,7 +182,6 @@ class FBdriver(webdriver.Chrome):
             last_height = new_height
         
         # getting all url to friends
-        #friend_elements = self.find_elements_by_css_selector("._5pxa ._5pxc a")
         friend_elements = self.find_elements_by_css_selector("._55wp._7om2._5pxa._8yo0")
 
         friend_urls = [self.get_link_and_mutual_friends(f) for f in friend_elements]
@@ -229,15 +236,16 @@ class FBdriver(webdriver.Chrome):
         while (not all_friends_loaded):
             if load_num==to_load:
                 break
-            for i in range(0, 12):
+            for i in range(0, 3*4):
                 self.scroll(0.25)
                 new_height = self.execute_script("return document.body.scrollHeight;")
                 if new_height != last_height:
                     all_friends_loaded = False
                     load_num+=1
                     break
+                #elif load_num*8/friend.numMutualFriends > 0.6:
                 else:
-                     all_friends_loaded = True
+                    all_friends_loaded = True
             last_height = new_height
 
         try:
@@ -500,12 +508,22 @@ class FBdriver(webdriver.Chrome):
         basic_info = extract_data(text_elements[2], basic_info)
 
         #format for consistency - NA
-        if not basic_info["languages"]:
+        if not basic_info:
             basic_info["languages"] = "NA"
-        if not websites:
+            basic_info["religiousviews"] = "NA"
+            basic_info["politicalviews"] = "NA"
+            basic_info["birthyear"] = "NA"
+            basic_info["interestedin"] = "NA"
+            basic_info["gender"] = "NA"
             websites = "NA"
-        if not social_links:
             social_links = "NA"
+        else:
+            if not basic_info["languages"]:
+                basic_info["languages"] = "NA"
+            if not websites:
+                websites = "NA"
+            if not social_links:
+                social_links = "NA"
         contact_and_basic_info = {
             "contact_info": contact_info,
             "websites": websites,
@@ -538,55 +556,127 @@ class FBdriver(webdriver.Chrome):
         #print("contact and basic info: "+str(time.time()-start_time))
         return totalCount, completionCount, contact_and_basic_info, float(time.time()-start_time)
 
-    def scrape_family_and_rel(self, friend):
-        start_time = time.time()
-        self.get(format_url(friend, "about_family_and_relationships"))
-        sections = self.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt")
-        rel = sections[0]
+    # def scrape_family_and_rel(self, friend):
+    #     start_time = time.time()
+    #     self.get(format_url(friend, "about_family_and_relationships"))
+    #     sections = self.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt")
+    #     rel = sections[0]
 
-        #scrape relationship
-        relStatus = rel.get_attribute("innerText")
-        if "No relationship info to show" in relStatus or "Add a " in relStatus:
-            relStatus = "NA"
-        else:
-            relStatus = rel.get_attribute("innerText")
+    #     #scrape relationship
+    #     relStatus = rel.get_attribute("innerText")
+    #     if "No relationship info to show" in relStatus or "Add a " in relStatus:
+    #         relStatus = "NA"
+    #     else:
+    #         relStatus = rel.get_attribute("innerText")
         
-        #scrape family
-        fam = sections[1:]
-        famList = []
-        for f in fam:
-            famPart = f.get_attribute("innerText").partition('\n')
-            famName = famPart[0]
-            if "No family" in famName:
-                famList = "NA"
-                break
-            elif "Add a " in famName:
-                continue
-            famRel = famPart[2]
-            famUrl = "NA"
+    #     #scrape family
+    #     fam = sections[1:]
+    #     famList = []
+    #     for f in fam:
+    #         famPart = f.get_attribute("innerText").partition('\n')
+    #         famName = famPart[0]
+    #         if "No family" in famName:
+    #             famList = "NA"
+    #             break
+    #         elif "Add a " in famName:
+    #             continue
+    #         famRel = famPart[2]
+    #         famUrl = "NA"
 
-            famUrlElement = f.find_elements_by_css_selector("[role='link']")
+    #         famUrlElement = f.find_elements_by_css_selector("[role='link']")
 
-            if famUrlElement:
-                famUrl = famUrlElement[0].get_attribute("href").split("/")[-1]
+    #         if famUrlElement:
+    #             famUrl = famUrlElement[0].get_attribute("href").split("/")[-1]
 
-            famList.append(
-                {
-                    "relation": famRel,
-                    "name": famName,
-                    "url": famUrl
-                }
-            )
+    #         famList.append(
+    #             {
+    #                 "relation": famRel,
+    #                 "name": famName,
+    #                 "url": famUrl
+    #             }
+    #         )
 
-        relAndFamDict = {
-            "relationship": relStatus,
-            "family members": famList
-        }
-        completionCount = 1
-        if famList == "NA":
-            completionCount-=1
-        totalCount = 1
-        if relStatus == "NA":
-            totalCount-=1
-        #print("relationship and family: "+str(time.time()-start_time))
-        return totalCount, completionCount, relAndFamDict, float(time.time()-start_time)
+    #     relAndFamDict = {
+    #         "relationship": relStatus,
+    #         "family members": famList
+    #     }
+    #     completionCount = 1
+    #     if famList == "NA":
+    #         completionCount-=1
+    #     totalCount = 1
+    #     if relStatus == "NA":
+    #         totalCount-=1
+    #     #print("relationship and family: "+str(time.time()-start_time))
+    #     return totalCount, completionCount, relAndFamDict, float(time.time()-start_time)
+
+def populate_category_groups(data, person_url, category_name, category_groups):
+    if data == "NA":
+        category_groups[category_name]["no_data"].append(person_url)
+        return
+    if not isinstance(data, list):
+        if data in category_groups[category_name]:
+            category_groups[category_name][data].append(person_url)
+        else:
+            category_groups[category_name][data] = [person_url]
+        return
+    for entry in data:
+        entry_name = entry
+        if isinstance(entry, dict):
+            entry_name = entry["title"]
+        if entry_name in category_groups[category_name]:
+            category_groups[category_name][entry_name].append(person_url)
+        else:
+            category_groups[category_name][entry_name] = [person_url]
+
+def get_participant_data(category_groups, driver):
+    #scrape user info
+    participant = Friend(driver.participant_path)
+    (count, participant.attributes["work"], participant.attributes["college"], participant.attributes["highschool"], participant.profile_picture_url, time) = driver.scrape_work_and_ed(participant)
+    participant.percent_complete+=count
+    populate_category_groups(participant.attributes["work"], participant.url, "work", category_groups)
+    populate_category_groups(participant.attributes["college"], participant.url, "college", category_groups)
+    populate_category_groups(participant.attributes["highschool"], participant.url, "highschool", category_groups)
+    (count, participant.attributes["places lived"], time) = driver.scrape_places_lived(participant)
+    participant.percent_complete+=count
+    populate_category_groups(participant.attributes["places lived"]["list_of_cities"], participant.url, "cities", category_groups)
+    (participant.percent_total_complete, count, participant.attributes["contact and basic"], time) = driver.scrape_contact_and_basic(participant)
+    participant.percent_complete+=count
+    populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["religiousviews"], participant.url, "religiousviews", category_groups)
+    populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["politicalviews"], participant.url, "politicalviews", category_groups)
+    #populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["birthyear"], participant.url, "birthyear", category_groups)
+    #(tempCount, count, participant.attributes["family and rel"], time) = driver.scrape_family_and_rel(participant)
+    #participant.percent_total_complete+=tempCount
+    participant.percent_complete+=count
+    participant.percent_total_complete+=participant.percent_complete
+    participant.percent_complete = round(participant.percent_complete/7, 3)
+    participant.percent_total_complete = round(participant.percent_total_complete/13, 3)
+    return participant
+
+def scrape_friend_info(f, num_mutual, category_groups, driver):
+    time_array = []
+    f.name = driver.scrape_name(f)
+    f.mutual_friends, time = driver.full_mutual_friend_list(f, num_mutual)
+    time_array.append(time)
+    (count, f.attributes["work"], f.attributes["college"], f.attributes["highschool"], f.profile_picture_url, time) = driver.scrape_work_and_ed(f)
+    time_array.append(time)
+    f.percent_complete+=count    
+    populate_category_groups(f.attributes["work"], f.url, "work", category_groups)
+    populate_category_groups(f.attributes["college"], f.url, "college", category_groups)
+    populate_category_groups(f.attributes["highschool"], f.url, "highschool", category_groups)
+    (count, f.attributes["places lived"], time) = driver.scrape_places_lived(f)
+    time_array.append(time)
+    f.percent_complete+=count    
+    populate_category_groups(f.attributes["places lived"]["list_of_cities"], f.url, "cities", category_groups)
+    (f.percent_total_complete, count, f.attributes["contact and basic"], time) = driver.scrape_contact_and_basic(f)
+    time_array.append(time)
+    populate_category_groups(f.attributes["contact and basic"]["basic_info"]["religiousviews"], f.url, "religiousviews", category_groups)
+    populate_category_groups(f.attributes["contact and basic"]["basic_info"]["politicalviews"], f.url, "politicalviews", category_groups)
+    populate_category_groups(f.attributes["contact and basic"]["basic_info"]["birthyear"], f.url, "birthyear", category_groups)
+    #(tempCount, count, f.attributes["family and rel"], time) = driver.scrape_family_and_rel(f)
+    #time_array.append(time)
+    #f.percent_complete+=count
+    f.percent_total_complete+=f.percent_complete
+    #f.percent_total_complete+=tempCount
+    f.percent_complete = round(f.percent_complete/7, 3)
+    f.percent_total_complete = round(f.percent_total_complete/13, 3)
+    return time_array
