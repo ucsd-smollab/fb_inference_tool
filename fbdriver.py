@@ -228,6 +228,8 @@ class FBdriver(webdriver.Chrome):
     def full_mutual_friend_list(self, friend, to_load=-1):
         start_time = time.time()
         self.get(format_url(friend, "friends_mutual"))
+        if friend.numMutualFriends == 0:
+            return "NA", 0
 
         # getting all of user's friends loaded on screen
         all_friends_loaded = False
@@ -236,7 +238,7 @@ class FBdriver(webdriver.Chrome):
         while (not all_friends_loaded):
             if load_num==to_load:
                 break
-            for i in range(0, 3*4):
+            for i in range(0, 6*4):
                 self.scroll(0.25)
                 new_height = self.execute_script("return document.body.scrollHeight;")
                 if new_height != last_height:
@@ -250,8 +252,6 @@ class FBdriver(webdriver.Chrome):
 
         try:
             mutual_friends_elements = self.find_element_by_class_name("j83agx80.btwxx1t3.lhclo0ds.i1fnvgqd")
-            if "No friends" in mutual_friends_elements.get_attribute("innerText"):
-                return "NA"
             mutual_friends_anchors = mutual_friends_elements.find_elements_by_css_selector("[tabindex='-1']")
             mutual_friends_urls = [anchor.get_attribute("href") for anchor in mutual_friends_anchors]
             mutual_friends_paths = [path.split("/")[-1] for path in mutual_friends_urls]

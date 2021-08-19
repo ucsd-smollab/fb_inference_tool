@@ -19,14 +19,14 @@ from fbInferences import compute_frequency_category_data, get_list_of_people, ge
 # https://selenium-python.readthedocs.io/
 #-------------------------------------------------------------------------------
 
-path_to_chrome_driver = "C:\\Users\\tanst\\chromedriver.exe"
+path_to_chrome_driver = "/Users/aaron/opt/WebDriver/bin/chromedriver"
 username = "aaronbroukhim@aol.com"
 url = "https://mobile.facebook.com/home.php"
 
 driver = FBdriver(executable_path=path_to_chrome_driver)
 driver.set_page_load_timeout(60)
 #5 should work on fast computers, increase if getting Unable to locate element errors
-driver.implicitly_wait(5)
+driver.implicitly_wait(10)
 driver.login(url, username) # type pw manually
 
 category_groups_template = {
@@ -105,7 +105,7 @@ time_df = pd.DataFrame(columns=["mutual friends", "Word and ed", "Places lived",
 num_friends_scraped = 0
 num_to_scrape = 1000
 #manual override if didnt scrape properly
-#prev_friends_scraped = 60
+#prev_friends_scraped = 467
 num_mutual_pages = -1 #-1 for all, otherwise a 8* will be number of friends scraped
 time_df = pd.DataFrame(columns=[str(num_mutual_pages*8)+" mutual friends", "Word and ed", \
 "Places lived", "contact and basic info", "friend total time"])
@@ -116,6 +116,13 @@ for p, f in friends.items():
     #update data with old
     if num_friends_scraped < prev_friends_scraped:
         f = old_data["friends"][p]
+        mutual_tries = 0
+        if f.numMutualFriends > 0:
+            while len(f.mutual_friends)/f.numMutualFriends < 0.6:
+                if mutual_tries >= 10:
+                    break
+                f.mutual_friends, temp = driver.full_mutual_friend_list(f, num_mutual_pages)
+                mutual_tries+=1
         print(num_friends_scraped)        
         print(f.name)
         # print(f.url)
@@ -124,6 +131,14 @@ for p, f in friends.items():
         # pprint.pprint(f.attributes)
         # print("---------")
         num_friends_scraped+=1
+        #updating local data, breaking after number of friends achieved
+        # file = open("file.pkl","wb")
+        # formatted_data = {
+        #     "count": num_friends_scraped,
+        #     "friends": friends,
+        #     "participant": participant
+        # }
+        # pickle.dump(formatted_data, file)
         continue
     if num_friends_scraped >= num_to_scrape:
         break
@@ -147,14 +162,14 @@ for p, f in friends.items():
     time_array.append(float(time.time()-start_time))
     time_df.loc[len(time_df.index)] = time_array
     #updating local data, breaking after number of friends achieved
-    file = open("file.pkl","wb")
-    formatted_data = {
-        "count": num_friends_scraped,
-        "friends": friends,
-        "participant": participant
-    }
-    pickle.dump(formatted_data, file)
-    file.close()
+    # file = open("file.pkl","wb")
+    # formatted_data = {
+    #     "count": num_friends_scraped,
+    #     "friends": friends,
+    #     "participant": participant
+    # }
+    # pickle.dump(formatted_data, file)
+    # file.close()
 
 print(f"number of friends scraped: {num_friends_scraped}")
 print("total runtime: "+str(time.time() - total_time))
