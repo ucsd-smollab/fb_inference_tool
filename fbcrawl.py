@@ -11,7 +11,7 @@ import pprint
 import json
 import pickle
 import pandas as pd
-from fbInferences import compute_frequency_category_data, get_list_of_people, generate_inferences, infer
+from fbInferences import get_list_of_people, generate_inferences
 
 # Some helpful resources I consulted:
 # https://medium.com/@ali.raza.nisar/crawling-your-facebook-friends-data-31a2d8fc0c6d
@@ -52,16 +52,8 @@ category_groups_template = {
         "no_data": []
     },
 }
-category_groups = copy.deepcopy(category_groups_template)
 
-inference_count_dict = {
-    "Right": 0,
-    "Wrong": 0,
-    "Tie": 0,
-    "No Data": 0,
-    "Not Scraped": 0,
-    "Below Threshold": 0
-}
+category_groups = copy.deepcopy(category_groups_template)
 
 #keep track of time
 total_time = time.time()
@@ -78,12 +70,15 @@ try:
     print("Found pickle file")
 except:
     print("No pickle file")
+
 old_data = {}
 prev_friends_scraped = 0
 if objects:
     old_data = objects[0]
     if "count" in old_data:
         prev_friends_scraped = old_data["count"]
+    if "category_groups" in old_data:
+        category_groups = old_data["category_groups"]
 
 #scrape user info
 if not old_data and not "participant" in old_data:
@@ -103,7 +98,7 @@ time_df = pd.DataFrame(columns=["mutual friends", "Word and ed", "Places lived",
 "contact and basic info", "relationship and family", "total time"])
 
 num_friends_scraped = 0
-num_to_scrape = 1000
+num_to_scrape = 200
 #manual override if didnt scrape properly
 #prev_friends_scraped = 467
 num_mutual_pages = -1 #-1 for all, otherwise a 8* will be number of friends scraped
@@ -125,18 +120,17 @@ for p, f in friends.items():
                 mutual_tries+=1
         print(num_friends_scraped)        
         print(f.name)
-        # print(f.url)
         print(f"Actual Mutual Friends: {f.numMutualFriends}")
         print(f"Scraped Mutual Friends: {len(f.mutual_friends)}")
-        # pprint.pprint(f.attributes)
-        # print("---------")
+        print("---------")
         num_friends_scraped+=1
         #updating local data, breaking after number of friends achieved
         # file = open("file.pkl","wb")
         # formatted_data = {
         #     "count": num_friends_scraped,
         #     "friends": friends,
-        #     "participant": participant
+        #     "participant": participant,
+        #     "category_groups": category_groups
         # }
         # pickle.dump(formatted_data, file)
         continue
@@ -166,19 +160,19 @@ for p, f in friends.items():
     # formatted_data = {
     #     "count": num_friends_scraped,
     #     "friends": friends,
-    #     "participant": participant
+    #     "participant": participant,
+    #     "category_groups": category_groups
     # }
     # pickle.dump(formatted_data, file)
     # file.close()
 
 print(f"number of friends scraped: {num_friends_scraped}")
 print("total runtime: "+str(time.time() - total_time))
-print("time averages: ")
-time_df.loc['mean'] = time_df.mean()
-print(time_df.loc['mean'])
-time_df.to_csv("20friends_160mutual_nourls.csv")
+# print("time averages: ")
+# time_df.loc['mean'] = time_df.mean()
+# print(time_df.loc['mean'])
+# time_df.to_csv("20friends_160mutual_nourls.csv")
 
-#make inferences
 '''
 look through each friends dcitionary
  - key/value pair is url/friend object pair
@@ -193,17 +187,108 @@ for in friends
         for dataentry in category
             add mutual friend url to category
 '''
+inference_count_dict = {
+    "Not Scraped": 0,
+    "Has Ground Truth": {
+        "work": {
+            "Right": 0,
+            "Tie": 0,
+            "Wrong": 0,
+            "Below Threshold": 0,
+            "No Data": 0
+        },
+        "college": {
+            "Right": 0,
+            "Tie": 0,
+            "Wrong": 0,
+            "Below Threshold": 0,
+            "No Data": 0
+        },
+        "highschool": {
+            "Right": 0,
+            "Tie": 0,
+            "Wrong": 0,
+            "Below Threshold": 0,
+            "No Data": 0
+        },
+        "cities": {
+            "Right": 0,
+            "Tie": 0,
+            "Wrong": 0,
+            "Below Threshold": 0,
+            "No Data": 0
+        },
+        "religiousviews": {	
+            "Right": 0,
+            "Tie": 0,
+            "Wrong": 0,
+            "Below Threshold": 0,
+            "No Data": 0
+        },
+        "politicalviews": {
+            "Right": 0,
+            "Tie": 0,
+            "Wrong": 0,
+            "Below Threshold": 0,
+            "No Data": 0
+        },
+        "birthyear": {
+            "Right": 0,
+            "Tie ": 0,
+            "Wrong": 0,
+            "Below Threshold": 0,
+            "No Data": 0
+        },
+    },
+    "No Ground Truth": {
+        "work": {
+            "Tie": 0,
+            "Below Threshold": 0,
+            "No Data": 0
+        },
+        "college": {
+            "Tie": 0,
+            "Below Threshold": 0,
+            "No Data": 0
+        },
+        "highschool": {
+            "Tie": 0,
+            "Below Threshold": 0,
+            "No Data": 0
+        },
+        "cities": {
+            "Tie": 0,
+            "Below Threshold": 0,
+            "No Data": 0
+        },
+        "religiousviews": {	
+            "Tie": 0,
+            "Below Threshold": 0,
+            "No Data": 0
+        },
+        "politicalviews": {
+            "Tie": 0,
+            "Below Threshold": 0,
+            "No Data": 0
+        },
+        "birthyear": {
+            "Tie": 0,
+            "Below Threshold": 0,
+            "No Data": 0
+        },
+    },
+}
+
 for url, friend in friends.items():
     category_frequency_data = copy.deepcopy(category_groups_template)
     for category, category_data in category_groups.items():
         for name, list_of_urls in category_data.items():
             category_frequency_data[category][name] = get_list_of_people(friend.mutual_friends, participant.url, list_of_urls)
     friend.inference_count = category_frequency_data
-
+#pprint.pprint(friends['danielnewman21'].inference_count)
 generate_inferences(friends, participant, inference_count_dict)
 pprint.pprint(inference_count_dict)
 
-#inferences = generate_inferences(friends, participant, key_value_pairs)
 inferences = []
 data_to_send = {
     "friends": [f.attributes for f in friends.values()],

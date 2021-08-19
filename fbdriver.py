@@ -627,6 +627,7 @@ def populate_category_groups(data, person_url, category_name, category_groups):
         entry_name = entry
         if isinstance(entry, dict):
             entry_name = entry["title"]
+        
         if entry_name in category_groups[category_name]:
             category_groups[category_name][entry_name].append(person_url)
         else:
