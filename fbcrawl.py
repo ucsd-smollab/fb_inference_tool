@@ -98,7 +98,7 @@ time_df = pd.DataFrame(columns=["mutual friends", "Word and ed", "Places lived",
 "contact and basic info", "relationship and family", "total time"])
 
 num_friends_scraped = 0
-num_to_scrape = 200
+num_to_scrape = 341
 #manual override if didnt scrape properly
 #prev_friends_scraped = 467
 num_mutual_pages = -1 #-1 for all, otherwise a 8* will be number of friends scraped
@@ -114,7 +114,7 @@ for p, f in friends.items():
         mutual_tries = 0
         if f.numMutualFriends > 0:
             while len(f.mutual_friends)/f.numMutualFriends < 0.6:
-                if mutual_tries >= 10:
+                if mutual_tries >= 3:
                     break
                 f.mutual_friends, temp = driver.full_mutual_friend_list(f, num_mutual_pages)
                 mutual_tries+=1
@@ -125,14 +125,14 @@ for p, f in friends.items():
         print("---------")
         num_friends_scraped+=1
         #updating local data, breaking after number of friends achieved
-        # file = open("file.pkl","wb")
-        # formatted_data = {
-        #     "count": num_friends_scraped,
-        #     "friends": friends,
-        #     "participant": participant,
-        #     "category_groups": category_groups
-        # }
-        # pickle.dump(formatted_data, file)
+        file = open("file.pkl","wb")
+        formatted_data = {
+            "count": num_friends_scraped,
+            "friends": friends,
+            "participant": participant,
+            "category_groups": category_groups
+        }
+        pickle.dump(formatted_data, file)
         continue
     if num_friends_scraped >= num_to_scrape:
         break
@@ -141,7 +141,7 @@ for p, f in friends.items():
     mutual_tries = 0
     if f.numMutualFriends > 0:
         while len(f.mutual_friends)/f.numMutualFriends < 0.6:
-            if mutual_tries >= 10:
+            if mutual_tries >= 3:
                 break
             f.mutual_friends, temp = driver.full_mutual_friend_list(f, num_mutual_pages)
             mutual_tries+=1
@@ -156,15 +156,15 @@ for p, f in friends.items():
     time_array.append(float(time.time()-start_time))
     time_df.loc[len(time_df.index)] = time_array
     #updating local data, breaking after number of friends achieved
-    # file = open("file.pkl","wb")
-    # formatted_data = {
-    #     "count": num_friends_scraped,
-    #     "friends": friends,
-    #     "participant": participant,
-    #     "category_groups": category_groups
-    # }
-    # pickle.dump(formatted_data, file)
-    # file.close()
+    file = open("file.pkl","wb")
+    formatted_data = {
+        "count": num_friends_scraped,
+        "friends": friends,
+        "participant": participant,
+        "category_groups": category_groups
+    }
+    pickle.dump(formatted_data, file)
+    file.close()
 
 print(f"number of friends scraped: {num_friends_scraped}")
 print("total runtime: "+str(time.time() - total_time))
