@@ -3,6 +3,7 @@ import random
 from sys import set_asyncgen_hooks
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import NoSuchElementException
 from time import sleep
 from friend import Friend
 
@@ -658,30 +659,42 @@ def get_participant_data(category_groups, driver):
     return participant
 
 def scrape_friend_info(f, num_mutual, category_groups, driver):
-    time_array = []
-    f.name = driver.scrape_name(f)
-    f.mutual_friends, time = driver.full_mutual_friend_list(f, num_mutual)
-    time_array.append(time)
-    (count, f.attributes["work"], f.attributes["college"], f.attributes["highschool"], f.profile_picture_url, time) = driver.scrape_work_and_ed(f)
-    time_array.append(time)
-    f.percent_complete+=count    
+    try:
+        time_array = []
+        f.name = driver.scrape_name(f)
+        f.mutual_friends, time = driver.full_mutual_friend_list(f, num_mutual)
+        time_array.append(time)
+        (count, f.attributes["work"], f.attributes["college"], f.attributes["highschool"], f.profile_picture_url, time) = driver.scrape_work_and_ed(f)
+        time_array.append(time)
+        f.percent_complete+=count    
+        populate_category_groups(f.attributes["work"], f.url, "work", category_groups)
+        populate_category_groups(f.attributes["college"], f.url, "college", category_groups)
+        populate_category_groups(f.attributes["highschool"], f.url, "highschool", category_groups)
+        (count, f.attributes["places lived"], time) = driver.scrape_places_lived(f)
+        time_array.append(time)
+        f.percent_complete+=count    
+        populate_category_groups(f.attributes["places lived"]["list_of_cities"], f.url, "cities", category_groups)
+        (f.percent_total_complete, count, f.attributes["contact and basic"], time) = driver.scrape_contact_and_basic(f)
+        time_array.append(time)
+        populate_category_groups(f.attributes["contact and basic"]["basic_info"]["religiousviews"], f.url, "religiousviews", category_groups)
+        populate_category_groups(f.attributes["contact and basic"]["basic_info"]["politicalviews"], f.url, "politicalviews", category_groups)
+        populate_category_groups(f.attributes["contact and basic"]["basic_info"]["birthyear"], f.url, "birthyear", category_groups)
+        #(tempCount, count, f.attributes["family and rel"], time) = driver.scrape_family_and_rel(f)
+        #time_array.append(time)
+        #f.percent_complete+=count
+        f.percent_total_complete+=f.percent_complete
+        #f.percent_total_complete+=tempCount
+        f.percent_complete = round(f.percent_complete/7, 3)
+        f.percent_total_complete = round(f.percent_total_complete/13, 3)
+        return time_array
+    except NoSuchElementException:
+        return None
+def populate_category_groups_funct(f, category_groups):
     populate_category_groups(f.attributes["work"], f.url, "work", category_groups)
     populate_category_groups(f.attributes["college"], f.url, "college", category_groups)
     populate_category_groups(f.attributes["highschool"], f.url, "highschool", category_groups)
-    (count, f.attributes["places lived"], time) = driver.scrape_places_lived(f)
-    time_array.append(time)
-    f.percent_complete+=count    
     populate_category_groups(f.attributes["places lived"]["list_of_cities"], f.url, "cities", category_groups)
-    (f.percent_total_complete, count, f.attributes["contact and basic"], time) = driver.scrape_contact_and_basic(f)
-    time_array.append(time)
     populate_category_groups(f.attributes["contact and basic"]["basic_info"]["religiousviews"], f.url, "religiousviews", category_groups)
     populate_category_groups(f.attributes["contact and basic"]["basic_info"]["politicalviews"], f.url, "politicalviews", category_groups)
     populate_category_groups(f.attributes["contact and basic"]["basic_info"]["birthyear"], f.url, "birthyear", category_groups)
-    #(tempCount, count, f.attributes["family and rel"], time) = driver.scrape_family_and_rel(f)
-    #time_array.append(time)
-    #f.percent_complete+=count
-    f.percent_total_complete+=f.percent_complete
-    #f.percent_total_complete+=tempCount
-    f.percent_complete = round(f.percent_complete/7, 3)
-    f.percent_total_complete = round(f.percent_total_complete/13, 3)
-    return time_array
+

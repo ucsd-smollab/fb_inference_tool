@@ -8,6 +8,7 @@ def get_list_of_people(mutual_friends, participant, list_of_urls):
     if "NA" == mutual_friends or not list_of_urls or not mutual_friends:
         return []
     total_people = copy.deepcopy(mutual_friends)
+    #total_people = copy.deepcopy(mutual_friends)[:40]
     if not participant in mutual_friends:
         total_people.append(participant)
     list_of_intersected_friends = [friend for friend in list_of_urls if friend in total_people]
@@ -29,15 +30,18 @@ def generate_inferences(friends, participant, inference_count_dict):
                 attribute_data = f.attributes[category]
                 if isinstance(attribute_data, list):
                     attribute_data = [data["title"] for data in attribute_data]
+            # print(f.name)
+            # pprint.pprint(attribute_data)
+            # pprint.pprint(category_data)
             #initialize variables
             temp_max = threshold
             temp_name = "Threshold"
             tie = False
             No_Data = True
             if attribute_data == "NA":
-                Truth = "No Ground Truth"
+                truth = "No Ground Truth"
             else:
-                Truth = "Has Ground Truth"
+                truth = "Has Ground Truth"
             # check if no data, below threshold, tied, right or wrong
             for name, url_list in category_data.items():
                 if not url_list or name=="no_data":
@@ -48,23 +52,19 @@ def generate_inferences(friends, participant, inference_count_dict):
                     temp_name = name
                     tie = False
                 elif len(url_list) == temp_max:
-                    tie == True
+                    tie = True
             # update counts
             if No_Data:
-                inference_count_dict[Truth][category]["No Data"]+=1
+                inference_count_dict[truth][category]["No Data"]+=1
             elif temp_name=="Threshold":
-                inference_count_dict[Truth][category]["Below Threshold"]+=1
+                inference_count_dict[truth][category]["Below Threshold"]+=1
             elif tie:
-                inference_count_dict[Truth][category]["Tie"]+=1
-            elif Truth=="Has Ground Truth":
+                inference_count_dict[truth][category]["Tie"]+=1
+            elif truth=="Has Ground Truth":
                 if (isinstance(attribute_data, list) and temp_name in attribute_data) or temp_name == attribute_data:
-                    inference_count_dict[Truth][category]["Right"]+=1
+                    inference_count_dict[truth][category]["Right"]+=1
                 else:
-                    inference_count_dict[Truth][category]["Wrong"]+=1
-
-# def compute_frequency_category_data(category_data):
-#     frequency_category_data = copy.deepcopy(category_data)
-#     for category, data in category_data.items():
-#         for k, list_of_urls in data.items():
-#             frequency_category_data[category][k] = len(list_of_urls)
-#     return frequency_category_data
+                    inference_count_dict[truth][category]["Wrong"]+=1
+            # print(f"prediction: {temp_name}")
+            # print("------------------")
+            # sleep(10)

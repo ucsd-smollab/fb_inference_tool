@@ -98,9 +98,9 @@ time_df = pd.DataFrame(columns=["mutual friends", "Word and ed", "Places lived",
 "contact and basic info", "relationship and family", "total time"])
 
 num_friends_scraped = 0
-num_to_scrape = 341
+num_to_scrape = 0
 #manual override if didnt scrape properly
-#prev_friends_scraped = 467
+prev_friends_scraped = 250
 num_mutual_pages = -1 #-1 for all, otherwise a 8* will be number of friends scraped
 time_df = pd.DataFrame(columns=[str(num_mutual_pages*8)+" mutual friends", "Word and ed", \
 "Places lived", "contact and basic info", "friend total time"])
@@ -110,6 +110,8 @@ for p, f in friends.items():
     start_time = time.time()
     #update data with old
     if num_friends_scraped < prev_friends_scraped:
+        if not f.name:
+            continue
         f = old_data["friends"][p]
         mutual_tries = 0
         if f.numMutualFriends > 0:
@@ -125,19 +127,24 @@ for p, f in friends.items():
         print("---------")
         num_friends_scraped+=1
         #updating local data, breaking after number of friends achieved
-        file = open("file.pkl","wb")
-        formatted_data = {
-            "count": num_friends_scraped,
-            "friends": friends,
-            "participant": participant,
-            "category_groups": category_groups
-        }
-        pickle.dump(formatted_data, file)
+        # file = open("file.pkl","wb")
+        # formatted_data = {
+        #     "count": num_friends_scraped,
+        #     "friends": friends,
+        #     "participant": participant,
+        #     "category_groups": category_groups
+        # }
+        # pickle.dump(formatted_data, file)
         continue
     if num_friends_scraped >= num_to_scrape:
         break
     #get current friend data, mutual friends in batches of 8
     time_array = scrape_friend_info(f, num_mutual_pages, category_groups, driver)
+    if not time_array:
+        driver.get("http://facebook.com")
+        f.name = ""
+        continue
+    populate_category_groups_funct(f, category_groups)
     mutual_tries = 0
     if f.numMutualFriends > 0:
         while len(f.mutual_friends)/f.numMutualFriends < 0.6:
@@ -156,15 +163,15 @@ for p, f in friends.items():
     time_array.append(float(time.time()-start_time))
     time_df.loc[len(time_df.index)] = time_array
     #updating local data, breaking after number of friends achieved
-    file = open("file.pkl","wb")
-    formatted_data = {
-        "count": num_friends_scraped,
-        "friends": friends,
-        "participant": participant,
-        "category_groups": category_groups
-    }
-    pickle.dump(formatted_data, file)
-    file.close()
+    # file = open("file.pkl","wb")
+    # formatted_data = {
+    #     "count": num_friends_scraped,
+    #     "friends": friends,
+    #     "participant": participant,
+    #     "category_groups": category_groups
+    # }
+    # pickle.dump(formatted_data, file)
+    # file.close()
 
 print(f"number of friends scraped: {num_friends_scraped}")
 print("total runtime: "+str(time.time() - total_time))
@@ -234,7 +241,7 @@ inference_count_dict = {
         },
         "birthyear": {
             "Right": 0,
-            "Tie ": 0,
+            "Tie": 0,
             "Wrong": 0,
             "Below Threshold": 0,
             "No Data": 0
@@ -277,17 +284,33 @@ inference_count_dict = {
             "No Data": 0
         },
     },
+    "totals": {
+        "total right": 0,
+        "total wrong": 0,
+        "total tie": 0,
+        "total below threshold": 0,
+        "total no data": 0,
+    },
+    "percentages": {
+        "total right": 0,
+        "total wrong": 0,
+        "total tie": 0,
+        "total below threshold": 0,
+        "total no data": 0,
+    }
 }
 
 for url, friend in friends.items():
     category_frequency_data = copy.deepcopy(category_groups_template)
     for category, category_data in category_groups.items():
         for name, list_of_urls in category_data.items():
-            category_frequency_data[category][name] = get_list_of_people(friend.mutual_friends, participant.url, list_of_urls)
+            category_frequency_data[category][name] = list(set(get_list_of_people(friend.mutual_friends, participant.url, list_of_urls)))
     friend.inference_count = category_frequency_data
 #pprint.pprint(friends['danielnewman21'].inference_count)
 generate_inferences(friends, participant, inference_count_dict)
 pprint.pprint(inference_count_dict)
+with open("100friends_ALLmutuals_.json", "w") as outfile:
+    json.dump(inference_count_dict, outfile)
 
 inferences = []
 data_to_send = {
