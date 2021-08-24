@@ -4,6 +4,7 @@ import random
 import copy
 import pprint
 import bisect 
+import pandas as pd
 
 
 def get_list_of_people(mutual_friends, participant, list_of_urls, num_mutuals = None):
@@ -95,6 +96,9 @@ def generate_inferences(friends, participant, inference_count_dict):
 def generate_inferences_ranking(friends, participant, inference_count_dict):
     total = 0
     total_rwt = 0
+    conf_perc_right = 0
+    conf_perc_wrong = 0
+    pred_df = pd.DataFrame(columns=["Conf Pred", "Prediction", "Ranking Array"])
     for p, f in friends.items():
         if not f.attributes:
             inference_count_dict["Not Scraped"]+=1
@@ -122,17 +126,22 @@ def generate_inferences_ranking(friends, participant, inference_count_dict):
                 truth = "No Ground Truth"
             else:
                 truth = "Has Ground Truth"
+            cat_count = 0
+            cat_dict = {}
             # check if no data, below threshold, tied, right or wrong
             for name, url_list in category_data.items():
                 if not url_list or name=="no_data":
                     continue
                 No_Data = False
+                cat_dict[name] = len(url_list)
+                cat_count+=len(url_list)
                 if len(url_list) > temp_max:
                     temp_max = len(url_list)
                     temp_name = name
                     tie = False
                 elif len(url_list) == temp_max:
                     tie = True
+            cat_dict = {k: v for k, v in sorted(cat_dict.items(), key=lambda item: item[1]) if len(cat_dict) < 11}
             # update counts
             total+=1
             if No_Data:
@@ -149,13 +158,20 @@ def generate_inferences_ranking(friends, participant, inference_count_dict):
                 if (isinstance(attribute_data, list) and temp_name in attribute_data) or temp_name == attribute_data:
                     inference_count_dict[truth][category]["Right"]+=1
                     inference_count_dict["totals"]["total right"]+=1
+                    conf_perc_right += (temp_max/cat_count)
                 else:
                     inference_count_dict[truth][category]["Wrong"]+=1
                     inference_count_dict["totals"]["total wrong"]+=1
+                    conf_perc_wrong += (temp_max/cat_count)
                 total_rwt+=1
             # print(f"prediction: {temp_name}")
             # print("------------------")
             # sleep(10)
+            if(attribute_data!="NA"):
+                data_list = list(cat_dict.items())
+                pred_df.loc[len(pred_df.index)] = [conf_perc_right, attribute_data, data_list]
+    inference_count_dict["avg confidence percentage"]["right"] = round(conf_perc_right/inference_count_dict["totals"]["total right"]*100, 2)
+    inference_count_dict["avg confidence percentage"]["wrong"] = round(conf_perc_wrong/inference_count_dict["totals"]["total wrong"]*100, 2)
     c = 0
     dict_cat = ["total right", "total wrong", "total tie", "total below threshold", "total no data",
         "right/rwt", "wrong/rwt", "tie/rwt"]
@@ -165,4 +181,11 @@ def generate_inferences_ranking(friends, participant, inference_count_dict):
             continue
         inference_count_dict["percentages"][key] = round(100*inference_count_dict["totals"][key]/total, 2)
         c+=1
-    
+    pred_df.to_csv("predRanking.csv")
+        
+"""
+CSV File Structure
+
+PredictionConfidence Prediction [(key, value) () ()]
+
+"""
