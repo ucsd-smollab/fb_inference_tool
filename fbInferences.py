@@ -98,7 +98,7 @@ def generate_inferences_ranking(friends, participant, inference_count_dict):
     total_rwt = 0
     conf_perc_right = 0
     conf_perc_wrong = 0
-    pred_df = pd.DataFrame(columns=["Conf Pred", "Prediction", "Ranking Array"])
+    pred_df = pd.DataFrame(columns=["Right/Wrong", "Conf Pred Right", "Actual", "Ranking Array"])
     for p, f in friends.items():
         if not f.attributes:
             inference_count_dict["Not Scraped"]+=1
@@ -142,8 +142,12 @@ def generate_inferences_ranking(friends, participant, inference_count_dict):
                 elif len(url_list) == temp_max:
                     tie = True
             cat_dict = {k: v for k, v in sorted(cat_dict.items(), key=lambda item: item[1]) if len(cat_dict) < 11}
+            print(category)
+            print(cat_dict)
+            print("-----------")
             # update counts
             total+=1
+            temp_bool = False
             if No_Data:
                 inference_count_dict[truth][category]["No Data"]+=1
                 inference_count_dict["totals"]["total no data"]+=1
@@ -155,21 +159,23 @@ def generate_inferences_ranking(friends, participant, inference_count_dict):
                 inference_count_dict["totals"]["total tie"]+=1
                 total_rwt+=1
             elif truth=="Has Ground Truth":
+                temp_conf = round((temp_max/cat_count)*100, 2)
+                cat_dict = list(cat_dict.items())
+                cat_dict.reverse()
                 if (isinstance(attribute_data, list) and temp_name in attribute_data) or temp_name == attribute_data:
                     inference_count_dict[truth][category]["Right"]+=1
                     inference_count_dict["totals"]["total right"]+=1
                     conf_perc_right += (temp_max/cat_count)
+                    pred_df.loc[len(pred_df.index)] = ["Right", temp_conf, attribute_data, cat_dict]
                 else:
                     inference_count_dict[truth][category]["Wrong"]+=1
                     inference_count_dict["totals"]["total wrong"]+=1
                     conf_perc_wrong += (temp_max/cat_count)
+                    pred_df.loc[len(pred_df.index)] = ["Wrong", temp_conf, attribute_data, cat_dict]
                 total_rwt+=1
             # print(f"prediction: {temp_name}")
             # print("------------------")
             # sleep(10)
-            if(attribute_data!="NA"):
-                data_list = list(cat_dict.items())
-                pred_df.loc[len(pred_df.index)] = [conf_perc_right, attribute_data, data_list]
     inference_count_dict["avg confidence percentage"]["right"] = round(conf_perc_right/inference_count_dict["totals"]["total right"]*100, 2)
     inference_count_dict["avg confidence percentage"]["wrong"] = round(conf_perc_wrong/inference_count_dict["totals"]["total wrong"]*100, 2)
     c = 0
@@ -181,7 +187,7 @@ def generate_inferences_ranking(friends, participant, inference_count_dict):
             continue
         inference_count_dict["percentages"][key] = round(100*inference_count_dict["totals"][key]/total, 2)
         c+=1
-    pred_df.to_csv("predRanking.csv")
+    pred_df.to_csv("predRanking.csv", index=False)
         
 """
 CSV File Structure
