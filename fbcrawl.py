@@ -116,7 +116,7 @@ for p, f in friends.items():
             if not f.name or num_friends_scraped>=num_to_scrape:
                 continue
             f = old_data["friends"][p]
-            #time_df.loc[len(time_df.index)] = f.time_array
+            time_df.loc[len(time_df.index)] = f.time_array
             print(num_friends_scraped)        
             print(f.name)
             print(f"Actual Mutual Friends: {f.numMutualFriends}")
