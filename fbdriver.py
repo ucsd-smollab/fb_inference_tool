@@ -171,7 +171,7 @@ class FBdriver(webdriver.Chrome):
         while (not all_friends_loaded):
             if load_num==to_load:
                  break
-            for i in range(0, 12):
+            for i in range(0, 3*4):
                 self.scroll(0.25)
                 new_height = self.execute_script("return document.body.scrollHeight;")
                 if new_height != last_height:
@@ -234,7 +234,7 @@ class FBdriver(webdriver.Chrome):
             return "NA", 0
 
         mutual_tries = 3
-        while not friend.mutual_friends or (to_load == -1 and len(friend.mutual_friends)/friend.numMutualFriends < 0.6):
+        while not friend.mutual_friends or (to_load==-1 and len(friend.mutual_friends)/friend.numMutualFriends < 0.6) or (to_load!=-1 and len(friend.mutual_friends)*0.6<to_load*8):
             if mutual_tries == 0:
                 break
 
