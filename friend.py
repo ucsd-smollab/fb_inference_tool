@@ -9,3 +9,4 @@ class Friend:
         self.mutual_friends = None
         self.name = None
         self.inference_count = None
+        self.time_array = []

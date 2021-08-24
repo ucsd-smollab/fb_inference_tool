@@ -4,11 +4,13 @@ import random
 import copy
 import pprint
 
-def get_list_of_people(mutual_friends, participant, list_of_urls):
+def get_list_of_people(mutual_friends, participant, list_of_urls, num_mutuals = None):
     if "NA" == mutual_friends or not list_of_urls or not mutual_friends:
         return []
-    total_people = copy.deepcopy(mutual_friends)
-    #total_people = copy.deepcopy(mutual_friends)[:40]
+    if num_mutuals == -1:
+        total_people = copy.deepcopy(mutual_friends)
+    else:
+        total_people = copy.deepcopy(mutual_friends)[:num_mutuals]
     if not participant in mutual_friends:
         total_people.append(participant)
     list_of_intersected_friends = [friend for friend in list_of_urls if friend in total_people]
