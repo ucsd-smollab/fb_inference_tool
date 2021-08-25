@@ -98,7 +98,7 @@ def generate_inferences_ranking(friends, participant, inference_count_dict):
     total_rwt = 0
     conf_perc_right = 0
     conf_perc_wrong = 0
-    pred_df = pd.DataFrame(columns=["Right/Wrong", "Conf Pred Right", "Actual", "Ranking Array"])
+    pred_df = pd.DataFrame(columns=["category", "Right/Wrong", "Conf Pred Right", "Actual", "Max", "Ranking Array"])
     for p, f in friends.items():
         if not f.attributes:
             inference_count_dict["Not Scraped"]+=1
@@ -166,12 +166,12 @@ def generate_inferences_ranking(friends, participant, inference_count_dict):
                     inference_count_dict[truth][category]["Right"]+=1
                     inference_count_dict["totals"]["total right"]+=1
                     conf_perc_right += (temp_max/cat_count)
-                    pred_df.loc[len(pred_df.index)] = ["Right", temp_conf, attribute_data, cat_dict]
+                    pred_df.loc[len(pred_df.index)] = [category, "Right", temp_conf, attribute_data, temp_max, cat_dict]
                 else:
                     inference_count_dict[truth][category]["Wrong"]+=1
                     inference_count_dict["totals"]["total wrong"]+=1
                     conf_perc_wrong += (temp_max/cat_count)
-                    pred_df.loc[len(pred_df.index)] = ["Wrong", temp_conf, attribute_data, cat_dict]
+                    pred_df.loc[len(pred_df.index)] = [category, "Wrong", temp_conf, attribute_data, temp_max, cat_dict]
                 total_rwt+=1
             # print(f"prediction: {temp_name}")
             # print("------------------")
