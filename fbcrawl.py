@@ -11,7 +11,7 @@ import pprint
 import json
 import pickle
 import pandas as pd
-from fbInferences import get_list_of_people, generate_inferences
+from fbInferences import get_list_of_people, generate_inferences, generate_inferences_ranking
 
 # Some helpful resources I consulted:
 # https://medium.com/@ali.raza.nisar/crawling-your-facebook-friends-data-31a2d8fc0c6d
@@ -299,6 +299,10 @@ inference_count_dict = {
         "right/rwt": 0,
         "wrong/rwt": 0,
         "tie/rwt": 0,
+    },
+    "avg confidence percentage": {
+        "right": 0,
+        "wrong": 0
     }
 }
 
@@ -309,7 +313,7 @@ for url, friend in friends.items():
             category_frequency_data[category][name] = list(set(get_list_of_people(friend.mutual_friends, participant.url, list_of_urls, num_mutuals_inf)))
     friend.inference_count = category_frequency_data
 
-generate_inferences(friends, participant, inference_count_dict)
+generate_inferences_ranking(friends, participant, inference_count_dict)
 pprint.pprint(inference_count_dict)
 with open(str(num_friends_scraped)+"friends_"+str(num_mutuals_inf)+"mutuals_inferences.json", "w") as outfile:
     json.dump(inference_count_dict, outfile)
