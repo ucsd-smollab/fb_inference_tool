@@ -141,10 +141,7 @@ def generate_inferences_ranking(friends, participant, inference_count_dict):
                     tie = False
                 elif len(url_list) == temp_max:
                     tie = True
-            cat_dict = {k: v for k, v in sorted(cat_dict.items(), key=lambda item: item[1]) if len(cat_dict) < 11}
-            print(category)
-            print(cat_dict)
-            print("-----------")
+
             # update counts
             total+=1
             temp_bool = False
@@ -160,8 +157,11 @@ def generate_inferences_ranking(friends, participant, inference_count_dict):
                 total_rwt+=1
             elif truth=="Has Ground Truth":
                 temp_conf = round((temp_max/cat_count)*100, 2)
+                cat_dict = {k: v for k, v in sorted(cat_dict.items(), key=lambda item: item[1])}
                 cat_dict = list(cat_dict.items())
                 cat_dict.reverse()
+                if len(cat_dict)>=10:
+                    cat_dict = cat_dict[:10]
                 if (isinstance(attribute_data, list) and temp_name in attribute_data) or temp_name == attribute_data:
                     inference_count_dict[truth][category]["Right"]+=1
                     inference_count_dict["totals"]["total right"]+=1
