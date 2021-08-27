@@ -201,61 +201,76 @@ inference_count_dict = {
             "Tie": 0,
             "Wrong": 0,
             "Below Threshold": 0,
-            "No Data": 0
+            "No Data": 0,
+            "Accuracy": 0,
+            "Sorted Accuracy": 0,
+
         },
         "college": {
             "Right": 0,
             "Tie": 0,
             "Wrong": 0,
             "Below Threshold": 0,
-            "No Data": 0
+            "No Data": 0,
+            "Accuracy": 0,
+            "Sorted Accuracy": 0,
         },
         "highschool": {
             "Right": 0,
             "Tie": 0,
             "Wrong": 0,
             "Below Threshold": 0,
-            "No Data": 0
+            "No Data": 0,
+            "Accuracy": 0,
+            "Sorted Accuracy": 0,
         },
         "cities": {
             "Right": 0,
             "Tie": 0,
             "Wrong": 0,
             "Below Threshold": 0,
-            "No Data": 0
+            "No Data": 0,
+            "Accuracy": 0,
+            "Sorted Accuracy": 0,
         },
         "religiousviews": {	
             "Right": 0,
             "Tie": 0,
             "Wrong": 0,
             "Below Threshold": 0,
-            "No Data": 0
+            "No Data": 0,
+            "Accuracy": 0,
+            "Sorted Accuracy": 0,
         },
         "politicalviews": {
             "Right": 0,
             "Tie": 0,
             "Wrong": 0,
             "Below Threshold": 0,
-            "No Data": 0
+            "No Data": 0,
+            "Accuracy": 0,
+            "Sorted Accuracy": 0,
         },
         "birthyear": {
             "Right": 0,
             "Tie": 0,
             "Wrong": 0,
             "Below Threshold": 0,
-            "No Data": 0
+            "No Data": 0,
+            "Accuracy": 0,
+            "Sorted Accuracy": 0,
         },
     },
     "No Ground Truth": {
         "work": {
             "Tie": 0,
             "Below Threshold": 0,
-            "No Data": 0
+            "No Data": 0,
         },
         "college": {
             "Tie": 0,
             "Below Threshold": 0,
-            "No Data": 0
+            "No Data": 0,
         },
         "highschool": {
             "Tie": 0,
@@ -302,8 +317,8 @@ inference_count_dict = {
     },
     "avg confidence percentage": {
         "right": 0,
-        "wrong": 0
-    }
+        "wrong": 0,
+    },
 }
 
 for url, friend in friends.items():
