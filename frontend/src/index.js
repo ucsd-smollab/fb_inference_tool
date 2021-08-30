@@ -1,14 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import reportWebVitals from "./reportWebVitals";
+
+import "./index.css";
+import App from "./App";
+import {StageTwoStepOne, StageTwoStepTwo} from "./components";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  <Router>
+    <Switch>
+		  <Route exact path="/" component={App}/>
+			<Route exact path="/StageTwoStepOne" component={StageTwoStepOne} />
+      <Route exact path="/StageTwoStepTwo" component={StageTwoStepTwo} />
+	  </Switch>
+  </Router>,
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
