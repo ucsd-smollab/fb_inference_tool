@@ -171,7 +171,7 @@ class FBdriver(webdriver.Chrome):
         while (not all_friends_loaded):
             if load_num==to_load:
                  break
-            for i in range(0, 12):
+            for i in range(0, 3*4):
                 self.scroll(0.25)
                 new_height = self.execute_script("return document.body.scrollHeight;")
                 if new_height != last_height:
@@ -229,37 +229,46 @@ class FBdriver(webdriver.Chrome):
     def full_mutual_friend_list(self, friend, to_load=-1):
         start_time = time.time()
         self.get(format_url(friend, "friends_mutual"))
+
         if friend.numMutualFriends == 0:
             return "NA", 0
 
-        # getting all of user's friends loaded on screen
-        all_friends_loaded = False
-        last_height = self.execute_script("return document.body.scrollHeight;")
-        load_num = 0
-        while (not all_friends_loaded):
-            if load_num==to_load:
+        mutual_tries = 3
+        while not friend.mutual_friends or (to_load==-1 and len(friend.mutual_friends)/friend.numMutualFriends < 0.6) or (to_load!=-1 and len(friend.mutual_friends)*0.6<to_load*8):
+            if mutual_tries == 0:
                 break
-            for i in range(0, 7*4):
-                self.scroll(0.25)
-                new_height = self.execute_script("return document.body.scrollHeight;")
-                if new_height != last_height:
-                    all_friends_loaded = False
-                    load_num+=1
-                    break
-                #elif load_num*8/friend.numMutualFriends > 0.6:
-                else:
-                    all_friends_loaded = True
-            last_height = new_height
 
-        try:
-            mutual_friends_elements = self.find_element_by_class_name("j83agx80.btwxx1t3.lhclo0ds.i1fnvgqd")
-            mutual_friends_anchors = mutual_friends_elements.find_elements_by_css_selector("[tabindex='-1']")
-            mutual_friends_urls = [anchor.get_attribute("href") for anchor in mutual_friends_anchors]
-            mutual_friends_paths = [path.split("/")[-1] for path in mutual_friends_urls]
-            #print(f"{len(mutual_friends_urls)} mutual friends: "+str(time.time() - start_time))
-            return mutual_friends_paths, float(time.time() - start_time)
-        except Exception:
-            return "NA", 0
+            # getting all of user's friends loaded on screen
+            all_friends_loaded = False
+            last_height = self.execute_script("return document.body.scrollHeight;")
+            load_num = 0
+            while (not all_friends_loaded):
+                if load_num==to_load:
+                    break
+                for i in range(0, 7*4):
+                    self.scroll(0.25)
+                    new_height = self.execute_script("return document.body.scrollHeight;")
+                    if new_height != last_height:
+                        all_friends_loaded = False
+                        load_num+=1
+                        break
+                    #elif load_num*8/friend.numMutualFriends > 0.6:
+                    else:
+                        all_friends_loaded = True
+                last_height = new_height
+
+            try:
+                mutual_friends_elements = self.find_element_by_class_name("j83agx80.btwxx1t3.lhclo0ds.i1fnvgqd")
+                mutual_friends_anchors = mutual_friends_elements.find_elements_by_css_selector("[tabindex='-1']")
+                mutual_friends_urls = [anchor.get_attribute("href") for anchor in mutual_friends_anchors]
+                friend.mutual_friends = [path.split("/")[-1] for path in mutual_friends_urls]
+                #print(f"{len(mutual_friends_urls)} mutual friends: "+str(time.time() - start_time))
+                mutual_tries-=1
+                to_return = float(time.time() - start_time)
+            except Exception:
+                mutual_tries-=1
+                to_return = float(time.time() - start_time)
+        return to_return
 
     def scrape_name(self, friend):
         #load friends facebook page
@@ -662,23 +671,16 @@ def scrape_friend_info(f, num_mutual, category_groups, driver):
     try:
         time_array = []
         f.name = driver.scrape_name(f)
-        f.mutual_friends, time = driver.full_mutual_friend_list(f, num_mutual)
+        time = driver.full_mutual_friend_list(f, num_mutual)
         time_array.append(time)
         (count, f.attributes["work"], f.attributes["college"], f.attributes["highschool"], f.profile_picture_url, time) = driver.scrape_work_and_ed(f)
         time_array.append(time)
         f.percent_complete+=count    
-        populate_category_groups(f.attributes["work"], f.url, "work", category_groups)
-        populate_category_groups(f.attributes["college"], f.url, "college", category_groups)
-        populate_category_groups(f.attributes["highschool"], f.url, "highschool", category_groups)
         (count, f.attributes["places lived"], time) = driver.scrape_places_lived(f)
         time_array.append(time)
         f.percent_complete+=count    
-        populate_category_groups(f.attributes["places lived"]["list_of_cities"], f.url, "cities", category_groups)
         (f.percent_total_complete, count, f.attributes["contact and basic"], time) = driver.scrape_contact_and_basic(f)
         time_array.append(time)
-        populate_category_groups(f.attributes["contact and basic"]["basic_info"]["religiousviews"], f.url, "religiousviews", category_groups)
-        populate_category_groups(f.attributes["contact and basic"]["basic_info"]["politicalviews"], f.url, "politicalviews", category_groups)
-        populate_category_groups(f.attributes["contact and basic"]["basic_info"]["birthyear"], f.url, "birthyear", category_groups)
         #(tempCount, count, f.attributes["family and rel"], time) = driver.scrape_family_and_rel(f)
         #time_array.append(time)
         #f.percent_complete+=count
