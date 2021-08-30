@@ -1,7 +1,7 @@
 const StageTwoStepOne = (props) => {
   return (
     <div>
-      Stage Two Step One
+      <h1>Stage Two Step One</h1>
     </div>
   );
 }

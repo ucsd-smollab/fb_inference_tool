@@ -1,20 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 
 import "./index.css";
 import App from "./App";
-import {StageTwoStepOne, StageTwoStepTwo} from "./components";
 
 ReactDOM.render(
-  <Router>
-    <Switch>
-		  <Route exact path="/" component={App}/>
-			<Route exact path="/StageTwoStepOne" component={StageTwoStepOne} />
-      <Route exact path="/StageTwoStepTwo" component={StageTwoStepTwo} />
-	  </Switch>
-  </Router>,
+  <App />,
   document.getElementById("root")
 );
 
