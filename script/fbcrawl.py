@@ -101,7 +101,7 @@ time_df = pd.DataFrame(columns=["mutual friends", "Word and ed", "Places lived",
 #prev_friends_scraped = 250
 exception_list = []
 num_friends_scraped = 0
-num_to_scrape = 100 #len(friends) for all
+num_to_scrape = 15 #len(friends) for all
 num_mutual_pages = -1 #-1 for all, otherwise a 8* will be number of friends scraped
 num_mutuals_inf = 100 #-1 for all, otherwise sets mutuals to make inferences on
 time_df = pd.DataFrame(columns=[str(num_mutual_pages)+" pages", "Word and ed", \
@@ -116,7 +116,7 @@ for p, f in friends.items():
             if not f.name or num_friends_scraped>=num_to_scrape:
                 continue
             f = old_data["friends"][p]
-            #time_df.loc[len(time_df.index)] = f.time_array
+            time_df.loc[len(time_df.index)] = f.time_array
             print(num_friends_scraped)        
             print(f.name)
             print(f"Actual Mutual Friends: {f.numMutualFriends}")
@@ -124,15 +124,15 @@ for p, f in friends.items():
             print("---------")
             num_friends_scraped+=1
             #updating local data, breaking after number of friends achieved
-            # file = open("file.pkl","wb")
-            # formatted_data = {
-            #     "count": num_friends_scraped,
-            #     "friends": friends,
-            #     "participant": participant,
-            #     "category_groups": category_groups,
-            #     "time_df": time_df
-            # }
-            # pickle.dump(formatted_data, file)
+            file = open("file.pkl","wb")
+            formatted_data = {
+                "count": num_friends_scraped,
+                "friends": friends,
+                "participant": participant,
+                "category_groups": category_groups,
+                "time_df": time_df
+            }
+            pickle.dump(formatted_data, file)
             continue
         if num_friends_scraped >= num_to_scrape:
             break
@@ -155,16 +155,16 @@ for p, f in friends.items():
         f.time_array.append(float(time.time()-start_time))
         time_df.loc[len(time_df.index)] = f.time_array
         #updating local data, breaking after number of friends achieved
-        # file = open("file.pkl","wb")
-        # formatted_data = {
-        #     "count": num_friends_scraped,
-        #     "friends": friends,
-        #     "participant": participant,
-        #     "category_groups": category_groups,
-        #     "time_df": time_df
-        # }
-        # pickle.dump(formatted_data, file)
-        # file.close()
+        file = open("file.pkl","wb")
+        formatted_data = {
+            "count": num_friends_scraped,
+            "friends": friends,
+            "participant": participant,
+            "category_groups": category_groups,
+            "time_df": time_df
+        }
+        pickle.dump(formatted_data, file)
+        file.close()
     except:
         print(f"exception: {f.url}")
         print("---------")
@@ -174,10 +174,10 @@ for p, f in friends.items():
 print(f"exception list: {exception_list}")
 print(f"number of friends scraped: {num_friends_scraped}")
 print("total runtime: "+str(time.time() - total_time))
-# print("time averages: ")
-# time_df.loc['mean'] = time_df.mean()
-# print(time_df.loc['mean'])
-# time_df.to_csv(str(num_friends_scraped)+"friends_"+str(8*num_mutual_pages)+"mutuals.csv")
+print("time averages: ")
+time_df.loc['mean'] = time_df.mean()
+print(time_df.loc['mean'])
+time_df.to_csv(str(num_friends_scraped)+"friends_"+str(8*num_mutual_pages)+"mutuals.csv")
 
 '''
 look through each friends dcitionary

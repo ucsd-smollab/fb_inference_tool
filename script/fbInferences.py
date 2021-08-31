@@ -169,7 +169,8 @@ def generate_inferences_ranking(friends, participant, inference_count_dict):
                 inference_count_dict["totals"]["total tie"]+=1
                 total_rwt+=1
             elif truth=="Has Ground Truth":
-                temp_conf = round((temp_max/cat_count)*100, 2)
+                if cat_count:
+                    temp_conf = round((temp_max/cat_count)*100, 2)
                 cat_dict = {k: v for k, v in sorted(cat_dict.items(), key=lambda item: item[1])}
                 cat_dict = list(cat_dict.items())
                 cat_dict.reverse()
@@ -178,30 +179,36 @@ def generate_inferences_ranking(friends, participant, inference_count_dict):
                 if (isinstance(attribute_data, list) and temp_name in attribute_data) or temp_name == attribute_data:
                     inference_count_dict[truth][category]["Right"]+=1
                     inference_count_dict["totals"]["total right"]+=1
-                    conf_perc_right += (temp_max/cat_count)
+                    if cat_count:
+                        conf_perc_right += (temp_max/cat_count)
                     pred_df.loc[len(pred_df.index)] = [category, "Right", temp_conf, attribute_data, temp_max, cat_dict]
                     df_dict[category].loc[len(pred_df.index)] = ["Right", temp_conf, attribute_data, temp_max, cat_dict]
                 else:
                     inference_count_dict[truth][category]["Wrong"]+=1
                     inference_count_dict["totals"]["total wrong"]+=1
-                    conf_perc_wrong += (temp_max/cat_count)
+                    if cat_count:
+                        conf_perc_wrong += (temp_max/cat_count)
                     pred_df.loc[len(pred_df.index)] = [category, "Wrong", temp_conf, attribute_data, temp_max, cat_dict]
                     df_dict[category].loc[len(pred_df.index)] = ["Wrong", temp_conf, attribute_data, temp_max, cat_dict]
                 total_rwt+=1
             # print(f"prediction: {temp_name}")
             # print("------------------")
             # sleep(10)
-    inference_count_dict["avg confidence percentage"]["right"] = round(conf_perc_right/inference_count_dict["totals"]["total right"]*100, 2)
-    inference_count_dict["avg confidence percentage"]["wrong"] = round(conf_perc_wrong/inference_count_dict["totals"]["total wrong"]*100, 2)
+    if inference_count_dict["totals"]["total right"]:
+        inference_count_dict["avg confidence percentage"]["right"] = round(conf_perc_right/inference_count_dict["totals"]["total right"]*100, 2)
+    if inference_count_dict["totals"]["total wrong"]:
+        inference_count_dict["avg confidence percentage"]["wrong"] = round(conf_perc_wrong/inference_count_dict["totals"]["total wrong"]*100, 2)
 
     c = 0
     dict_cat = ["total right", "total wrong", "total tie", "total below threshold", "total no data",
         "right/rwt", "wrong/rwt", "tie/rwt"]
     for key in dict_cat:
         if c > 4:
-            inference_count_dict["percentages"][key] = round(100*inference_count_dict["totals"]["total "+ key[:-4]]/total_rwt, 2)
+            if total_rwt:
+                inference_count_dict["percentages"][key] = round(100*inference_count_dict["totals"]["total "+ key[:-4]]/total_rwt, 2)
             continue
-        inference_count_dict["percentages"][key] = round(100*inference_count_dict["totals"][key]/total, 2)
+        if total:
+            inference_count_dict["percentages"][key] = round(100*inference_count_dict["totals"][key]/total, 2)
         c+=1
     pred_df.to_csv("predRanking.csv", index=False)
     truth="Has Ground Truth"
@@ -213,9 +220,14 @@ def generate_inferences_ranking(friends, participant, inference_count_dict):
         df_dict[key] = df_dict[key].sort_values(by=["Conf Pred Right"], ascending=False)
         # export to csv
         df_dict[key].to_csv(str(key)+"Ranking.csv", index=False)
-        inference_count_dict[truth][key]["Accuracy"] = round(inference_count_dict[truth][key]["Right"]/(inference_count_dict[truth][key]["Right"]+inference_count_dict[truth][key]["Wrong"])*100, 2)
-        right = df_dict[key]["Right/Wrong"].value_counts().Right
-        inference_count_dict[truth][key]["Sorted Accuracy"] = int(right*10)
+        if (inference_count_dict[truth][key]["Right"]+inference_count_dict[truth][key]["Wrong"]):
+            inference_count_dict[truth][key]["Accuracy"] = round(inference_count_dict[truth][key]["Right"]/(inference_count_dict[truth][key]["Right"]+inference_count_dict[truth][key]["Wrong"])*100, 2)
+
+        try:
+            right = df_dict[key]["Right/Wrong"].value_counts().Right
+            inference_count_dict[truth][key]["Sorted Accuracy"] = int(right*10)
+        except:
+            print("sorted accuracy failure")
         
 """
 CSV File Structure
