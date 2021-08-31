@@ -1,0 +1,75 @@
+.MainBodyContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+}
+
+.SectionContainer {
+    background-color: burlywood;
+    margin: 0px 10px 10px 10px;
+    width: 33%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ProfilePostsContainer {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 5px;
+    padding: 5px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: black;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+}
+
+.ProfileImage {
+    border-radius: 100%;
+    width: 100px;
+    height: 100px;
+    background-color: black;
+}
+
+.ProfilePostImage {
+    background-color: black;
+    width: 150px;
+    height: 50px;
+}
+
+.InferencesContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.DetailColumnContainer {
+    margin: 5px;
+    background-color: lightblue;
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+}
+
+.DetailItem {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    background-color: lightcoral;
+    min-height: 50px;
+    display: block;
+}
+
+.SubDetailText {
+    font-style: italic;
+    color: darkgray;
+}
+
+.AdImage {
+    width: 75%;
+    height: 50%;
+    background-color: black;
+    margin-bottom: 5px;
+}

@@ -1,0 +1,22 @@
+.StageTitle {
+    font-size: 20px;
+}
+
+.StageTitleContainer {
+    margin-bottom: 50px;
+    /* background-color: yellow; */
+}
+
+.ButtonNav {
+    background-color: blue;
+    border: none;
+    border-radius: 10px;
+    width: 200px;
+    height: 100px;
+    color: white;
+    font-size: 50px;
+}
+
+.ButtonContainer {
+    text-align: right;
+}

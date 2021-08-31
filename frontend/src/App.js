@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import StageOne from "./components/StageOne";
-import StageTwoStepOne from "./components/StageTwoStepOne";
-import StageTwoStepTwo from "./components/StageTwoStepTwo";
+import StageOne from "./components/StageOne/StageOne";
+import StageTwoStepOne from "./components/StageTwo/StageTwoStepOne";
+import StageTwoStepTwo from "./components/StageTwo/StageTwoStepTwo";
 
 const App = (props) => {
   return (

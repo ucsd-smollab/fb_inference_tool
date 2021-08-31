@@ -1,0 +1,31 @@
+.CenterTitle {
+    font: bold;
+    font-size: 50px;
+}
+
+.MainBodyContainer {
+    /* background-color: green; */
+    text-align: center;
+}
+
+.ContentContainer {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+
+.SectionContainer {
+    /* background-color: greenyellow; */
+    width: 40%;
+    margin: 10px;
+    font-size: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.SectionImage {
+    background-color: "black";
+     width: "100px";
+    height: "100px"
+}
