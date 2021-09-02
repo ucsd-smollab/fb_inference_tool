@@ -3,10 +3,17 @@
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-evenly;
+    width: 100%;
+}
+
+.ProfileText {
+    display: block;
+    text-align: center;
+    font-size: 50px;
 }
 
 .SectionContainer {
-    background-color: burlywood;
+    /* background-color: blue; */
     margin: 0px 10px 10px 10px;
     width: 33%;
     display: flex;
@@ -14,14 +21,12 @@
     align-items: center;
 }
 
-.ProfilePostsContainer {
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-bottom: 5px;
+.ItemContainer {
+    width: 80%;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-bottom: 5%;
     padding: 5px;
-    border-width: 2px;
-    border-style: solid;
-    border-color: black;
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -30,15 +35,17 @@
 
 .ProfileImage {
     border-radius: 100%;
-    width: 100px;
-    height: 100px;
+    width: 300px;
+    height: 300px;
     background-color: black;
 }
 
 .ProfilePostImage {
     background-color: black;
-    width: 150px;
-    height: 50px;
+    width: 300px;
+    height: 100px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .InferencesContainer {
@@ -48,28 +55,49 @@
 
 .DetailColumnContainer {
     margin: 5px;
-    background-color: lightblue;
+    /* background-color: lightblue; */
     display: flex;
     flex-direction: column;
     flex-basis: 100%;
 }
 
-.DetailItem {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    background-color: lightcoral;
-    min-height: 50px;
+.DetailItemLeft {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: 30px;
+    /* background-color: rgb(240, 128, 128); */
+    min-height: 100px;
     display: block;
+    font-size: 50px;
+}
+
+.DetailItemRight {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-right: 30px;
+    /* background-color: rgb(131, 60, 60); */
+    min-height: 100px;
+    display: block;
+    font-size: 50px;
 }
 
 .SubDetailText {
     font-style: italic;
-    color: darkgray;
+    color: rgb(124, 118, 118);
 }
 
 .AdImage {
-    width: 75%;
+    width: 50%;
     height: 50%;
     background-color: black;
-    margin-bottom: 5px;
+    margin-bottom: 20px;
+}
+
+.SectionHeader {
+    padding-bottom: 10%;
+    font-size: 70px;
+    font: 'Roboto';
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: center;
 }

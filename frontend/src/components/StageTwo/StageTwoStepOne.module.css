@@ -1,6 +1,6 @@
 .CenterTitle {
     font: bold;
-    font-size: 50px;
+    font-size: 100px;
 }
 
 .MainBodyContainer {
@@ -9,6 +9,7 @@
 }
 
 .ContentContainer {
+    margin-top: 100px;
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
@@ -24,8 +25,13 @@
     align-items: center;
 }
 
+.SectionHeader {
+    margin-bottom: 30px;
+    font-size: 50px;
+}
+
 .SectionImage {
     background-color: "black";
-     width: "100px";
-    height: "100px"
+    width: "200px";
+    height: "200px"
 }
