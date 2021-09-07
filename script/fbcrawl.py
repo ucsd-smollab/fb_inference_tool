@@ -100,6 +100,8 @@ time_df = pd.DataFrame(columns=["mutual friends", "Word and ed", "Places lived",
 #manual override if didnt scrape properly
 #prev_friends_scraped = 250
 exception_list = []
+friends_with_most_data = []
+friends_with_least_data = []
 num_friends_scraped = 0
 num_to_scrape = 15 #len(friends) for all
 num_mutual_pages = -1 #-1 for all, otherwise a 8* will be number of friends scraped
@@ -116,13 +118,24 @@ for p, f in friends.items():
             if not f.name or num_friends_scraped>=num_to_scrape:
                 continue
             f = old_data["friends"][p]
-            time_df.loc[len(time_df.index)] = f.time_array
+            # time_df.loc[len(time_df.index)] = f.time_array
             print(num_friends_scraped)        
             print(f.name)
             print(f"Actual Mutual Friends: {f.numMutualFriends}")
             print(f"Scraped Mutual Friends: {len(f.mutual_friends)}")
             print("---------")
             num_friends_scraped+=1
+
+            friends_with_least_data.append([f.url, f.percent_total_complete])
+            friends_with_most_data.append([f.url, f.percent_total_complete])
+            if len(friends_with_least_data) > 5:
+                friends_with_least_data = sorted(friends_with_least_data, key=lambda ele: ele[1])
+                friends_with_least_data.pop(-1)
+
+            if len(friends_with_most_data) > 5:
+                friends_with_most_data = sorted(friends_with_most_data, key=lambda ele: ele[1])
+                friends_with_most_data.pop(-1)
+
             #updating local data, breaking after number of friends achieved
             file = open("file.pkl","wb")
             formatted_data = {
@@ -143,6 +156,17 @@ for p, f in friends.items():
             f.name = ""
             continue
         populate_category_groups_funct(f, category_groups)
+
+        friends_with_least_data.append([f.url, f.percent_total_complete])
+        friends_with_most_data.append([f.url, f.percent_total_complete])
+        if len(friends_with_least_data) > 5:
+            friends_with_least_data = sorted(friends_with_least_data, key=lambda ele: ele[1])
+            friends_with_least_data.pop(-1)
+
+        if len(friends_with_most_data) > 5:
+            friends_with_most_data = sorted(friends_with_most_data, key=lambda ele: ele[1])
+            friends_with_most_data.pop(-1)
+
         print(num_friends_scraped)
         print(f.name)
         print(f"Actual Mutual Friends: {f.numMutualFriends}")
@@ -169,6 +193,8 @@ for p, f in friends.items():
         print(f"exception: {f.url}")
         print("---------")
         exception_list.append(f.url)
+    print(f"least: {friends_with_least_data}")
+    print(f"most: {friends_with_most_data}")
 
         
 print(f"exception list: {exception_list}")
