@@ -1,0 +1,52 @@
+.StageTitle {
+    font-size: 20px;
+}
+
+.StageTitleContainer {
+    margin-bottom: 50px;
+    /* background-color: yellow; */
+}
+
+.ButtonNav {
+    background-color: blue;
+    border: none;
+    border-radius: 30px;
+    width: 400px;
+    height: 200px;
+    color: white;
+    font-size: 50px;
+    margin: 0px 20px 20px 0px;
+    position: absolute;
+    right: 0;
+    bottom: 0;   
+}
+
+.ButtonContainer {
+    text-align: right;
+}
+
+.background {
+    background-color: rgb(211, 211, 211);
+    height: 100vh;
+}
+
+span {
+    font: "roboto";
+}
+
+.CenterTitle {
+    font: bold;
+    font-size: 100px;
+}
+
+.MainBodyContainer {
+    /* background-color: green; */
+    text-align: center;
+}
+
+.ContentContainer {
+    margin-top: 100px;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+}

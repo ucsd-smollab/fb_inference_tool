@@ -18,7 +18,7 @@ const StageTwoStepTwo = (props) => {
         <StepTwoShowsSection />
       </div>
       <div className={globalStyles.ButtonContainer}>
-        <Link to="/">
+        <Link to="/StageThreeStepOne">
           <button className={globalStyles.ButtonNav}>
             Next
           </button>
