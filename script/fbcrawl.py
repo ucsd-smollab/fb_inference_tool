@@ -18,7 +18,7 @@ from fbInferences import get_list_of_people, generate_inferences, generate_infer
 # https://medium.com/analytics-vidhya/the-art-of-not-getting-blocked-how-i-used-selenium-python-to-scrape-facebook-and-tiktok-fd6b31dbe85f
 # https://selenium-python.readthedocs.io/
 #-------------------------------------------------------------------------------
-
+#this branch should be refactored to store in a database
 path_to_chrome_driver = "/Users/aaron/opt/WebDriver/bin/chromedriver"
 username = "aaronbroukhim@aol.com"
 url = "https://mobile.facebook.com/home.php"
