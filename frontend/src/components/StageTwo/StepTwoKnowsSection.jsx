@@ -23,11 +23,11 @@ const StepTwoKnowsSection = (props) => {
 
   return (
     <div className={styles.SectionContainer}>
-      <span className={styles.SectionHeader}>Facebook Knows Abby</span>
+      <span className={styles.SectionHeader}>Facebook Knows</span>
       <div className={styles.InferencesContainer}>
         <div className={styles.DetailColumnContainer}>
           {details.map((detail) => 
-            <div className={styles.DetailItemLeft}>
+            <div className={styles.DetailItemLeft} style={{textAlign: "right"}}>
               <span>{detail}</span>
             </div>
           )}

@@ -3,7 +3,7 @@ import styles from "./StageTwoStepTwo.module.css";
 const StepTwoProfileSection = (props) => {
   return (
     <div className={styles.SectionContainer}>
-      <span className={styles.SectionHeader}>Abby's Posts</span>
+      <span className={styles.SectionHeader}>Abby Posts</span>
       <div className={styles.ItemContainer}>
         <div className={styles.ProfileImage}></div>
         <br />

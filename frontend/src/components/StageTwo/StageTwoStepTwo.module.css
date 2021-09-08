@@ -2,8 +2,8 @@
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content: space-evenly;
-    width: 100%;
+    padding-left: 200px;
+    padding-right: 200px;
 }
 
 .ProfileText {
@@ -13,7 +13,6 @@
 }
 
 .SectionContainer {
-    /* background-color: blue; */
     margin: 0px 10px 10px 10px;
     width: 33%;
     display: flex;
@@ -55,7 +54,7 @@
 
 .DetailColumnContainer {
     margin: 5px;
-    /* background-color: lightblue; */
+    background-color: lightblue;
     display: flex;
     flex-direction: column;
     flex-basis: 100%;
@@ -65,7 +64,7 @@
     margin-top: 30px;
     margin-bottom: 30px;
     margin-left: 30px;
-    /* background-color: rgb(240, 128, 128); */
+    background-color: rgb(240, 128, 128);
     min-height: 100px;
     display: block;
     font-size: 50px;
@@ -87,8 +86,7 @@
 }
 
 .AdImage {
-    width: 50%;
-    height: 50%;
+    width: 75%;
     background-color: black;
     margin-bottom: 20px;
 }
