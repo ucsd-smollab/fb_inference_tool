@@ -126,26 +126,29 @@ for p, f in friends.items():
             print("---------")
             num_friends_scraped+=1
 
-            friends_with_least_data.append([f.url, f.percent_total_complete])
-            friends_with_most_data.append([f.url, f.percent_total_complete])
+            friends_with_least_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
+            friends_with_most_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
             if len(friends_with_least_data) > 5:
-                friends_with_least_data = sorted(friends_with_least_data, key=lambda ele: ele[1])
+                friends_with_least_data = sorted(friends_with_least_data, key=lambda ele: (ele[1], -ele[2]))
                 friends_with_least_data.pop(-1)
 
             if len(friends_with_most_data) > 5:
-                friends_with_most_data = sorted(friends_with_most_data, key=lambda ele: ele[1])
+                friends_with_most_data = sorted(friends_with_most_data, reverse=True, key=lambda ele: (ele[1], ele[2]))
                 friends_with_most_data.pop(-1)
 
+            print(f"least: {friends_with_least_data}")
+            print(f"most: {friends_with_most_data}")
+
             #updating local data, breaking after number of friends achieved
-            file = open("file.pkl","wb")
-            formatted_data = {
-                "count": num_friends_scraped,
-                "friends": friends,
-                "participant": participant,
-                "category_groups": category_groups,
-                "time_df": time_df
-            }
-            pickle.dump(formatted_data, file)
+            # file = open("file.pkl","wb")
+            # formatted_data = {
+            #     "count": num_friends_scraped,
+            #     "friends": friends,
+            #     "participant": participant,
+            #     "category_groups": category_groups,
+            #     "time_df": time_df
+            # }
+            # pickle.dump(formatted_data, file)
             continue
         if num_friends_scraped >= num_to_scrape:
             break
@@ -157,21 +160,24 @@ for p, f in friends.items():
             continue
         populate_category_groups_funct(f, category_groups)
 
-        friends_with_least_data.append([f.url, f.percent_total_complete])
-        friends_with_most_data.append([f.url, f.percent_total_complete])
+        friends_with_least_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
+        friends_with_most_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
         if len(friends_with_least_data) > 5:
-            friends_with_least_data = sorted(friends_with_least_data, key=lambda ele: ele[1])
+            friends_with_least_data = sorted(friends_with_least_data, key=lambda ele: (ele[1], -ele[2]))
             friends_with_least_data.pop(-1)
 
         if len(friends_with_most_data) > 5:
-            friends_with_most_data = sorted(friends_with_most_data, key=lambda ele: ele[1])
+            friends_with_most_data = sorted(friends_with_most_data, reverse=True, key=lambda ele: (ele[1], ele[2]))
             friends_with_most_data.pop(-1)
+        
+        print(f"least: {friends_with_least_data}")
+        print(f"most: {friends_with_most_data}")
 
-        print(num_friends_scraped)
-        print(f.name)
-        print(f"Actual Mutual Friends: {f.numMutualFriends}")
-        print(f"Scraped Mutual Friends: {len(f.mutual_friends)}")
-        print("---------")
+        # print(num_friends_scraped)
+        # print(f.name)
+        # print(f"Actual Mutual Friends: {f.numMutualFriends}")
+        # print(f"Scraped Mutual Friends: {len(f.mutual_friends)}")
+        # print("---------")
         num_friends_scraped+=1
         #print time and append time array to df
         #print("friend total time: "+str(time.time()-start_time))
@@ -179,24 +185,24 @@ for p, f in friends.items():
         f.time_array.append(float(time.time()-start_time))
         time_df.loc[len(time_df.index)] = f.time_array
         #updating local data, breaking after number of friends achieved
-        file = open("file.pkl","wb")
-        formatted_data = {
-            "count": num_friends_scraped,
-            "friends": friends,
-            "participant": participant,
-            "category_groups": category_groups,
-            "time_df": time_df
-        }
-        pickle.dump(formatted_data, file)
-        file.close()
+        # file = open("file.pkl","wb")
+        # formatted_data = {
+        #     "count": num_friends_scraped,
+        #     "friends": friends,
+        #     "participant": participant,
+        #     "category_groups": category_groups,
+        #     "time_df": time_df
+        # }
+        # pickle.dump(formatted_data, file)
+        # file.close()
     except:
         print(f"exception: {f.url}")
         print("---------")
         exception_list.append(f.url)
-    print(f"least: {friends_with_least_data}")
-    print(f"most: {friends_with_most_data}")
 
-        
+
+print("Begin Postprocessing")
+post_time = time.time()
 print(f"exception list: {exception_list}")
 print(f"number of friends scraped: {num_friends_scraped}")
 print("total runtime: "+str(time.time() - total_time))
@@ -358,6 +364,9 @@ generate_inferences_ranking(friends, participant, inference_count_dict)
 pprint.pprint(inference_count_dict)
 with open(str(num_friends_scraped)+"friends_"+str(num_mutuals_inf)+"mutuals_inferences.json", "w") as outfile:
     json.dump(inference_count_dict, outfile)
+
+post_time_total = time.time()-post_time
+print(f"finished postprocessing{post_time_total}")
 
 inferences = []
 data_to_send = {
