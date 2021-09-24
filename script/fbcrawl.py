@@ -88,30 +88,44 @@ else:
 
 #fetching all url paths to the user's friends' profiles
 if not old_data and not "friends" in old_data:
-    #change value to limit number of pages loaded for friends
+    # change value to limit number of pages loaded for friends
     friends = driver.full_friend_lookup_table(-1)
 else:
     friends = old_data["friends"]
 
-#table of times
+# table of times
 time_df = pd.DataFrame(columns=["mutual friends", "Word and ed", "Places lived", \
 "contact and basic info", "relationship and family", "total time"])
 
-#manual override if didnt scrape properly
-#prev_friends_scraped = 250
+'''
+for scraping:
+    set update_pickle = True
+    num_to_scrape sets the number of participants friends to scrape (-1 for all)
+    num_mutual_pages sets the number of mutual friends*8 to scrape per friend (-1 for all)
+    after large scraping sessions backup pickle file
+
+for inferencing:
+    set update_pickle = False
+    set num_to_scrape to number of friends want to consider (make sure its less than number already scraped) (-1 for all)
+    set num_mutuals_inf to number of mutuals want to consider (-1 for all) (make sure less than already scraped)
+'''
+
+# manual override if didnt scrape properly
+# prev_friends_scraped = 250
+update_pickle = True # turn off if only doing inferences on previously scraped data
 exception_list = []
 num_friends_scraped = 0
-num_to_scrape = 15 #len(friends) for all
-num_mutual_pages = -1 #-1 for all, otherwise a 8* will be number of friends scraped
-num_mutuals_inf = 100 #-1 for all, otherwise sets mutuals to make inferences on
+num_to_scrape = -1 # len(friends) for all, sets number of friends to scrape
+num_mutual_pages = -1 # -1 for all, otherwise a 8* will be number of mutual friends scraped
+num_mutuals_inf = 20 # -1 for all, otherwise sets mutuals to make inferences on 
 time_df = pd.DataFrame(columns=[str(num_mutual_pages)+" pages", "Word and ed", \
 "Places lived", "contact and basic info", "friend total time"])
 print(f"friends scraped from pickle: {prev_friends_scraped}")
-#scrape friends
+# scrape friends
 for p, f in friends.items():
     try:
         start_time = time.time()
-        #update data with old
+        # update data with old
         if num_friends_scraped < prev_friends_scraped:
             if not f.name or num_friends_scraped>=num_to_scrape:
                 continue
@@ -123,20 +137,22 @@ for p, f in friends.items():
             print(f"Scraped Mutual Friends: {len(f.mutual_friends)}")
             print("---------")
             num_friends_scraped+=1
-            #updating local data, breaking after number of friends achieved
-            file = open("file.pkl","wb")
-            formatted_data = {
-                "count": num_friends_scraped,
-                "friends": friends,
-                "participant": participant,
-                "category_groups": category_groups,
-                "time_df": time_df
-            }
-            pickle.dump(formatted_data, file)
-            continue
-        if num_friends_scraped >= num_to_scrape:
+            # updating local data, breaking after number of friends achieved
+
+            if update_pickle:
+                file = open("file.pkl","wb")
+                formatted_data = {
+                    "count": num_friends_scraped,
+                    "friends": friends,
+                    "participant": participant,
+                    "category_groups": category_groups,
+                    "time_df": time_df
+                }
+                pickle.dump(formatted_data, file)
+                continue
+        if num_friends_scraped >= num_to_scrape or not update_pickle:
             break
-        #get current friend data, mutual friends in batches of 8
+        # get current friend data, mutual friends in batches of 8
         f.time_array = scrape_friend_info(f, num_mutual_pages, category_groups, driver)
         if not f.time_array:
             driver.get("http://facebook.com")
@@ -155,16 +171,17 @@ for p, f in friends.items():
         f.time_array.append(float(time.time()-start_time))
         time_df.loc[len(time_df.index)] = f.time_array
         #updating local data, breaking after number of friends achieved
-        file = open("file.pkl","wb")
-        formatted_data = {
-            "count": num_friends_scraped,
-            "friends": friends,
-            "participant": participant,
-            "category_groups": category_groups,
-            "time_df": time_df
-        }
-        pickle.dump(formatted_data, file)
-        file.close()
+        if update_pickle:
+            file = open("file.pkl","wb")
+            formatted_data = {
+                "count": num_friends_scraped,
+                "friends": friends,
+                "participant": participant,
+                "category_groups": category_groups,
+                "time_df": time_df
+            }
+            pickle.dump(formatted_data, file)
+            file.close()
     except:
         print(f"exception: {f.url}")
         print("---------")
@@ -177,7 +194,7 @@ print("total runtime: "+str(time.time() - total_time))
 print("time averages: ")
 time_df.loc['mean'] = time_df.mean()
 print(time_df.loc['mean'])
-time_df.to_csv(str(num_friends_scraped)+"friends_"+str(8*num_mutual_pages)+"mutuals.csv")
+time_df.to_csv(str(num_friends_scraped)+"friends_"+str(8*num_mutual_pages)+"mutuals_time_data.csv")
 
 '''
 look through each friends dcitionary
@@ -332,14 +349,3 @@ generate_inferences_ranking(friends, participant, inference_count_dict)
 pprint.pprint(inference_count_dict)
 with open(str(num_friends_scraped)+"friends_"+str(num_mutuals_inf)+"mutuals_inferences.json", "w") as outfile:
     json.dump(inference_count_dict, outfile)
-
-inferences = []
-data_to_send = {
-    "friends": [f.attributes for f in friends.values()],
-    "inferences": inferences
-}
-
-querystring = urllib.parse.urlencode(data_to_send)
-driver.get(f'http://127.0.0.1:5000/go?{querystring}') # flask app
-
-driver.execute_script("alert('Finished!');")
