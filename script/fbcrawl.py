@@ -12,6 +12,7 @@ import json
 import pickle
 import pandas as pd
 from fbInferences import get_list_of_people, generate_inferences, generate_inferences_ranking
+from pymongo import MongoClient
 
 # Some helpful resources I consulted:
 # https://medium.com/@ali.raza.nisar/crawling-your-facebook-friends-data-31a2d8fc0c6d
@@ -28,6 +29,12 @@ driver.set_page_load_timeout(60)
 #5 should work on fast computers, increase if getting unable to locate element errors
 driver.implicitly_wait(10)
 driver.login(url, username) # type pw manually
+
+client = MongoClient("mongodb+srv://priv_admin:kristenisthebest@facebook-data-and-infer.095rq.mongodb.net/privacy_data?retryWrites=true&w=majority")
+profile_database = client.profile_data
+friends_col = profile_database.friends
+participant_col = profile_database.participant
+
 
 #keep track of time
 total_time = time.time()
@@ -81,10 +88,9 @@ if objects:
         category_groups = old_data["category_groups"]
 
 #scrape user info
-if not old_data and not "participant" in old_data:
-    participant = get_participant_data(category_groups, driver)
-else:
-    participant = old_data["participant"]
+participant_data = Friend(driver.participant_path, -1)
+participant = get_participant_data(participant_data, -1, category_groups, driver)
+participant_col.insert_one(participant_data.__dict__)
 
 #fetching all url paths to the user's friends' profiles
 if not old_data and not "friends" in old_data:
@@ -103,7 +109,7 @@ exception_list = []
 friends_with_most_data = []
 friends_with_least_data = []
 num_friends_scraped = 0
-num_to_scrape = 15 #len(friends) for all
+num_to_scrape = 340 #len(friends) for all
 num_mutual_pages = -1 #-1 for all, otherwise a 8* will be number of friends scraped
 num_mutuals_inf = 100 #-1 for all, otherwise sets mutuals to make inferences on
 time_df = pd.DataFrame(columns=[str(num_mutual_pages)+" pages", "Word and ed", \
@@ -149,6 +155,7 @@ for p, f in friends.items():
             #     "time_df": time_df
             # }
             # pickle.dump(formatted_data, file)
+            # friends_col.insert_one(f.__dict__)
             continue
         if num_friends_scraped >= num_to_scrape:
             break
@@ -209,7 +216,7 @@ print("total runtime: "+str(time.time() - total_time))
 print("time averages: ")
 time_df.loc['mean'] = time_df.mean()
 print(time_df.loc['mean'])
-time_df.to_csv(str(num_friends_scraped)+"friends_"+str(8*num_mutual_pages)+"mutuals.csv")
+# time_df.to_csv(str(num_friends_scraped)+"friends_"+str(8*num_mutual_pages)+"mutuals.csv")
 
 '''
 look through each friends dcitionary

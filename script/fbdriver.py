@@ -643,7 +643,7 @@ def populate_category_groups(data, person_url, category_name, category_groups):
         else:
             category_groups[category_name][entry_name] = [person_url]
 
-def get_participant_data(category_groups, driver):
+def get_participant_data(participant, category_groups, driver):
     #scrape user info
     participant = Friend(driver.participant_path)
     (count, participant.attributes["work"], participant.attributes["college"], participant.attributes["highschool"], participant.profile_picture_url, time) = driver.scrape_work_and_ed(participant)
