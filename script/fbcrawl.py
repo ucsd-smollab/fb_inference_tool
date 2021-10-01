@@ -58,7 +58,7 @@ category_groups_template = {
 
 category_groups = copy.deepcopy(category_groups_template)
 
-#load in previously scraped data
+# load in previously scraped data
 objects = []
 try:
     with (open("file.pkl", "rb")) as openfile:
