@@ -12,12 +12,26 @@ import json
 import pickle
 import pandas as pd
 from fbInferences import get_list_of_people, generate_inferences, generate_inferences_ranking
+from sql import insert_scraped_into_database, insert_inf_into_database
+import mysql.connector
 
-# Some helpful resources I consulted:
-# https://medium.com/@ali.raza.nisar/crawling-your-facebook-friends-data-31a2d8fc0c6d
-# https://medium.com/analytics-vidhya/the-art-of-not-getting-blocked-how-i-used-selenium-python-to-scrape-facebook-and-tiktok-fd6b31dbe85f
-# https://selenium-python.readthedocs.io/
-#-------------------------------------------------------------------------------
+mydb = mysql.connector.connect(
+  host="127.0.0.1",
+  user="privacy_admin",
+  password="kristenisthebest",
+)
+
+mycursor = mydb.cursor()
+sql_file = open("initialize_db.sql")
+sql_as_string = sql_file.read()
+sqlCommands = sql_as_string.split(';')
+for command in sqlCommands:
+    try:
+        mycursor.execute(command)
+    except:
+        print(f"Command skipped: {command}")
+mydb.commit()
+sql_file.close()
 
 path_to_chrome_driver = "/Users/aaron/opt/WebDriver/bin/chromedriver"
 username = "aaronbroukhim@aol.com"
@@ -25,7 +39,7 @@ url = "https://mobile.facebook.com/home.php"
 
 driver = FBdriver(executable_path=path_to_chrome_driver)
 driver.set_page_load_timeout(60)
-#5 should work on fast computers, increase if getting unable to locate element errors
+# 5 should work on fast computers, increase if getting unable to locate element errors
 driver.implicitly_wait(10)
 driver.login(url, username) # type pw manually
 
@@ -81,10 +95,8 @@ if objects:
         category_groups = old_data["category_groups"]
 
 #scrape user info
-if not old_data and not "participant" in old_data:
-    participant = get_participant_data(category_groups, driver)
-else:
-    participant = old_data["participant"]
+participant = get_participant_data(category_groups, driver)
+insert_scraped_into_database(participant, mydb, mycursor, True)
 
 #fetching all url paths to the user's friends' profiles
 if not old_data and not "friends" in old_data:
@@ -103,7 +115,7 @@ exception_list = []
 friends_with_most_data = []
 friends_with_least_data = []
 num_friends_scraped = 0
-num_to_scrape = 15 #len(friends) for all
+num_to_scrape = 200 #len(friends) for all
 num_mutual_pages = -1 #-1 for all, otherwise a 8* will be number of friends scraped
 num_mutuals_inf = 100 #-1 for all, otherwise sets mutuals to make inferences on
 time_df = pd.DataFrame(columns=[str(num_mutual_pages)+" pages", "Word and ed", \
@@ -111,54 +123,20 @@ time_df = pd.DataFrame(columns=[str(num_mutual_pages)+" pages", "Word and ed", \
 print(f"friends scraped from pickle: {prev_friends_scraped}")
 #scrape friends
 for p, f in friends.items():
-    try:
-        start_time = time.time()
-        #update data with old
-        if num_friends_scraped < prev_friends_scraped:
-            if not f.name or num_friends_scraped>=num_to_scrape:
-                continue
-            f = old_data["friends"][p]
-            # time_df.loc[len(time_df.index)] = f.time_array
-            print(num_friends_scraped)        
-            print(f.name)
-            print(f"Actual Mutual Friends: {f.numMutualFriends}")
-            print(f"Scraped Mutual Friends: {len(f.mutual_friends)}")
-            print("---------")
-            num_friends_scraped+=1
-
-            friends_with_least_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
-            friends_with_most_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
-            if len(friends_with_least_data) > 5:
-                friends_with_least_data = sorted(friends_with_least_data, key=lambda ele: (ele[1], -ele[2]))
-                friends_with_least_data.pop(-1)
-
-            if len(friends_with_most_data) > 5:
-                friends_with_most_data = sorted(friends_with_most_data, reverse=True, key=lambda ele: (ele[1], ele[2]))
-                friends_with_most_data.pop(-1)
-
-            print(f"least: {friends_with_least_data}")
-            print(f"most: {friends_with_most_data}")
-
-            #updating local data, breaking after number of friends achieved
-            # file = open("file.pkl","wb")
-            # formatted_data = {
-            #     "count": num_friends_scraped,
-            #     "friends": friends,
-            #     "participant": participant,
-            #     "category_groups": category_groups,
-            #     "time_df": time_df
-            # }
-            # pickle.dump(formatted_data, file)
+#    try:
+    start_time = time.time()
+    #update data with old
+    if num_friends_scraped < prev_friends_scraped:
+        if not f.name or num_friends_scraped>=num_to_scrape:
             continue
-        if num_friends_scraped >= num_to_scrape:
-            break
-        #get current friend data, mutual friends in batches of 8
-        f.time_array = scrape_friend_info(f, num_mutual_pages, category_groups, driver)
-        if not f.time_array:
-            driver.get("http://facebook.com")
-            f.name = ""
-            continue
-        populate_category_groups_funct(f, category_groups)
+        f = old_data["friends"][p]
+        # time_df.loc[len(time_df.index)] = f.time_array
+        print(num_friends_scraped)        
+        print(f.name)
+        print(f"Actual Mutual Friends: {f.numMutualFriends}")
+        print(f"Scraped Mutual Friends: {len(f.mutual_friends)}")
+        print("---------")
+        num_friends_scraped+=1
 
         friends_with_least_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
         friends_with_most_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
@@ -169,21 +147,11 @@ for p, f in friends.items():
         if len(friends_with_most_data) > 5:
             friends_with_most_data = sorted(friends_with_most_data, reverse=True, key=lambda ele: (ele[1], ele[2]))
             friends_with_most_data.pop(-1)
-        
-        print(f"least: {friends_with_least_data}")
-        print(f"most: {friends_with_most_data}")
 
-        # print(num_friends_scraped)
-        # print(f.name)
-        # print(f"Actual Mutual Friends: {f.numMutualFriends}")
-        # print(f"Scraped Mutual Friends: {len(f.mutual_friends)}")
-        # print("---------")
-        num_friends_scraped+=1
-        #print time and append time array to df
-        #print("friend total time: "+str(time.time()-start_time))
-        #print("-------NEW FRIEND-------")
-        f.time_array.append(float(time.time()-start_time))
-        time_df.loc[len(time_df.index)] = f.time_array
+        # print(f"least: {friends_with_least_data}")
+        # print(f"most: {friends_with_most_data}")
+        
+        insert_scraped_into_database(f, mydb, mycursor)
         #updating local data, breaking after number of friends achieved
         # file = open("file.pkl","wb")
         # formatted_data = {
@@ -194,12 +162,77 @@ for p, f in friends.items():
         #     "time_df": time_df
         # }
         # pickle.dump(formatted_data, file)
-        # file.close()
-    except:
-        print(f"exception: {f.url}")
-        print("---------")
-        exception_list.append(f.url)
 
+        # insert event listener here for when we want to update inferences
+        # for url, friend in friends.items():
+        #     category_frequency_data = copy.deepcopy(category_groups_template)
+        #     for category, category_data in category_groups.items():
+        #         for name, list_of_urls in category_data.items():
+        #             category_frequency_data[category][name] = list(set(get_list_of_people(friend.mutual_friends, participant.url, list_of_urls, num_mutuals_inf)))
+        #     friend.inference_count = category_frequency_data
+        #     insert_inf_into_database(friend, mydb, mycursor)
+        continue
+    if num_friends_scraped >= num_to_scrape:
+        break
+    #get current friend data, mutual friends in batches of 8
+    f.time_array = scrape_friend_info(f, num_mutual_pages, category_groups, driver)
+    if not f.time_array:
+        driver.get("http://facebook.com")
+        f.name = ""
+        continue
+    populate_category_groups_funct(f, category_groups)
+
+    friends_with_least_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
+    friends_with_most_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
+    if len(friends_with_least_data) > 5:
+        friends_with_least_data = sorted(friends_with_least_data, key=lambda ele: (ele[1], -ele[2]))
+        friends_with_least_data.pop(-1)
+
+    if len(friends_with_most_data) > 5:
+        friends_with_most_data = sorted(friends_with_most_data, reverse=True, key=lambda ele: (ele[1], ele[2]))
+        friends_with_most_data.pop(-1)
+
+    num_friends_scraped+=1
+    insert_scraped_into_database(f, mydb, mycursor)
+    # insert event listener here for when we want to update inferences
+    # for url, friend in friends.items():
+    #     category_frequency_data = copy.deepcopy(category_groups_template)
+    #     for category, category_data in category_groups.items():
+    #         for name, list_of_urls in category_data.items():
+    #             category_frequency_data[category][name] = list(set(get_list_of_people(friend.mutual_friends, participant.url, list_of_urls, num_mutuals_inf)))
+    #     friend.inference_count = category_frequency_data
+    #     insert_inf_into_database(friend, mydb, mycursor)
+
+    # print(f"least: {friends_with_least_data}")
+    # print(f"most: {friends_with_most_data}")
+    print(num_friends_scraped)
+    print(f.name)
+    print(f"Actual Mutual Friends: {f.numMutualFriends}")
+    print(f"Scraped Mutual Friends: {len(f.mutual_friends)}")
+    # print("---------")
+    #print time and append time array to df
+    #print("friend total time: "+str(time.time()-start_time))
+    #print("-------NEW FRIEND-------")
+    # f.time_array.append(float(time.time()-start_time))
+    # time_df.loc[len(time_df.index)] = f.time_array
+    #updating local data, breaking after number of friends achieved
+    # file = open("file.pkl","wb")
+    # formatted_data = {
+    #     "count": num_friends_scraped,
+    #     "friends": friends,
+    #     "participant": participant,
+    #     "category_groups": category_groups,
+    #     "time_df": time_df
+    # }
+    # pickle.dump(formatted_data, file)
+    # file.close()
+    # except:
+    #     print(f"exception: {f.url}")
+    #     print("---------")
+    #     exception_list.append(f.url)
+
+
+# dont need anything below this for actual experiment
 
 print("Begin Postprocessing")
 post_time = time.time()
@@ -209,7 +242,8 @@ print("total runtime: "+str(time.time() - total_time))
 print("time averages: ")
 time_df.loc['mean'] = time_df.mean()
 print(time_df.loc['mean'])
-time_df.to_csv(str(num_friends_scraped)+"friends_"+str(8*num_mutual_pages)+"mutuals.csv")
+# time_df.to_csv(str(num_friends_scraped)+"friends_"+str(8*num_mutual_pages)+"mutuals.csv")
+
 
 '''
 look through each friends dcitionary
@@ -359,11 +393,13 @@ for url, friend in friends.items():
         for name, list_of_urls in category_data.items():
             category_frequency_data[category][name] = list(set(get_list_of_people(friend.mutual_friends, participant.url, list_of_urls, num_mutuals_inf)))
     friend.inference_count = category_frequency_data
+    insert_inf_into_database(friend, mydb, mycursor)
+
 
 generate_inferences_ranking(friends, participant, inference_count_dict)
-pprint.pprint(inference_count_dict)
-with open(str(num_friends_scraped)+"friends_"+str(num_mutuals_inf)+"mutuals_inferences.json", "w") as outfile:
-    json.dump(inference_count_dict, outfile)
+# pprint.pprint(inference_count_dict)
+# with open(str(num_friends_scraped)+"friends_"+str(num_mutuals_inf)+"mutuals_inferences.json", "w") as outfile:
+#     json.dump(inference_count_dict, outfile)
 
 post_time_total = time.time()-post_time
 print(f"finished postprocessing{post_time_total}")

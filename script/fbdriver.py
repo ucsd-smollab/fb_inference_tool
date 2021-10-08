@@ -283,6 +283,19 @@ class FBdriver(webdriver.Chrome):
         #print(name)
         return name
 
+    def scrape_participant_name(self, participant):
+        #load friends facebook page
+        self.get("https://mobile.facebook.com/" + participant.url)
+        #find name element by css selector and return attribute string value
+        elt = self.find_element_by_css_selector("h3._6x2x")
+        # if len(elt) > 1:
+        #     elt = elt[1]
+        # else:
+        #     elt = elt[0]
+        name = elt.get_attribute("innerText")
+        #print(name)
+        return name
+
     def scrape_work_and_ed(self, friend):
         start_time = time.time()
         self.get(format_url(friend, "about_work_and_education"))
@@ -628,6 +641,7 @@ def populate_category_groups(data, person_url, category_name, category_groups):
         category_groups[category_name]["no_data"].append(person_url)
         return
     if not isinstance(data, list):
+        data = data.lower()
         if data in category_groups[category_name]:
             category_groups[category_name][data].append(person_url)
         else:
@@ -637,7 +651,7 @@ def populate_category_groups(data, person_url, category_name, category_groups):
         entry_name = entry
         if isinstance(entry, dict):
             entry_name = entry["title"]
-        
+        entry_name = entry_name.lower()
         if entry_name in category_groups[category_name]:
             category_groups[category_name][entry_name].append(person_url)
         else:
@@ -646,6 +660,7 @@ def populate_category_groups(data, person_url, category_name, category_groups):
 def get_participant_data(category_groups, driver):
     #scrape user info
     participant = Friend(driver.participant_path)
+    participant.name = driver.scrape_participant_name(participant)
     (count, participant.attributes["work"], participant.attributes["college"], participant.attributes["highschool"], participant.profile_picture_url, time) = driver.scrape_work_and_ed(participant)
     participant.percent_complete+=count
     populate_category_groups(participant.attributes["work"], participant.url, "work", category_groups)
