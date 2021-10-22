@@ -115,9 +115,9 @@ exception_list = []
 friends_with_most_data = []
 friends_with_least_data = []
 num_friends_scraped = 0
-num_to_scrape = 200 #len(friends) for all
+num_to_scrape = 10 #len(friends) for all
 num_mutual_pages = -1 #-1 for all, otherwise a 8* will be number of friends scraped
-num_mutuals_inf = 100 #-1 for all, otherwise sets mutuals to make inferences on
+num_mutuals_inf = -1 #-1 for all, otherwise sets mutuals to make inferences on
 time_df = pd.DataFrame(columns=[str(num_mutual_pages)+" pages", "Word and ed", \
 "Places lived", "contact and basic info", "friend total time"])
 print(f"friends scraped from pickle: {prev_friends_scraped}")
@@ -138,15 +138,15 @@ for p, f in friends.items():
         print("---------")
         num_friends_scraped+=1
 
-        friends_with_least_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
-        friends_with_most_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
-        if len(friends_with_least_data) > 5:
-            friends_with_least_data = sorted(friends_with_least_data, key=lambda ele: (ele[1], -ele[2]))
-            friends_with_least_data.pop(-1)
+        # friends_with_least_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
+        # friends_with_most_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
+        # if len(friends_with_least_data) > 5:
+        #     friends_with_least_data = sorted(friends_with_least_data, key=lambda ele: (ele[1], -ele[2]))
+        #     friends_with_least_data.pop(-1)
 
-        if len(friends_with_most_data) > 5:
-            friends_with_most_data = sorted(friends_with_most_data, reverse=True, key=lambda ele: (ele[1], ele[2]))
-            friends_with_most_data.pop(-1)
+        # if len(friends_with_most_data) > 5:
+        #     friends_with_most_data = sorted(friends_with_most_data, reverse=True, key=lambda ele: (ele[1], ele[2]))
+        #     friends_with_most_data.pop(-1)
 
         # print(f"least: {friends_with_least_data}")
         # print(f"most: {friends_with_most_data}")
@@ -182,15 +182,15 @@ for p, f in friends.items():
         continue
     populate_category_groups_funct(f, category_groups)
 
-    friends_with_least_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
-    friends_with_most_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
-    if len(friends_with_least_data) > 5:
-        friends_with_least_data = sorted(friends_with_least_data, key=lambda ele: (ele[1], -ele[2]))
-        friends_with_least_data.pop(-1)
+    # friends_with_least_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
+    # friends_with_most_data.append([f.url, f.percent_total_complete, f.numMutualFriends])
+    # if len(friends_with_least_data) > 5:
+    #     friends_with_least_data = sorted(friends_with_least_data, key=lambda ele: (ele[1], -ele[2]))
+    #     friends_with_least_data.pop(-1)
 
-    if len(friends_with_most_data) > 5:
-        friends_with_most_data = sorted(friends_with_most_data, reverse=True, key=lambda ele: (ele[1], ele[2]))
-        friends_with_most_data.pop(-1)
+    # if len(friends_with_most_data) > 5:
+    #     friends_with_most_data = sorted(friends_with_most_data, reverse=True, key=lambda ele: (ele[1], ele[2]))
+    #     friends_with_most_data.pop(-1)
 
     num_friends_scraped+=1
     insert_scraped_into_database(f, mydb, mycursor)

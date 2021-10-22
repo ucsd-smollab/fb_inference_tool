@@ -301,7 +301,8 @@ class FBdriver(webdriver.Chrome):
         self.get(format_url(friend, "about_work_and_education"))
 
         # getting profile image url
-        profile_picture_section = self.find_element_by_class_name("b3onmgus.e5nlhep0.ph5uu5jm.ecm0bbzt.spb7xbtv.bkmhp75w.emlxlaya.s45kfl79.cwj9ozl2")
+        profile_picture_section = self.find_element_by_class_name("q9uorilb.l9j0dhe7.pzggbiyp.du4w35lb")
+        # profile_picture_section = self.find_element_by_class_name("b3onmgus.e5nlhep0.ph5uu5jm.ecm0bbzt.spb7xbtv.bkmhp75w.emlxlaya.s45kfl79.cwj9ozl2")
         profile_picture_image = profile_picture_section.find_element_by_tag_name("image")
         profile_picture_url = profile_picture_image.get_attribute("xlink:href")
 

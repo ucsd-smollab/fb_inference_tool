@@ -23,24 +23,24 @@ def insert_scraped_into_database(friend, mydb, mycursor, is_participant=False):
 
     if friend.attributes["work"] != "NA":
         for work in friend.attributes["work"]:
-            sql = "INSERT INTO work (friend_url, workplace) VALUES (%s, %s)"
+            sql = "INSERT IGNORE INTO work (friend_url, workplace) VALUES (%s, %s)"
             val = (friend.url, work["title"])
             mycursor.execute(sql, val)
     if friend.attributes["college"] != "NA":
         for college in friend.attributes["college"]:
-            sql = "INSERT INTO college (friend_url, college_name) VALUES (%s, %s)"
+            sql = "INSERT IGNORE INTO college (friend_url, college_name) VALUES (%s, %s)"
             val = (friend.url, college["title"])
             mycursor.execute(sql, val)
 
     if friend.attributes["highschool"] != "NA":
         for hs in friend.attributes["highschool"]:
-            sql = "INSERT INTO high_school (friend_url, hs_name) VALUES (%s, %s)"
+            sql = "INSERT IGNORE INTO high_school (friend_url, hs_name) VALUES (%s, %s)"
             val = (friend.url, hs["title"])
             mycursor.execute(sql, val)
 
     if friend.attributes["places lived"]["list_of_cities"] != "NA":
         for city in friend.attributes["places lived"]["list_of_cities"]:
-            sql = "INSERT INTO places_lived (friend_url, location) VALUES (%s, %s)"
+            sql = "INSERT IGNORE INTO places_lived (friend_url, location) VALUES (%s, %s)"
             val = (friend.url, city)
             mycursor.execute(sql, val)
     mydb.commit()
