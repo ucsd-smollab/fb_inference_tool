@@ -9,34 +9,48 @@ const StageThreeStepOne = (props) => {
 
   useEffect(() => {
     // make call to fetch friends
-    changeFriendsMany(["wow"]);
-    changeFriendsSparse(["sparse"]);
-  }, [])
+    changeFriendsMany(["a", "b", "c", "d", "e"]);
+    changeFriendsSparse(["z", "y", "x", "w", "v"]);
+  }, []);
 
   return (
     <div className={globalStyles.background}>
       <br />
       <div className={globalStyles.MainBodyContainer}>
-        <span className={globalStyles.CenterTitle}>
-          Your Friends
-        </span>
+        <div className={globalStyles.CenterTitleContainer}>
+          <span className={globalStyles.CenterTitle}>Your Friends</span>
+        </div>
         <div className={globalStyles.ContentContainer}>
           <div>
-            <span>Some of your friends have shared a lot:</span>
-            {friendsManyShared.map((friend) => 
-              <span>{friend}</span>
-            )}
+            <span className={globalStyles.StageTitle}>
+              Some of your friends have shared a lot:
+            </span>
+            <br />
+            <br />
+            <div className={globalStyles.FriendsContainer}>
+              {friendsManyShared.map((friend) => (
+                <div className={globalStyles.FriendItem}>
+                  <span>{friend}</span>
+                </div>
+              ))}
+            </div>
           </div>
           <div>
             <span>Others haven't shared much at all:</span>
-            {friendsSparseShared.map((friend) => 
-              <span>{friend}</span>
-            )}
+            <br />
+            <br />
+            <div className={globalStyles.FriendsContainer}>
+              {friendsSparseShared.map((friend) => (
+                <div className={globalStyles.FriendItem}>
+                  <span>{friend}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
       <div className={globalStyles.ButtonContainer}>
-        <Link to="/StageTwoStepTwo">
+        <Link to="/StageThreeStepTwoOne">
           <button className={globalStyles.ButtonNav}>Next</button>
         </Link>
       </div>
