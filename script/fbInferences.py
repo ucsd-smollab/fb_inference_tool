@@ -210,7 +210,7 @@ def generate_inferences_ranking(friends, participant, inference_count_dict):
         if total:
             inference_count_dict["percentages"][key] = round(100*inference_count_dict["totals"][key]/total, 2)
         c+=1
-    pred_df.to_csv("predRanking.csv", index=False)
+    # pred_df.to_csv("predRanking.csv", index=False)
     truth="Has Ground Truth"
     for key in df_dict:
         # sort by max value & take the top 10
@@ -219,7 +219,7 @@ def generate_inferences_ranking(friends, participant, inference_count_dict):
         # then sort by confidence percentage
         df_dict[key] = df_dict[key].sort_values(by=["Conf Pred Right"], ascending=False)
         # export to csv
-        df_dict[key].to_csv(str(key)+"Ranking.csv", index=False)
+        # df_dict[key].to_csv(str(key)+"Ranking.csv", index=False)
         if (inference_count_dict[truth][key]["Right"]+inference_count_dict[truth][key]["Wrong"]):
             inference_count_dict[truth][key]["Accuracy"] = round(inference_count_dict[truth][key]["Right"]/(inference_count_dict[truth][key]["Right"]+inference_count_dict[truth][key]["Wrong"])*100, 2)
 
