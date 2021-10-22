@@ -11,7 +11,9 @@ const StageTwoStepOne = (props) => {
     <div className={globalStyles.background}>
       <br />
       <div className={styles.MainBodyContainer}>
-        <span className={styles.CenterTitle}>Facebook can learn about you from:</span>
+        <div style={{"marginTop": "150px"}}>
+          <span className={styles.CenterTitle}>Facebook can learn about you from:</span>
+        </div>
         <div className={styles.ContentContainer}>
           {sections.map((section) => 
             <div className={styles.SectionContainer}>

@@ -1,5 +1,5 @@
 .StageTitle {
-    font-size: 20px;
+    font-size: 50px;
 }
 
 .StageTitleContainer {
@@ -7,8 +7,15 @@
     /* background-color: yellow; */
 }
 
+.CenterTitleContainer {
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 150px;
+    text-align: center;
+}
+
 .ButtonNav {
-    background-color: blue;
+    background-color: #4267B2;
     border: none;
     border-radius: 30px;
     width: 200px;
@@ -49,4 +56,31 @@ span {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-evenly;
+    font-size: 50px;
 }
+
+.FriendsContainer {
+    display: flex;
+    flex-flow: column;
+}
+
+.FriendItem {
+    margin-top: 4vh;
+}
+
+.FriendItemHoverText {
+    display: inline-block;
+    visibility: hidden;
+    /* width: inherit; */
+    margin-left: 10px;
+    margin-right: 10px;
+    border-width: 2px;
+    border-color: black;
+    border-style:solid;
+    position: absolute;
+    z-index: 1;
+}
+
+.FriendItem:hover .FriendItemHoverText {
+    visibility: visible;
+  }

@@ -4,7 +4,6 @@ import StepTwoProfileSection from "./StepTwoProfileSection";
 import StepTwoKnowsSection from "./StepTwoKnowsSection";
 import StepTwoShowsSection from "./StepTwoShowsSection";
 
-
 import styles from "./StageTwoStepTwo.module.css";
 import globalStyles from "./StageTwo.module.css";
 

@@ -1,0 +1,22 @@
+.CategoryListContainer {
+    display: flex;
+    flex-flow: column;
+    margin-left: 20%;
+    margin-right: 20%;
+}
+
+.CategoryListItem {
+    border-width: 2px;
+    border-color: black;
+    border-style:solid;
+    margin-bottom: 20px;
+}
+
+.CategoryText {
+    font-size: 80px;
+}
+
+.CategoryListItemContainer {
+    background-color: white;
+    width: 100%;
+}
