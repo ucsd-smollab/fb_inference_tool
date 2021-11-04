@@ -1,0 +1,10 @@
+.SearchBar {
+    font-size: 50px;
+}
+
+.MainBody {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
