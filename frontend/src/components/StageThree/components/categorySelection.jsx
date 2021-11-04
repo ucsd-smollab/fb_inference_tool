@@ -10,7 +10,7 @@ const CategorySelection = (props) => {
         className={styles.CategoryListItemContainer}
         onClick={changeCat}
         style={{
-          "backgroundColor": props.category===props.selectedCategory ? "black" : "white",
+          "backgroundColor": props.category===props.selectedCategory ? "lightBlue" : "white",
         }}
       >
         <span className={styles.CategoryText}>{props.category}</span>
