@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
+import globalStyles from "../../styles/styles.module.css";
 import styles from "./StageTwoStepOne.module.css";
-import globalStyles from "./StageTwo.module.css"
 
 import like from "../../images/blue-like.png";
 import search_like from "../../images/search-and-like.png";

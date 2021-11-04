@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import globalStyles from "./StageThree.module.css";
+import globalStyles from "../../styles/styles.module.css";
+import mainStyles from "./StageThree.module.css";
 
 const StageThreeStepOne = (props) => {
   const [friendsManyShared, changeFriendsMany] = useState([]);
@@ -16,20 +17,20 @@ const StageThreeStepOne = (props) => {
   return (
     <div className={globalStyles.background}>
       <br />
-      <div className={globalStyles.MainBodyContainer}>
-        <div className={globalStyles.CenterTitleContainer}>
-          <span className={globalStyles.CenterTitle}>Your Friends</span>
+      <div className={mainStyles.MainBodyContainer}>
+        <div className={mainStyles.CenterTitleContainer}>
+          <span className={mainStyles.CenterTitle}>Your Friends</span>
         </div>
-        <div className={globalStyles.ContentContainer}>
+        <div className={mainStyles.ContentContainer}>
           <div>
-            <span className={globalStyles.StageTitle}>
+            <span className={mainStyles.StageTitle}>
               Some of your friends have shared a lot:
             </span>
             <br />
             <br />
-            <div className={globalStyles.FriendsContainer}>
+            <div className={mainStyles.FriendsContainer}>
               {friendsManyShared.map((friend) => (
-                <div className={globalStyles.FriendItem}>
+                <div className={mainStyles.FriendItem}>
                   <span>{friend}</span>
                 </div>
               ))}
@@ -39,9 +40,9 @@ const StageThreeStepOne = (props) => {
             <span>Others haven't shared much at all:</span>
             <br />
             <br />
-            <div className={globalStyles.FriendsContainer}>
+            <div className={mainStyles.FriendsContainer}>
               {friendsSparseShared.map((friend) => (
-                <div className={globalStyles.FriendItem}>
+                <div className={mainStyles.FriendItem}>
                   <span>{friend}</span>
                 </div>
               ))}

@@ -7,6 +7,7 @@ import StageThreeStepOne from "./components/StageThree/StageThreeStepOne";
 import StageThreeStepTwoOne from "./components/StageThree/StageThreeStepTwoOne";
 import StageThreeStepTwoTwo from "./components/StageThree/StageThreeStepTwoTwo";
 import StageThreeStepThree from "./components/StageThree/StageThreeStepThree";
+import StageFour from "./components/StageFour/StageFour";
 
 
 const App = (props) => {
@@ -20,6 +21,7 @@ const App = (props) => {
         <Route exact path="/StageThreeStepTwoOne" component={StageThreeStepTwoOne} />
         <Route exact path="/StageThreeStepTwoTwo" component={StageThreeStepTwoTwo} />
         <Route exact path="/StageThreeStepThree" component={StageThreeStepThree} />
+        <Route exact path="/StageFour" component={StageFour} />
       </Switch>
     </Router>
   );
