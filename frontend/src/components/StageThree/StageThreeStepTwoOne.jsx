@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 
 import { Link } from "react-router-dom";
-import globalStyles from "./StageThree.module.css";
+
+import globalStyles from "../../styles/styles.module.css";
+import mainStyles from "./StageThree.module.css";
 
 const StageThreeStepTwoOne = (props) => {
   const [friends, changeFriends] = useState([]);
@@ -19,18 +21,18 @@ const StageThreeStepTwoOne = (props) => {
   return (
     <div className={globalStyles.background}>
       <br />
-      <div className={globalStyles.MainBodyContainer}>
-        <div className={globalStyles.CenterTitleContainer}>
-          <span className={globalStyles.CenterTitle}>
+      <div className={mainStyles.MainBodyContainer}>
+        <div className={mainStyles.CenterTitleContainer}>
+          <span className={mainStyles.CenterTitle}>
             Some of your friends who have lived in San Diego:
           </span>
         </div>
         <br />
         <br />
-        <div className={globalStyles.ContentContainer}>
-          <div className={globalStyles.FriendsContainer}>
+        <div className={mainStyles.ContentContainer}>
+          <div className={mainStyles.FriendsContainer}>
             {friends.map((friend) => (
-              <div className={globalStyles.FriendItem}>
+              <div className={mainStyles.FriendItem}>
                 <span>{friend}</span>
               </div>
             ))}

@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 import CategorySelection from "./components/categorySelection";
 import ColumnData from "./components/ColumnData";
 
-import globalStyles from "./StageThree.module.css";
+import globalStyles from "../../styles/styles.module.css";
+import mainStyles from "./StageThree.module.css";
 import styles from "./StageThreeStepThree.module.css";
 
 const StageThreeStepThree = (props) => {
@@ -56,14 +57,14 @@ const StageThreeStepThree = (props) => {
       <br />
       <br />
       <br />
-      <div className={globalStyles.CenterTitleContainer}>
-        <span className={globalStyles.CenterTitle}>Select a Category</span>
+      <div className={mainStyles.CenterTitleContainer}>
+        <span className={mainStyles.CenterTitle}>Select a Category</span>
       </div>
       <br />
       <br />
       <br />
       <br />
-      <div className={globalStyles.MainBodyContainer}>
+      <div className={mainStyles.MainBodyContainer}>
         <div className={styles.CategoryListContainer}>
           {categories.map((category) => (
             <CategorySelection

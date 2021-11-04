@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 
 import { Link } from "react-router-dom";
-import globalStyles from "./StageThree.module.css";
+
+import globalStyles from "../../styles/styles.module.css";
+import mainStyles from "./StageThree.module.css";
 
 const StageThreeStepTwoTwo = (props) => {
   const [friendsExplicit, changeFriendsExplicit] = useState([]);
@@ -29,21 +31,21 @@ const StageThreeStepTwoTwo = (props) => {
   return (
     <div className={globalStyles.background}>
       <br />
-      <div className={globalStyles.CenterTitleContainer}>
-        <span className={globalStyles.CenterTitle}>
+      <div className={mainStyles.CenterTitleContainer}>
+        <span className={mainStyles.CenterTitle}>
           {`We can infer that these friends have also ${prediction}`}
         </span>
       </div>
-      <div className={globalStyles.MainBodyContainer}>
-        <div className={globalStyles.ContentContainer}>
+      <div className={mainStyles.MainBodyContainer}>
+        <div className={mainStyles.ContentContainer}>
           <div>
-            <span className={globalStyles.StageTitle}>
+            <span className={mainStyles.StageTitle}>
               {`Friends who explicitly shared that they ${prediction}`}
             </span>
             <br />
-            <div className={globalStyles.FriendsContainer}>
+            <div className={mainStyles.FriendsContainer}>
               {friendsExplicit.map((friend) => (
-                <div className={globalStyles.FriendItem}>
+                <div className={mainStyles.FriendItem}>
                   <span>{friend}</span>
                 </div>
               ))}
@@ -51,15 +53,17 @@ const StageThreeStepTwoTwo = (props) => {
           </div>
           <div>
             <span
-              className={globalStyles.StageTitle}
+              className={mainStyles.StageTitle}
             >{`Friends who we can infer ${prediction}`}</span>
             <br />
-            <div className={globalStyles.FriendsContainer}>
+            <div className={mainStyles.FriendsContainer}>
               {friendsInferred.map((friend) => (
-                <div className={globalStyles.FriendItem}>
+                <div className={mainStyles.FriendItem}>
                   <span>{friend}</span>
-                  <div className={globalStyles.FriendItemHoverText}>
-                    <span style={{fontSize: "35px"}}>{`You and ${friend} have mutual friends, 5 of whom have prediction`}</span>
+                  <div className={mainStyles.FriendItemHoverText}>
+                    <span
+                      style={{ fontSize: "35px" }}
+                    >{`You and ${friend} have mutual friends, 5 of whom have prediction`}</span>
                   </div>
                 </div>
               ))}

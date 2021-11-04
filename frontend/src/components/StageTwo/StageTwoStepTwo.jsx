@@ -4,8 +4,8 @@ import StepTwoProfileSection from "./StepTwoProfileSection";
 import StepTwoKnowsSection from "./StepTwoKnowsSection";
 import StepTwoShowsSection from "./StepTwoShowsSection";
 
+import globalStyles from "../../styles/styles.module.css";
 import styles from "./StageTwoStepTwo.module.css";
-import globalStyles from "./StageTwo.module.css";
 
 const StageTwoStepTwo = (props) => {
   return (

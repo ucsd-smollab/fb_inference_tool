@@ -2,43 +2,11 @@
     font-size: 50px;
 }
 
-.StageTitleContainer {
-    margin-bottom: 50px;
-    /* background-color: yellow; */
-}
-
 .CenterTitleContainer {
     margin-left: 10%;
     margin-right: 10%;
     margin-top: 150px;
     text-align: center;
-}
-
-.ButtonNav {
-    background-color: #4267B2;
-    border: none;
-    border-radius: 30px;
-    width: 200px;
-    height: 100px;
-    color: white;
-    font-size: 50px;
-    margin: 0px 20px 20px 0px;
-    position: absolute;
-    right: 0;
-    bottom: 0;   
-}
-
-.ButtonContainer {
-    text-align: right;
-}
-
-.background {
-    background-color: rgb(211, 211, 211);
-    height: 100vh;
-}
-
-span {
-    font: "roboto";
 }
 
 .CenterTitle {
@@ -47,7 +15,6 @@ span {
 }
 
 .MainBodyContainer {
-    /* background-color: green; */
     text-align: center;
 }
 
@@ -71,7 +38,6 @@ span {
 .FriendItemHoverText {
     display: inline-block;
     visibility: hidden;
-    /* width: inherit; */
     margin-left: 10px;
     margin-right: 10px;
     border-width: 2px;
