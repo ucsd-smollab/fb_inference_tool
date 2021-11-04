@@ -50,43 +50,42 @@ def insert_inf_into_database(friend, mydb, mycursor):
     for work in friend.inference_count["work"]:
         mutual_count = len(friend.inference_count["work"][work])
         if mutual_count:
-            sql = "INSERT INTO work_inf (friend_url, workplace, mutual_count) VALUES (%s, %s, %s)"
-            val = (friend.url, work, mutual_count)
+            sql = "INSERT INTO work_inf (friend_url, workplace, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
+            val = (friend.url, work, mutual_count, mutual_count)
             mycursor.execute(sql, val)
 
     for college in friend.inference_count["college"]:
         mutual_count = len(friend.inference_count["college"][college])
         if mutual_count:
-            sql = "INSERT INTO college_inf (friend_url, college_name, mutual_count) VALUES (%s, %s, %s)"
-            print(friend.url, college, mutual_count)
-            val = (friend.url, college, mutual_count)
+            sql = "INSERT INTO college_inf (friend_url, college_name, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
+            val = (friend.url, college, mutual_count, mutual_count)
             mycursor.execute(sql, val)
 
     for hs in friend.inference_count["highschool"]:
         mutual_count = len(friend.inference_count["highschool"][hs])
         if mutual_count:
-            sql = "INSERT INTO high_school_inf (friend_url, hs_name, mutual_count) VALUES (%s, %s, %s)"
-            val = (friend.url, hs, mutual_count)
+            sql = "INSERT INTO high_school_inf (friend_url, hs_name, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
+            val = (friend.url, hs, mutual_count, mutual_count)
             mycursor.execute(sql, val)
 
     for city in friend.inference_count["cities"]:
         mutual_count = len(friend.inference_count["cities"][city])
         if mutual_count:
-            sql = "INSERT INTO places_lived_inf (friend_url, location, mutual_count) VALUES (%s, %s, %s)"
-            val = (friend.url, city, mutual_count)
+            sql = "INSERT INTO places_lived_inf (friend_url, location, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
+            val = (friend.url, city, mutual_count, mutual_count)
             mycursor.execute(sql, val)
 
     for religion in friend.inference_count["religiousviews"]:
         mutual_count = len(friend.inference_count["religiousviews"][religion])
         if mutual_count:
-            sql = "INSERT INTO religion_inf (friend_url, religious_belief, mutual_count) VALUES (%s, %s, %s)"
-            val = (friend.url, religion, mutual_count)
+            sql = "INSERT INTO religion_inf (friend_url, religious_belief, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
+            val = (friend.url, religion, mutual_count, mutual_count)
             mycursor.execute(sql, val)
 
     for politic in friend.inference_count["politicalviews"]:
         mutual_count = len(friend.inference_count["politicalviews"][politic])
         if mutual_count:
-            sql = "INSERT INTO politics_inf (friend_url, political_view, mutual_count) VALUES (%s, %s, %s)"
-            val = (friend.url, politic, mutual_count)
+            sql = "INSERT INTO politics_inf (friend_url, political_view, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
+            val = (friend.url, politic, mutual_count, mutual_count)
             mycursor.execute(sql, val)
     mydb.commit()

@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS privacy_db;
 CREATE DATABASE privacy_db;
 
 USE privacy_db;
@@ -97,3 +98,5 @@ CREATE TABLE politics_inf (
     mutual_count SMALLINT DEFAULT '0' NOT NULL,
     PRIMARY KEY(friend_url, political_view)
 );
+
+ALTER DATABASE privacy_db CHARACTER SET utf8 COLLATE utf8_bin;

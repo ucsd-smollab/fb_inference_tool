@@ -642,7 +642,7 @@ def populate_category_groups(data, person_url, category_name, category_groups):
         category_groups[category_name]["no_data"].append(person_url)
         return
     if not isinstance(data, list):
-        data = data.lower()
+        data = data
         if data in category_groups[category_name]:
             category_groups[category_name][data].append(person_url)
         else:
@@ -652,7 +652,7 @@ def populate_category_groups(data, person_url, category_name, category_groups):
         entry_name = entry
         if isinstance(entry, dict):
             entry_name = entry["title"]
-        entry_name = entry_name.lower()
+        entry_name = entry_name
         if entry_name in category_groups[category_name]:
             category_groups[category_name][entry_name].append(person_url)
         else:

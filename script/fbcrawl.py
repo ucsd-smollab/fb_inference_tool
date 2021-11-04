@@ -115,7 +115,7 @@ exception_list = []
 friends_with_most_data = []
 friends_with_least_data = []
 num_friends_scraped = 0
-num_to_scrape = 10 #len(friends) for all
+num_to_scrape = 100 #len(friends) for all
 num_mutual_pages = -1 #-1 for all, otherwise a 8* will be number of friends scraped
 num_mutuals_inf = -1 #-1 for all, otherwise sets mutuals to make inferences on
 time_df = pd.DataFrame(columns=[str(num_mutual_pages)+" pages", "Word and ed", \
