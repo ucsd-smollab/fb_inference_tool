@@ -1,37 +1,70 @@
-.CenterTitle {
-    font: bold;
-    font-size: 100px;
-}
-
-.MainBodyContainer {
-    /* background-color: green; */
-    text-align: center;
-}
-
-.ContentContainer {
-    margin-top: 100px;
+h1 {
+    font-size: "48";
+    color: rgb(255, 255, 255);
+    height: 100%;
+    width: 100%;
+    margin-bottom: 16px;
     display: flex;
-    flex-flow: row wrap;
     justify-content: center;
-}
-
-.SectionContainer {
-    /* background-color: greenyellow; */
-    width: 40%;
-    margin: 10px;
-    font-size: 30px;
-    display: flex;
-    flex-direction: column;
     align-items: center;
 }
 
-.SectionHeader {
-    margin-bottom: 30px;
-    font-size: 50px;
+.flex_container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    height: 60%;
+    width: 60%;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  
+  .flex_item {
+    background: rgb(36, 37, 38);
+    border-radius: 20px;
+    padding: 10px;
+    width: 300px;
+    height: 150px;
+    margin: 10px;
+    line-height: 25px;
+    color: white;
+    font-size: 16px;
+    text-align: center;
+  }
+
+.image_lives {
+  margin: 18px;
+  max-width: 90%;
+  max-height: 90%;
 }
 
-.SectionImage {
-    background-color: "black";
-    width: "200px";
-    height: "200px"
+
+.image_browse {
+  margin: 18px;
+  max-width: 90%;
+  max-height: 90%;
 }
+
+.image_content {
+  margin: 18px;
+  max-width: 80%;
+  max-height: 80%;
+}
+
+.image_activity {
+  margin: 18px;
+  max-width: 60%;
+  max-height: 60%;
+}
+
+.image_more {
+  margin: 18px;
+  max-width: 60%;
+  max-height: 60%;
+}
+
+body {
+    background-color: rgb(24, 25, 26);
+}  
