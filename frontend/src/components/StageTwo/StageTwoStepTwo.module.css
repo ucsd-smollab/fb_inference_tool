@@ -2,30 +2,58 @@
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    padding-left: 100px;
-    padding-right: 100px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .ProfileText {
     display: block;
     text-align: center;
-    font-size: 50px;
+    font-size: 1.5em;
 }
 
 .SectionContainer {
-    margin: 0px 10px 10px 10px;
-    width: 33%;
+    margin: 10px 10px 10px 10px;
+    width: 30%;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
+.knowsColumn{
+    display: flex;
+    align-items: center;
+}
+
+.rowItem{
+    display: flex;
+    align-items: center;
+    margin: 10px;
+}
+
+.DetailItemLeft {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    margin-left: 0px;
+    min-height: 100px;
+    display: block;
+    font-size: 1.5em;
+}
+
+.DetailItemRight {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    margin-right: 15px;
+    min-height: 100px;
+    display: block;
+    font-size: 1.5em;
+}
+
 .ItemContainer {
-    width: 80%;
+    width: 90%;
     margin-left: 5%;
     margin-right: 5%;
     margin-bottom: 5%;
-    padding: 5px;
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -34,8 +62,8 @@
 
 .ProfileImage {
     border-radius: 100%;
-    width: 300px;
-    height: 300px;
+    width: 150px;
+    height: 150px;
     background-color: black;
 }
 
@@ -54,49 +82,25 @@
 }
 
 .DetailColumnContainer {
-    margin: 5px;
-    background-color: lightblue;
+    margin: 0px;
     display: flex;
     flex-direction: column;
     flex-basis: 100%;
 }
 
-.DetailItemLeft {
-    margin-top: 30px;
-    margin-bottom: 30px;
-    margin-left: 15px;
-    background-color: rgb(240, 128, 128);
-    min-height: 100px;
-    display: block;
-    font-size: 50px;
-}
-
-.DetailItemRight {
-    margin-top: 30px;
-    margin-bottom: 30px;
-    margin-right: 15px;
-    background-color: rgb(131, 60, 60);
-    min-height: 100px;
-    display: block;
-    font-size: 50px;
-}
-
 .SubDetailText {
     font-style: italic;
-    color: rgb(124, 118, 118);
 }
 
 .AdImage {
     width: 59%;
-    background-color: black;
     margin-bottom: 20px;
 }
 
 .SectionHeader {
-    padding-bottom: 10%;
-    font-size: 70px;
+    font-size: 2.1em;
     font: 'Roboto';
-    margin-bottom: 10px;
+    margin: 16px;
     font-weight: bold;
     text-align: center;
 }

@@ -1,12 +1,12 @@
 import styles from "./StageTwoStepTwo.module.css";
+import abby from "../../images/abby.png";
 
 const StepTwoProfileSection = (props) => {
   return (
     <div className={styles.SectionContainer}>
       <span className={styles.SectionHeader}>Abby Posts</span>
       <div className={styles.ItemContainer}>
-        <div className={styles.ProfileImage}></div>
-        <br />
+        <img src={abby} className={styles.ProfileImage} alt="Abby's profile picture"/>
         <span className={styles.ProfileText}>Abby</span>
       </div>
 

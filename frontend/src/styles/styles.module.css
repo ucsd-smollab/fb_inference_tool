@@ -1,27 +1,44 @@
+h1 {
+    font-size: "48";
+    color: rgb(0, 0, 0);
+    height: 100%;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 16px;
+    margin-left: 16px;
+    margin-right: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .ButtonNav {
-    background-color: rgb(53, 140, 252);
+    background-color: rgb(23, 120, 242);
     border: none;
     border-radius: 20px;
     width: 20%;
-    max-width: 160px;
-    max-height: 100px;
-    min-height: 70px;
+    max-width: 110px;
+    max-height: 80px;
+    min-height: 60px;
     height: 10%;
     color: white;
-    font-size: 2em;
+    font-size: 1.7em;
     margin: 0px 20px 20px 0px;
     position: fixed;
     right: 0;
     bottom: 0;   
 }
 
+.ButtonNav:active {
+    background-color: rgb(14, 72, 143);
+};
+
 .ButtonContainer {
     text-align: right;
 }
 
 .background {
-    background-color: rgb(211, 211, 211);
-    height: 100vh;
+    background-color: rgb(255, 255, 255);
 }
 
 .StageTitleContainer {

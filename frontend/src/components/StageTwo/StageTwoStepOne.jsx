@@ -4,29 +4,27 @@ import globalStyles from "../../styles/styles.module.css";
 import styles from "./StageTwoStepOne.module.css";
 
 import like from "../../images/blue-like.png";
-import search_like from "../../images/search-and-like.png";
-import claire_mairy from "../../images/claire-with-mary.png";
-import browse from "../../images/search-history.png";
-import content from "../../images/mary-at-zion.png";
+import share from "../../images/share.png";
+import post from "../../images/post.png";
+import browse from "../../images/browse.png";
+import friend_post from "../../images/friend-post.png";
+import activity from "../../images/activity.png";
 
 const StageTwoStepOne = (props) => {
-
-  const sections = ["information you share", "content you post", "your web browsing", "content your friends post", "your activity on facebook", "...and more"]
-
   return (
-    <div>
+    <div className={globalStyles.background}>
       <h1>Facebook can learn about you from:</h1>
       <div style={{display: 'flex', justifyContent: 'center'}} >
         <ul class={styles.flex_container}>
           <li class={styles.flex_item}>
             information you share
             <br/>
-            <img class={styles.image_content} src={content}/>
+            <img class={styles.image_lives} src={share}/>
             </li>
           <li class={styles.flex_item}>
             content you post
             <br/>
-            <img class={styles.image_content} src={content}/>
+            <img class={styles.image_content} src={post}/>
             </li>
           <li class={styles.flex_item}>
             your web browsing
@@ -36,12 +34,12 @@ const StageTwoStepOne = (props) => {
           <li class={styles.flex_item}>
             content your friends post
             <br/>
-            <img class={styles.image_content} src={claire_mairy}/>
+            <img class={styles.image_content} src={friend_post}/>
             </li>
           <li class={styles.flex_item}>
             your activity on Facebook
             <br/>
-            <img class={styles.image_activity} src={search_like}/>
+            <img class={styles.image_activity} src={activity}/>
           </li>
           <li class={styles.flex_item}>
             ...and more
