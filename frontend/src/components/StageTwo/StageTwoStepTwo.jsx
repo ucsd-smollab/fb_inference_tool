@@ -10,7 +10,7 @@ import styles from "./StageTwoStepTwo.module.css";
 const StageTwoStepTwo = (props) => {
   return (
     <div className={globalStyles.background}>
-      <div className={styles.MainBodyContainer}>
+      <div className={styles.main_container}>
         <StepTwoProfileSection />
         <StepTwoKnowsSection />
         <StepTwoShowsSection />

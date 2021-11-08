@@ -1,106 +1,88 @@
-.MainBodyContainer {
+.main_container {
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    padding-left: 10px;
-    padding-right: 10px;
 }
 
-.ProfileText {
-    display: block;
+.flex_container {
+    width: 33.33%;
+    margin-left: 16px;
+    margin-right: 16px;
+    height: 100%;
+    justify-content: center;
     text-align: center;
-    font-size: 1.5em;
-}
-
-.SectionContainer {
-    margin: 10px 10px 10px 10px;
-    width: 30%;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-.knowsColumn{
-    display: flex;
-    align-items: center;
-}
-
-.rowItem{
-    display: flex;
-    align-items: center;
-    margin: 10px;
-}
-
-.DetailItemLeft {
-    margin-top: 0px;
-    margin-bottom: 10px;
-    margin-left: 0px;
-    min-height: 100px;
-    display: block;
-    font-size: 1.5em;
-}
-
-.DetailItemRight {
-    margin-top: 0px;
-    margin-bottom: 10px;
-    margin-right: 15px;
-    min-height: 100px;
-    display: block;
-    font-size: 1.5em;
-}
-
-.ItemContainer {
-    width: 90%;
-    margin-left: 5%;
-    margin-right: 5%;
-    margin-bottom: 5%;
+.body_container {
+    background: rgb(240, 242, 245);
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
+}
+
+.body{
+    font-size: 2vw;
+    font: "roboto";
     text-align: center;
-    align-items: center;
+    margin: 0px 10px 0px 10px;
 }
 
-.ProfileImage {
-    border-radius: 100%;
-    width: 150px;
-    height: 150px;
-    background-color: black;
+/*posts section*/
+.image_abby {
+    max-width: 50%;
+    min-width: 100px;
+    align-self: center;
 }
 
-.ProfilePostImage {
-    background-color: black;
-    width: 300px;
-    height: 100px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+.image_lived {
+    max-width: 90%;
+    min-width: 150px;
 }
 
-.InferencesContainer {
+.image_yosemite {
+    max-width: 90%;
+    min-width: 150px;
+}
+
+.image_madison {
+    max-width: 90%;
+    min-width: 150px;
+}
+
+/*knows section*/
+.left_and_right{
     display: flex;
-    flex-direction: row;
-    align-self: stretch;
+    justify-content: center;
+    width: 100%;
 }
 
-.DetailColumnContainer {
-    margin: 0px;
-    display: flex;
-    flex-direction: column;
-    flex-basis: 100%;
+.left{
+    width: 50%;
+    text-align: right;
+    font-size: 1.5vw;
+    margin: 16px 5px 16px 16px;
+    width: -webkit-fill-available;
+    float: right;
 }
 
-.SubDetailText {
+.right{
+    width: 50%;
+    text-align: left;
     font-style: italic;
+    font-size: 1.5vw;
+    margin: 16px 16px 5px 16px;
+    width: -webkit-fill-available;
+    float: left;
 }
 
-.AdImage {
-    width: 59%;
-    margin-bottom: 20px;
+/*show section*/
+.ad_masterclass{
+    align-self: center;
+    width: 90%;
+    margin-bottom: 1.8vh;
 }
 
-.SectionHeader {
-    font-size: 2.1em;
-    font: 'Roboto';
-    margin: 16px;
-    font-weight: bold;
-    text-align: center;
+.ad_secret{
+    align-self: center;
+    width: 90%;
 }

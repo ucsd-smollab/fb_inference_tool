@@ -1,36 +1,21 @@
 import styles from "./StageTwoStepTwo.module.css";
 import abby from "../../images/abby.png";
+import lived from "../../images/lived.png";
+import yosemite from "../../images/Yosemite.png";
+import madison from "../../images/Madison.png";
+
 
 const StepTwoProfileSection = (props) => {
   return (
-    <div className={styles.SectionContainer}>
-      <span className={styles.SectionHeader}>Abby Posts</span>
-      <div className={styles.ItemContainer}>
-        <img src={abby} className={styles.ProfileImage} alt="Abby's profile picture"/>
-        <span className={styles.ProfileText}>Abby</span>
-      </div>
-
-      <div className={styles.ItemContainer}>
-        <span className={styles.ProfileText}>
-          Lives in San Diego, California
-        </span>
-        <span className={styles.ProfileText}>From Los Angeles, California</span>
-      </div>
-
-      <div className={styles.ItemContainer}>
-        <span className={styles.ProfileText}>
-          I got to try out my new camera at Yellowstone this past weekend.
-        </span>
-        <br />
-        <div className={styles.ProfilePostImage}></div>
-      </div>
-
-      <div className={styles.ItemContainer}>
-        <span className={styles.ProfileText}>
-          Claire is with Mary at Madison Campground
-        </span>
-        <br />
-        <div className={styles.ProfilePostImage}></div>
+    <div className={styles.flex_container}>
+      <h1>Abby Posts</h1>
+      <img className={styles.image_abby} src={abby}></img>
+      <div className={styles.body}>Abby</div>
+      <br/>
+      <div>
+        <img className={styles.image_lived} src={lived}></img>
+        <img className={styles.image_yosemite} src={yosemite}></img>
+        <img className={styles.image_madison} src={madison}></img>
       </div>
     </div>
   );

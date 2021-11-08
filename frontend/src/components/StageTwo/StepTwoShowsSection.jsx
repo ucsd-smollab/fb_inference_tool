@@ -1,11 +1,14 @@
 import styles from "./StageTwoStepTwo.module.css";
 
+import masterclass from "../../images/ad-masterclass.png";
+import secret from "../../images/ad-secret.png";
+
 const StepTwoShowsSection = (props) => {
   return (
-    <div className={styles.SectionContainer}>
-      <span className={styles.SectionHeader}>Facebook Shows</span>
-      <img className={styles.AdImage} src="./Facebook-AD1.png" alt="facebook ad"></img>
-      <img className={styles.AdImage} src="./Facebook-AD1.png" alt="facebook ad"></img>
+    <div className={styles.flex_container}>
+      <h1>Facebook Shows</h1>
+      <img className={styles.ad_masterclass} src={masterclass}></img>
+      <img className={styles.ad_secret} src={secret}></img>
     </div>
   );
 };
