@@ -13,7 +13,7 @@ const CategorySelection = (props) => {
           "backgroundColor": props.category===props.selectedCategory ? "lightBlue" : "white",
         }}
       >
-        <span className={styles.CategoryText}>{props.category}</span>
+        <h2>{props.category}</h2>
       </button>
     </div>
   );

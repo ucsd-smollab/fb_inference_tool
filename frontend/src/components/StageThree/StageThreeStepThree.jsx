@@ -53,19 +53,11 @@ const StageThreeStepThree = (props) => {
 
   return (
     <div className={globalStyles.background}>
-      <br />
-      <br />
-      <br />
-      <br />
-      <div className={mainStyles.CenterTitleContainer}>
-        <span className={mainStyles.CenterTitle}>Select a Category</span>
+      <div>
+        <h1>Select a Category</h1>
       </div>
-      <br />
-      <br />
-      <br />
-      <br />
-      <div className={mainStyles.MainBodyContainer}>
-        <div className={styles.CategoryListContainer}>
+      <div className={globalStyles.mainContent}>
+        <div>
           {categories.map((category) => (
             <CategorySelection
               category={category}
@@ -74,17 +66,19 @@ const StageThreeStepThree = (props) => {
             />
           ))}
         </div>
+      </div>
 
-        <div className={styles.DataContainer}>
-          <div className={styles.ColumnContainer}>
-            <span>shared directly</span>
+      <div className={globalStyles.mainContent}>
+      <div className={`${globalStyles.flex_container} ${globalStyles.two_column}`}>
+        <div className={`${globalStyles.itemBoxes} ${globalStyles.longBox}`}>
+            <div><h2>Shared directly</h2></div>
             <ColumnData data={friendsDirect} />
-          </div>
-          <div className={styles.ColumnContainer}>
-            <span>inferred</span>
-            <ColumnData data={friendsInferred} />
-          </div>
         </div>
+        <div className={`${globalStyles.itemBoxes} ${globalStyles.longBox}`}>
+            <div><h2>Inferred</h2></div>
+            <ColumnData data={friendsInferred} />
+        </div>
+      </div>
       </div>
       <div className={globalStyles.ButtonContainer}>
         <Link to="/StageFour">
