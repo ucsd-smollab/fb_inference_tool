@@ -9,6 +9,18 @@ h1 {
     justify-content: center;
 }
 
+h2 {
+    font-size: 2vw;
+    color: rgb(0, 0, 0);
+    margin-top: 20px;
+    margin-bottom: 16px;
+    margin-left: 16px;
+    margin-right: 16px;
+    display: flex;
+    justify-content: center;
+    font-weight: normal;
+}
+
 .ButtonNav {
     background-color: rgb(23, 120, 242);
     border: none;

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import globalStyles from "../../styles/styles.module.css";
-import mainStyles from "./StageThree.module.css";
+import styles from "./StageThree.module.css";
 
 const StageThreeStepOne = (props) => {
   const [friendsManyShared, changeFriendsMany] = useState([]);
@@ -16,39 +16,20 @@ const StageThreeStepOne = (props) => {
 
   return (
     <div className={globalStyles.background}>
-      <br />
-      <div className={mainStyles.MainBodyContainer}>
-        <div className={mainStyles.CenterTitleContainer}>
-          <span className={mainStyles.CenterTitle}>Your Friends</span>
-        </div>
-        <div className={mainStyles.ContentContainer}>
+      <h1>Your Friends</h1>
+      <div className={styles.columns_container}>
+        <span className={styles.left_column}>
+          <h2>Some of your friends have shared a lot:</h2>
           <div>
-            <span className={mainStyles.StageTitle}>
-              Some of your friends have shared a lot:
-            </span>
-            <br />
-            <br />
-            <div className={mainStyles.FriendsContainer}>
-              {friendsManyShared.map((friend) => (
-                <div className={mainStyles.FriendItem}>
-                  <span>{friend}</span>
-                </div>
-              ))}
-            </div>
+            {friendsManyShared.map((friend) => <div className={styles.friend_text} >{friend}</div>)}
           </div>
+        </span>
+        <span className={styles.right_column}>
+          <h2>Others haven't shared much at all:</h2>
           <div>
-            <span>Others haven't shared much at all:</span>
-            <br />
-            <br />
-            <div className={mainStyles.FriendsContainer}>
-              {friendsSparseShared.map((friend) => (
-                <div className={mainStyles.FriendItem}>
-                  <span>{friend}</span>
-                </div>
-              ))}
-            </div>
+            {friendsSparseShared.map((friend) => <div className={styles.friend_text} >{friend}</div>)}
           </div>
-        </div>
+        </span>
       </div>
       <div className={globalStyles.ButtonContainer}>
         <Link to="/StageThreeStepTwoOne">
