@@ -25,51 +25,43 @@ const StageThreeStepTwoTwo = (props) => {
       "Mary A",
       "Kristen V",
     ]);
-    changePrediction("lived in San Diego");
+    changePrediction("have lived in San Diego");
   }, []);
 
   return (
     <div className={globalStyles.background}>
       <br />
-      <div className={mainStyles.CenterTitleContainer}>
-        <span className={mainStyles.CenterTitle}>
-          {`We can infer that these friends have also ${prediction}`}
-        </span>
-      </div>
-      <div className={mainStyles.MainBodyContainer}>
-        <div className={mainStyles.ContentContainer}>
-          <div>
-            <span className={mainStyles.StageTitle}>
-              {`Friends who explicitly shared that they ${prediction}`}
-            </span>
-            <br />
-            <div className={mainStyles.FriendsContainer}>
-              {friendsExplicit.map((friend) => (
-                <div className={mainStyles.FriendItem}>
-                  <span>{friend}</span>
-                </div>
-              ))}
-            </div>
+      <div>
+        <div className={globalStyles.StageTitleContainer}>
+          <h1>
+            We can infer that these friends also {prediction}
+          </h1>
+        </div >
+        <br />
+        <br />
+        <div className={globalStyles.mainContent}>
+        <div className={`${globalStyles.flex_container} ${globalStyles.two_column}`}>
+          <div className={`${globalStyles.itemBoxes} ${globalStyles.longBox} ${globalStyles.wideBox}`}>
+            <h2>Friends who explicitly shared that they {prediction}</h2>
+            {friendsExplicit.map((friend) => (
+              <div className={globalStyles.medText}>
+                <span>{friend}</span>
+              </div>
+            ))}
           </div>
-          <div>
-            <span
-              className={mainStyles.StageTitle}
-            >{`Friends who we can infer ${prediction}`}</span>
-            <br />
-            <div className={mainStyles.FriendsContainer}>
-              {friendsInferred.map((friend) => (
-                <div className={mainStyles.FriendItem}>
-                  <span>{friend}</span>
-                  <div className={mainStyles.FriendItemHoverText}>
-                    <span
-                      style={{ fontSize: "35px" }}
-                    >{`You and ${friend} have mutual friends, 5 of whom have prediction`}</span>
-                  </div>
-                </div>
-              ))}
-              <br />
-            </div>
+        </div>
+        <div className={`${globalStyles.flex_container} ${globalStyles.two_column}`}>
+          <div className={`${globalStyles.itemBoxes} ${globalStyles.longBox} ${globalStyles.wideBox}`}>
+            <h2>Friends who we can infer {prediction}</h2>
+            {friendsInferred.map((friend) => (
+              <div className={globalStyles.medText}>
+                <span>
+                {friend}
+                </span>
+              </div>
+            ))}
           </div>
+        </div>
         </div>
       </div>
       <div className={globalStyles.ButtonContainer}>
