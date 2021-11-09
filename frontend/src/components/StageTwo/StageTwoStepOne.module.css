@@ -10,7 +10,7 @@
     list-style: none;
   }
   
-.flex_item {
+/*.flex_item {
   background: rgb(240, 242, 245);
   border-radius: 20px;
   padding: 10px;
@@ -21,7 +21,7 @@
   color: rgb(0, 0, 0);
   font-size: 18px;
   text-align: center;
-}
+}*/
 
 .image_lives {
   margin: 15px;

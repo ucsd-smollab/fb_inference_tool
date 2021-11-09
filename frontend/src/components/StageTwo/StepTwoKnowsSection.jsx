@@ -1,3 +1,4 @@
+import globalStyles from "../../styles/styles.module.css";
 import styles from "./StageTwoStepTwo.module.css";
 
 const StepTwoKnowsSection = (props) => {
@@ -14,7 +15,7 @@ const StepTwoKnowsSection = (props) => {
 
 
   return (
-    <div className={styles.flex_container}>
+    <div className={`${globalStyles.flex_container} ${globalStyles.three_column}`}>
       <h1>Facebook Knows</h1>
       <div className={styles.body_container}>
         {row.map((item, index) => {

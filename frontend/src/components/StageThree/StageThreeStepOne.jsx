@@ -17,17 +17,18 @@ const StageThreeStepOne = (props) => {
   return (
     <div className={globalStyles.background}>
       <h1>Your Friends</h1>
-      <div className={styles.columns_container}>
-        <span className={styles.left_column}>
-          <h2>Some of your friends have shared a lot:</h2>
+      <div className={globalStyles.mainContent}>
+      <div className={`${globalStyles.flex_container} ${globalStyles.two_column}`}>
+        <span className={`${globalStyles.itemBoxes} ${globalStyles.longBox}`}>
+            <h2>Some of your friends have shared a lot:</h2>
           <div>
-            {friendsManyShared.map((friend) => <div className={styles.friend_text} >{friend}</div>)}
+            {friendsManyShared.map((friend) => <div className={globalStyles.medText}>{friend}</div>)}
           </div>
         </span>
-        <span className={styles.right_column}>
+        <span className={`${globalStyles.itemBoxes} ${globalStyles.longBox}`}>
           <h2>Others haven't shared much at all:</h2>
           <div>
-            {friendsSparseShared.map((friend) => <div className={styles.friend_text} >{friend}</div>)}
+            {friendsSparseShared.map((friend) => <div className={globalStyles.medText}>{friend}</div>)}
           </div>
         </span>
       </div>
@@ -36,6 +37,7 @@ const StageThreeStepOne = (props) => {
           <button className={globalStyles.ButtonNav}>Next</button>
         </Link>
       </div>
+    </div>
     </div>
   );
 };

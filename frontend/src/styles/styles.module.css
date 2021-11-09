@@ -1,3 +1,7 @@
+span {
+    font: "roboto";
+}
+
 h1 {
     font-size: 3vw;
     color: rgb(0, 0, 0);
@@ -22,7 +26,7 @@ h2 {
 }
 
 .ButtonNav {
-    background-color: rgb(23, 120, 242);
+    background-color: rgb(240, 242, 245);
     border: none;
     border-radius: 20px;
     width: 20%;
@@ -30,7 +34,7 @@ h2 {
     max-height: 80px;
     min-height: 60px;
     height: 10%;
-    color: white;
+    color: black;
     font-size: 1.7em;
     margin: 0px 20px 20px 0px;
     position: fixed;
@@ -39,7 +43,7 @@ h2 {
 }
 
 .ButtonNav:active {
-    background-color: rgb(14, 72, 143);
+    background-color: rgb(23, 120, 242);
 };
 
 .ButtonContainer {
@@ -50,10 +54,69 @@ h2 {
     background-color: rgb(255, 255, 255);
 }
 
+.nextButton {
+     background-color: yellow;
+}
+
 .StageTitleContainer {
     margin-bottom: 50px;
 }
 
-span {
-    font: "roboto";
+.mainContent {
+    justify-content: center;
+    align-self: flex-start;
+    display: flex;
 }
+
+.flex_container {
+    display: flex;
+    justify-content: center;
+    /*align-self: center;*/
+    align-items: center;
+    list-style: none;
+    text-align: center;
+}
+
+.two_column {
+    height: 60%;
+    width: 60%;
+    padding: 0;
+    margin: 0;
+    flex-flow: row wrap;
+}
+
+.three_column{
+    width: 33.33%;
+    margin-left: 16px;
+    margin-right: 16px;
+    height: 100%;
+    flex-direction: column;
+}
+
+.itemBoxes {
+    background: rgb(240, 242, 245);
+    border-radius: 20px;
+    padding: 10px;
+    width: 400px;
+    height: 200px;
+    margin: 10px;
+    line-height: 25px;
+    color: rgb(0, 0, 0);
+    font-size: 18px;
+    text-align: center;
+
+}
+
+.longBox {
+    height:  400px;
+    min-width: 300px;
+}
+
+
+.medText {
+    text-align: center;
+    margin-bottom: 2vh;
+    font-size: 2vw;
+}
+
+

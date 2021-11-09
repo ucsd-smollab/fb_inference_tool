@@ -1,3 +1,4 @@
+import globalStyles from "../../styles/styles.module.css";
 import styles from "./StageTwoStepTwo.module.css";
 import abby from "../../images/abby.png";
 import lived from "../../images/lived.png";
@@ -7,7 +8,7 @@ import madison from "../../images/Madison.png";
 
 const StepTwoProfileSection = (props) => {
   return (
-    <div className={styles.flex_container}>
+    <div className={`${globalStyles.flex_container} ${globalStyles.three_column}`}>
       <h1>Abby Posts</h1>
       <img className={styles.image_abby} src={abby}></img>
       <div className={styles.body}>Abby</div>

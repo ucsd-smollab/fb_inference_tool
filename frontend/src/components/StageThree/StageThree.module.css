@@ -1,24 +1,2 @@
-.columns_container{
-    display: flex;
-    flex-wrap: wrap;
-    align-self: center;
-    justify-content: center;
-    margin-top: 20px;
-}
 
-.left_column{
-    width: 50%;
-    min-width: 500px;
-    font-size: 2vw;
-}
 
-.right_column{
-    width: 50%;
-    min-width: 500px;
-    font-size: 2vw;
-}
-
-.friend_text{
-    text-align: center;
-    margin-bottom: 1vh;
-}
