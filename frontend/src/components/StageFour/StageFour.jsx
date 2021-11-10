@@ -8,6 +8,17 @@ import mainStyles from "./StageFour.modules.css";
 const StageFour = (props) => {
   const [query, changeQuery] = useState("");
   const [friendData, changeFriendData] = useState([]);
+  const exampleFriendData = {
+    name: 'Jacey Smith',
+    mutualFriendCount: '321',
+    profilePictureURL: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREQSG0xK1r5xe4WvQsV7WTNey9OSBunMh6GLY8HcxYUinuG_hHJ4IWUtjeAcV3M7bfhbo&usqp=CAU',
+    workplace: ['UCSD Department of Computer Science'],
+    college: ['University of California San Diego'],
+    highschool: ['No Data'],
+    places: ['Los Angeles', 'San Diego'],
+    religion: ['No Data'],
+    politics: ['No Data']
+  };
 
   useEffect(() => {
     changeFriendData(["gello", "hello", "wow"]);
@@ -15,7 +26,7 @@ const StageFour = (props) => {
 
   return (
     <div className={globalStyles.background}>
-      <input className={mainStyles.SearchBar} placeholder="Enter your Friend's Name" onChange={event => changeQuery(event.target.value)} />
+{/*      <input className={mainStyles.SearchBar} placeholder="Enter your Friend's Name" onChange={event => changeQuery(event.target.value)} />
       <div className={mainStyles.MainBody}>
         {friendData.filter(friend => {
           if (query === '' || friend.toLowerCase().includes(query.toLowerCase())) {
@@ -24,7 +35,8 @@ const StageFour = (props) => {
         }).map( (friend, index) => 
           <FriendBox friend={friend}/>
         )}
-      </div>
+      </div>*/}
+      <FriendBox friend={exampleFriendData}/>
     </div>
   );
 };
