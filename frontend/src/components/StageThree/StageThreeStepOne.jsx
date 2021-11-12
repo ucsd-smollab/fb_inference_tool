@@ -9,9 +9,15 @@ const StageThreeStepOne = (props) => {
   const [friendsSparseShared, changeFriendsSparse] = useState([]);
 
   useEffect(() => {
-    // make call to fetch friends
-    changeFriendsMany(["a", "b", "c", "d", "e"]);
-    changeFriendsSparse(["z", "y", "x", "w", "v"]);
+    const responseUsersShared= fetch("http://localhost:5000/stage_three_step_one", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => res.json()).then(data => {
+      changeFriendsMany(data[1])
+      changeFriendsSparse(data[0])
+    });
   }, []);
 
   return (
