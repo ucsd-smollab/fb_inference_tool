@@ -1,0 +1,42 @@
+.CategoryListContainer {
+    display: flex;
+    flex-flow: column;
+    margin-left: 20%;
+    margin-right: 20%;
+}
+
+.CategoryListItem {
+    border-width: 2px;
+    border-color: black;
+    border-style:solid;
+    margin-bottom: 20px;
+}
+
+.CategoryText {
+    font-size: 80px;
+}
+
+.CategoryListItemContainer {
+    background-color: white;
+    width: 100%;
+}
+
+.DataContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    font-size: 80px;
+    margin-left: 10vw;
+    margin-right: 10vw;
+    margin-top: 5vh;
+}
+
+.ColumnContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.ColumnDataItem {
+    font-size: 50px;
+}

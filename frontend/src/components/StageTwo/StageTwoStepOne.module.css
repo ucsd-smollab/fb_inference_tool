@@ -1,0 +1,55 @@
+.flex_container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    height: 60%;
+    width: 60%;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  
+/*.flex_item {
+  background: rgb(240, 242, 245);
+  border-radius: 20px;
+  padding: 10px;
+  width: 400px;
+  height: 200px;
+  margin: 10px;
+  line-height: 25px;
+  color: rgb(0, 0, 0);
+  font-size: 18px;
+  text-align: center;
+}*/
+
+.image_lives {
+  margin: 15px;
+  max-width: 80%;
+  max-height: 90%;
+}
+
+
+.image_browse {
+  margin: 10px;
+  max-width: 80%;
+  max-height: 100%;
+}
+
+.image_content {
+  margin: 0px;
+  max-width: 80%;
+  max-height: 80%;
+}
+
+.image_activity {
+  margin: 0px;
+  max-width: 80%;
+  max-height: 80%;
+}
+
+.image_more {
+  margin: 5px;
+  max-width: 60%;
+  max-height: 60%;
+}

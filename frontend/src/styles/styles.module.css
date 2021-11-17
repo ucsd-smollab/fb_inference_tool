@@ -1,0 +1,211 @@
+span {
+    font: "roboto";
+}
+
+h1 {
+    font-size: 3vw;
+    color: rgb(0, 0, 0);
+    margin-top: 20px;
+    margin-bottom: 16px;
+    margin-left: 16px;
+    margin-right: 16px;
+    display: flex;
+    justify-content: center;
+}
+
+h2 {
+    font-size: 2vw;
+    line-height: 1.1;
+    color: rgb(0, 0, 0);
+    margin-top: 20px;
+    margin-bottom: 40px;
+    margin-left: 16px;
+    margin-right: 16px;
+    display: flex;
+    justify-content: center;
+    font-weight: normal;
+}
+
+.ButtonNav {
+    background-color: rgb(240, 242, 245);
+    border: none;
+    border-radius: 20px;
+    width: 20%;
+    max-width: 110px;
+    max-height: 80px;
+    min-height: 60px;
+    height: 10%;
+    color: black;
+    font-size: 1.7em;
+    margin: 0px 20px 20px 0px;
+    position: fixed;
+    right: 0;
+    bottom: 0;   
+}
+
+.ButtonNav:active {
+    background-color: rgb(23, 120, 242);
+};
+
+.ButtonContainer {
+    text-align: right;
+}
+
+.background {
+    background-color: rgb(255, 255, 255);
+}
+
+.nextButton {
+     background-color: yellow;
+}
+
+.StageTitleContainer {
+    margin-bottom: 50px;
+}
+
+.mainContent {
+    justify-content: center;
+    align-self: flex-start;
+    display: flex;
+}
+
+.flex_container {
+    display: flex;
+    justify-content: center;
+    /*align-self: center;*/
+    align-items: center;
+    list-style: none;
+    text-align: center;
+}
+
+.two_column {
+    height: 60%;
+    width: 60%;
+    padding: 0;
+    margin: 0;
+    flex-flow: row wrap;
+}
+
+.three_column{
+    width: 33.33%;
+    margin-left: 16px;
+    margin-right: 16px;
+    height: 100%;
+    flex-direction: column;
+}
+
+.itemBoxes {
+    background: rgb(240, 242, 245);
+    border-radius: 20px;
+    padding: 10px;
+    width: 400px;
+    height: 200px;
+    margin: 10px;
+    line-height: 25px;
+    color: rgb(0, 0, 0);
+    font-size: 18px;
+    text-align: center;
+
+}
+
+.longBox {
+    height:  400px;
+    min-width: 300px;
+    padding-top: 40px;
+    padding-bottom: 20px;
+}
+
+.wideBox {
+    width: 600px;
+}
+
+.bigBox {
+    width: 800px;
+    height: 100%;
+    padding: 40px;
+    margin-left: 60px;
+    margin-right: 60px;
+    margin-bottom: 60px;
+    margin-top: 20px;
+}
+
+.medText {
+    text-align: center;
+    margin-bottom: 2vh;
+    font-size: 2vw;
+}
+
+.profilePicture {
+    margin: 10px;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+}
+
+.friendInfoHeader {
+    display: block;
+    margin-top: 40px;
+    padding-left: 60px;
+    background-color: rgb(240, 242, 245);
+    width: 100%;
+    height: 150px;
+    text-align: left;
+    justify-content: left;
+}
+
+.friendInfoHeader span{
+    display: inline-block;
+    text-align: left;
+    justify-content: left;
+    width: 200px;
+}
+
+
+.friendName{
+    display: inline-block;
+    font-size: 3vh;
+    font-weight: bold;
+}
+
+.friendH4{
+    display: inline-block;
+    font-size: 1.5vh;
+}
+
+.friendInfo {
+
+}
+
+.friendInfo .about {
+    margin-left: 100px;
+    margin-bottom: 0px;
+}
+
+.friendInfo h3 {
+    text-align: left;
+    font-size: 3vh;
+    margin-top: 30px;
+    margin-bottom: 8px;
+}
+
+.friendInfo h5 {
+    text-align: left;
+    font-size: 1.5vh;
+    font-weight: lighter;
+    margin-top: 0;
+    margin-bottom: 0px;
+}
+
+.knownInfo {
+    color: black;
+}
+
+.friendInfo .topRow {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.wrapper {
+    width: 100%;
+    height: 100%;
+}

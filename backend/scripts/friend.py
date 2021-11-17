@@ -1,5 +1,6 @@
 class Friend:
-    def __init__(self, path):
+    def __init__(self, path, numMutualFriends=0):
+        self.numMutualFriends = numMutualFriends
         self.url = path
         self.attributes = {}
         self.percent_complete = 0
@@ -8,3 +9,4 @@ class Friend:
         self.mutual_friends = None
         self.name = None
         self.inference_count = None
+        self.time_array = []
