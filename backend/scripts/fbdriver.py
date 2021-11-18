@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from fbscrape_helpers import *
 
 class FBdriver(webdriver.Chrome):
+    # initialize driver
     def __init__(self, executable_path, options=None):
         if options is None:
             options = Options()
@@ -19,6 +20,7 @@ class FBdriver(webdriver.Chrome):
         self.friend_lookup_table = None
         super(FBdriver, self).__init__(executable_path=executable_path, options=options)
 
+    # go to facebook login page and reattempt login until successful
     def login(self, url, username=""):
         self.get(url)
         if username:
@@ -39,14 +41,12 @@ class FBdriver(webdriver.Chrome):
         url = elt.get_attribute("href")
         self.participant_path = url.split("?")[0].split("/")[-1]
 
+    # scroll to bottom of the page
     def scroll(self, time):
-        #remove if not testing
         self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        # r = random.randint(5, 2*time-5)/10
-        # sleep(r)
         sleep(time)
-        return 0
 
+    # get a friends url and number of mutual friends
     def get_link_and_mutual_friends(self, f):
         full_text = f.get_attribute("innerText")
         href = f.find_element_by_css_selector("._5pxa ._5pxc a").get_attribute("href")
@@ -61,8 +61,8 @@ class FBdriver(webdriver.Chrome):
                     return (href, total_mutual_friends, True)
         return (href, 0, True)
 
+    # get participants friends list and return as list of friends objects
     def full_friend_lookup_table(self, to_load=-1):
-        start_time = time.time()
         if self.friend_lookup_table:
             return self.friend_lookup_table
 
@@ -102,8 +102,8 @@ class FBdriver(webdriver.Chrome):
         print(f"participant has {len(friend_urls)} friends")
         return friend_lookup_table
 
+    # get a friends mutual friends list and return as list of friend urls, done through mobile layout
     def full_mutual_friend_list_mobile(self, friend):
-        start_time = time.time()
         if "profile.php" in friend.url:
             url = f"https://m.facebook.com/{friend.url}&v=friends&mutual=1"
         else:
@@ -136,6 +136,7 @@ class FBdriver(webdriver.Chrome):
             friend_paths.append(path)
         return friend_paths
 
+    # get a friends mutual friends list and return as list of friend urls
     def full_mutual_friend_list(self, friend, to_load=-1):
         start_time = time.time()
         self.get(format_url(friend, "friends_mutual"))
@@ -172,7 +173,6 @@ class FBdriver(webdriver.Chrome):
                 mutual_friends_anchors = mutual_friends_elements.find_elements_by_css_selector("[tabindex='-1']")
                 mutual_friends_urls = [anchor.get_attribute("href") for anchor in mutual_friends_anchors]
                 friend.mutual_friends = [path.split("/")[-1] for path in mutual_friends_urls]
-                #print(f"{len(mutual_friends_urls)} mutual friends: "+str(time.time() - start_time))
                 mutual_tries-=1
                 to_return = float(time.time() - start_time)
             except Exception:
@@ -181,33 +181,26 @@ class FBdriver(webdriver.Chrome):
         return to_return
 
     def scrape_name(self, friend):
-        #load friends facebook page
+        # load friends facebook page
         self.get("https://facebook.com/" + friend.url)
-        #find name element by css selector and return attribute string value
+        # find name element by css selector and return attribute string value
         elt = self.find_elements_by_css_selector("h1.gmql0nx0.l94mrbxd.p1ri9a11.lzcic4wl")
         if len(elt) > 1:
             elt = elt[1]
         else:
             elt = elt[0]
         name = elt.get_attribute("innerText")
-        #print(name)
         return name
 
     def scrape_participant_name(self, participant):
-        #load friends facebook page
+        # load friends facebook page
         self.get("https://mobile.facebook.com/" + participant.url)
-        #find name element by css selector and return attribute string value
+        # find name element by css selector and return attribute string value
         elt = self.find_element_by_css_selector("h3._6x2x")
-        # if len(elt) > 1:
-        #     elt = elt[1]
-        # else:
-        #     elt = elt[0]
         name = elt.get_attribute("innerText")
-        #print(name)
         return name
 
     def scrape_work_and_ed(self, friend):
-        start_time = time.time()
         self.get(format_url(friend, "about_work_and_education"))
 
         # getting profile image url
@@ -216,59 +209,29 @@ class FBdriver(webdriver.Chrome):
         profile_picture_image = profile_picture_section.find_element_by_tag_name("image")
         profile_picture_url = profile_picture_image.get_attribute("xlink:href")
 
-        #work scraping
+        # work scraping
         sections = self.find_elements_by_css_selector(".dati1w0a.tu1s4ah4.f7vcsfb0.discj3wi > div")
         workList = []
         work = sections[0]
         for w in work.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt"):
             workName = "NA"
-            dateOrLocationName = "NA"
-            locationName = "NA"
-            facebookPageUrl = "NA"
-            list_of_years = "NA"
-
             if not "Add a " in w.get_attribute("innerText") and not " to show" in w.get_attribute("innerText"):
                 workElement = w.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id")
                 workName = workElement.get_attribute("innerText")
-                # workUrlElement = workElement.find_elements_by_css_selector("[role='link']")
-                # if workUrlElement:
-                #     facebookPageUrl = workUrlElement[0].get_attribute("href")
-                dateOrLocations = w.find_elements_by_class_name("j5wam9gi.e9vueds3.m9osqain")
-                if len(dateOrLocations) > 1:
-                    dateOrLocationName = dateOrLocations[0].get_attribute("innerText")
-                    locationName = dateOrLocations[1].get_attribute("innerText")
-                elif len(dateOrLocations) == 1:
-                    dateOrLocationName = dateOrLocations[0].get_attribute("innerText")
             else:
                 continue
-            
-            if locationName == "NA":
-                if not any(str.isdigit(c) for c in dateOrLocationName):
-                    locationName = dateOrLocationName
-                    dateOrLocationName = "NA"
-                else:
-                    list_of_years = generate_list_of_years(dateOrLocationName, 0)
-            else:
-                list_of_years = generate_list_of_years(dateOrLocationName, 0)
             if " at " in workName:
                 workName = workName.split("at ")[1]
             tempDict = {
                 "title": workName,
-                "date": dateOrLocationName,
-                "list_of_years": list_of_years,
-                "location": locationName,
-                "workUrl": facebookPageUrl
             }
             workList.append(tempDict)
 
-        #college scraping
+        # college scraping
         college = sections[1]
         collegeList = []
         for c in college.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt"):
             schoolName = "NA"
-            year = "NA"
-            list_of_years = []
-            facebookPageUrlC = "NA"
 
             if not "Add a " in c.get_attribute("innerText") and not " to show" in c.get_attribute("innerText"):
                 schoolElement = c.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id")
@@ -276,49 +239,25 @@ class FBdriver(webdriver.Chrome):
                 # schoolUrlElement = schoolElement.find_elements_by_css_selector("[role='link']")
                 # if schoolUrlElement:
                 #     facebookPageUrlC = schoolUrlElement[0].get_attribute("href")
-                elements = c.find_elements_by_css_selector(".j5wam9gi.e9vueds3.m9osqain")
-
-                if len(elements) == 1:
-                    year = elements[0].get_attribute("innerText")
-                elif len(elements) == 3:
-                    year = elements[2].get_attribute("innerText")
-                elif len(elements) == 5:
-                    year = elements[4].get_attribute("innerText")
             else:
                 continue
-
-            if not any(str.isdigit(c) for c in year): 
-                year = "NA" 
                 
             if " at " in schoolName:
                 schoolName = schoolName.split("at ")[1]
-            list_of_years = generate_list_of_years(year)
             tempDict = {
                 "title": schoolName,
-                "list_of_years": list_of_years,
-                "year": year,
-                "collegeUrl": facebookPageUrlC
             }
             collegeList.append(tempDict)
 
-        #high school scraping
+        # high school scraping
         highSchool = sections[2]
         highSchoolList = []
         for h in highSchool.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt"):
             hSchoolName = "NA"
-            hSYear = "NA"
-            facebookPageUrlH = "NA"
-            list_of_years = []
 
             if not "Add a " in h.get_attribute("innerText") and not " to show" in h.get_attribute("innerText"):
                 hSchoolElement = h.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id")
                 hSchoolName = hSchoolElement.get_attribute("innerText")
-                # hSchoolUrlElement = hSchoolElement.find_elements_by_css_selector("[role='link']")
-                # if hSchoolUrlElement:
-                #     facebookPageUrlH = hSchoolUrlElement[0].get_attribute("href")
-                hSYear_element = h.find_elements_by_css_selector(".j5wam9gi.e9vueds3.m9osqain")
-                if hSYear_element:
-                    hSYear = hSYear_element[0].get_attribute("innerText")
             else:
                 continue
 
@@ -326,17 +265,12 @@ class FBdriver(webdriver.Chrome):
                 hSchoolName = hSchoolName.split(" at ")[1]
             if " to " in hSchoolName:
                 hSchoolName = hSchoolName.split(" to ")[1]
-            list_of_years = generate_list_of_years(hSYear)
             tempDict = {
                 "title": hSchoolName,
-                "list_of_years": list_of_years,
-                "year": hSYear,
-                "highSchoolUrl": facebookPageUrlH
             }
             highSchoolList.append(tempDict)
 
-        #update profile completion counts
-        completionCount = 3
+        # update profile completion counts
         completionCount = 2
         if not workList:
             workList = "NA"
@@ -347,11 +281,9 @@ class FBdriver(webdriver.Chrome):
             collegeList = "NA"
         if not highSchoolList:
             highSchoolList = "NA"
-        #print("Work and ed: "+str(time.time() - start_time))
-        return (completionCount, workList, collegeList, highSchoolList, profile_picture_url, float(time.time() - start_time))
+        return (completionCount, workList, collegeList, highSchoolList, profile_picture_url)
 
     def scrape_places_lived(self, friend):
-        start_time = time.time()
         self.get(format_url(friend, "about_places"))
         places_lived = {
             "hometown": "NA",
@@ -397,152 +329,37 @@ class FBdriver(webdriver.Chrome):
         completionCount = 1
         if all(value == "NA" for value in places_lived.values()):
             completionCount = 0
-        #print("Places lived: "+str(time.time() - start_time))
-        return completionCount, places_lived, float(time.time() - start_time)
+        return completionCount, places_lived
 
     def scrape_contact_and_basic(self, friend):
-        start_time = time.time()
         self.get(format_url(friend, "about_contact_and_basic_info"))
         elts = self.find_elements_by_css_selector(".dati1w0a.tu1s4ah4.f7vcsfb0.discj3wi > div")
         text_elements = []
         for i in elts:
             text_elements.append(i.get_attribute("innerText"))
 
-        contact_info = {
-            "address": "NA",
-            "mobile": "NA",
-            "email": "NA"
-        }
-        websites = []
-        social_links = []
         basic_info = {
-            "languages": [],
             "religiousviews": "NA",
             "politicalviews": "NA",
-            "interestedin": "NA",
-            "gender": "NA",
-            "birthdate": "NA",
-            "birthyear": "NA"
         }
-    
-        # getting contact_info
-        if not "No contact info to show" in text_elements[0]:
-            contact_info = extract_data(text_elements[0], contact_info)
-        
-        # getting website and social media links
-        if not "No links to show" in text_elements[1]:
-            all_links = text_elements[1].split("\n")
-            links = [link for link in all_links if not "Shared " in link and not "Only " in link and not "Add a " in link]
-            for i in range(1, len(links), 2):
-                if "Website" in links[i+1]:
-                    websites.append(links[i])
-                else:
-                    social_links.append({
-                        "platform": links[i+1], 
-                        "identifier": links[i] 
-                    })
         
         # getting basic info
         basic_info = extract_data(text_elements[2], basic_info)
 
-        #format for consistency - NA
+        # format for consistency - NA
         if not basic_info:
-            basic_info["languages"] = "NA"
             basic_info["religiousviews"] = "NA"
             basic_info["politicalviews"] = "NA"
-            basic_info["birthyear"] = "NA"
-            basic_info["interestedin"] = "NA"
-            basic_info["gender"] = "NA"
-            websites = "NA"
-            social_links = "NA"
-        else:
-            if not basic_info["languages"]:
-                basic_info["languages"] = "NA"
-            if not websites:
-                websites = "NA"
-            if not social_links:
-                social_links = "NA"
+
         contact_and_basic_info = {
-            "contact_info": contact_info,
-            "websites": websites,
-            "social_links": social_links,
             "basic_info": basic_info
         }
 
-        #update profile percentage counts
-        completionCount = 4
-        if basic_info["languages"] == "NA":
-            completionCount-=1
+        # update profile percentage counts
+        completionCount = 2
         if basic_info["religiousviews"] == "NA":
             completionCount-=1
         if basic_info["politicalviews"] == "NA":
             completionCount-=1
-        if basic_info["birthyear"] == "NA":
-            completionCount-=1
-        totalCount = 5
-        if basic_info["interestedin"] == "NA":
-            totalCount-=1
-        if basic_info["gender"] == "NA":
-            totalCount-=1
-        if contact_info["address"] == "NA":
-            totalCount-=1
-        if contact_info["mobile"] == "NA":
-            totalCount-=1
-        if contact_info["email"] == "NA":
-            totalCount-=1
 
-        #print("contact and basic info: "+str(time.time()-start_time))
-        return totalCount, completionCount, contact_and_basic_info, float(time.time()-start_time)
-
-    # def scrape_family_and_rel(self, friend):
-    #     start_time = time.time()
-    #     self.get(format_url(friend, "about_family_and_relationships"))
-    #     sections = self.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt")
-    #     rel = sections[0]
-
-    #     #scrape relationship
-    #     relStatus = rel.get_attribute("innerText")
-    #     if "No relationship info to show" in relStatus or "Add a " in relStatus:
-    #         relStatus = "NA"
-    #     else:
-    #         relStatus = rel.get_attribute("innerText")
-        
-    #     #scrape family
-    #     fam = sections[1:]
-    #     famList = []
-    #     for f in fam:
-    #         famPart = f.get_attribute("innerText").partition('\n')
-    #         famName = famPart[0]
-    #         if "No family" in famName:
-    #             famList = "NA"
-    #             break
-    #         elif "Add a " in famName:
-    #             continue
-    #         famRel = famPart[2]
-    #         famUrl = "NA"
-
-    #         famUrlElement = f.find_elements_by_css_selector("[role='link']")
-
-    #         if famUrlElement:
-    #             famUrl = famUrlElement[0].get_attribute("href").split("/")[-1]
-
-    #         famList.append(
-    #             {
-    #                 "relation": famRel,
-    #                 "name": famName,
-    #                 "url": famUrl
-    #             }
-    #         )
-
-    #     relAndFamDict = {
-    #         "relationship": relStatus,
-    #         "family members": famList
-    #     }
-    #     completionCount = 1
-    #     if famList == "NA":
-    #         completionCount-=1
-    #     totalCount = 1
-    #     if relStatus == "NA":
-    #         totalCount-=1
-    #     #print("relationship and family: "+str(time.time()-start_time))
-    #     return totalCount, completionCount, relAndFamDict, float(time.time()-start_time)
+        return completionCount, contact_and_basic_info

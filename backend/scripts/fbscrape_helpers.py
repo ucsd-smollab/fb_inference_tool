@@ -1,4 +1,6 @@
 from friend import Friend
+from fbdriver import *
+from selenium.common.exceptions import NoSuchElementException
 
 def format_url(friend, sub_path):
     places_url = f'https://facebook.com/{friend.url}'
@@ -111,49 +113,37 @@ def populate_category_groups(data, person_url, category_name, category_groups):
 def get_participant_data(category_groups, driver):
     participant = Friend(driver.participant_path)
     participant.name = driver.scrape_participant_name(participant)
-    (count, participant.attributes["work"], participant.attributes["college"], participant.attributes["highschool"], participant.profile_picture_url, time) = driver.scrape_work_and_ed(participant)
+    # work_and_ed out of 2
+    (count, participant.attributes["work"], participant.attributes["college"], participant.attributes["highschool"], participant.profile_picture_url) = driver.scrape_work_and_ed(participant)
     participant.percent_complete+=count
     populate_category_groups(participant.attributes["work"], participant.url, "work", category_groups)
     populate_category_groups(participant.attributes["college"], participant.url, "college", category_groups)
     populate_category_groups(participant.attributes["highschool"], participant.url, "highschool", category_groups)
-    (count, participant.attributes["places lived"], time) = driver.scrape_places_lived(participant)
+    # places_lived out of 1
+    (count, participant.attributes["places lived"]) = driver.scrape_places_lived(participant)
     participant.percent_complete+=count
     populate_category_groups(participant.attributes["places lived"]["list_of_cities"], participant.url, "cities", category_groups)
-    (participant.percent_total_complete, count, participant.attributes["contact and basic"], time) = driver.scrape_contact_and_basic(participant)
+    # contact_and_basic out of 2
+    (count, participant.attributes["contact and basic"]) = driver.scrape_contact_and_basic(participant)
     participant.percent_complete+=count
     populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["religiousviews"], participant.url, "religiousviews", category_groups)
     populate_category_groups(participant.attributes["contact and basic"]["basic_info"]["politicalviews"], participant.url, "politicalviews", category_groups)
 
-    participant.percent_complete+=count
-    participant.percent_total_complete+=participant.percent_complete
-    participant.percent_complete = round(participant.percent_complete/7, 3)
-    participant.percent_total_complete = round(participant.percent_total_complete/13, 3)
+    participant.percent_complete = round(participant.percent_complete/5, 3)
+    participant.percent_total_complete = 0
     return participant
 
+# scrape friends data and update their profile percent complete
 def scrape_friend_info(f, num_mutual, category_groups, driver):
-    try:
-        time_array = []
-        f.name = driver.scrape_name(f)
-        time = driver.full_mutual_friend_list(f, num_mutual)
-        time_array.append(time)
-        (count, f.attributes["work"], f.attributes["college"], f.attributes["highschool"], f.profile_picture_url, time) = driver.scrape_work_and_ed(f)
-        time_array.append(time)
-        f.percent_complete+=count    
-        (count, f.attributes["places lived"], time) = driver.scrape_places_lived(f)
-        time_array.append(time)
-        f.percent_complete+=count    
-        (f.percent_total_complete, count, f.attributes["contact and basic"], time) = driver.scrape_contact_and_basic(f)
-        time_array.append(time)
-        #(tempCount, count, f.attributes["family and rel"], time) = driver.scrape_family_and_rel(f)
-        #time_array.append(time)
-        #f.percent_complete+=count
-        f.percent_total_complete+=f.percent_complete
-        #f.percent_total_complete+=tempCount
-        f.percent_complete = round(f.percent_complete/7, 3)
-        f.percent_total_complete = round(f.percent_total_complete/13, 3)
-        return time_array
-    except NoSuchElementException:
-        return None
+    f.name = driver.scrape_name(f)
+    driver.full_mutual_friend_list(f, num_mutual)
+    (count, f.attributes["work"], f.attributes["college"], f.attributes["highschool"], f.profile_picture_url) = driver.scrape_work_and_ed(f)
+    f.percent_complete+=count    
+    (count, f.attributes["places lived"]) = driver.scrape_places_lived(f)
+    f.percent_complete+=count    
+    (count, f.attributes["contact and basic"]) = driver.scrape_contact_and_basic(f)
+    f.percent_complete = round(f.percent_complete/5, 3)
+    f.percent_total_complete = 0
 
 def populate_category_groups_funct(f, category_groups):
     populate_category_groups(f.attributes["work"], f.url, "work", category_groups)
@@ -162,4 +152,3 @@ def populate_category_groups_funct(f, category_groups):
     populate_category_groups(f.attributes["places lived"]["list_of_cities"], f.url, "cities", category_groups)
     populate_category_groups(f.attributes["contact and basic"]["basic_info"]["religiousviews"], f.url, "religiousviews", category_groups)
     populate_category_groups(f.attributes["contact and basic"]["basic_info"]["politicalviews"], f.url, "politicalviews", category_groups)
-    populate_category_groups(f.attributes["contact and basic"]["basic_info"]["birthyear"], f.url, "birthyear", category_groups)

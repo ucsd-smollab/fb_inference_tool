@@ -60,9 +60,6 @@ category_groups_template = {
     "politicalviews": {
         "no_data": []
     },
-    "birthyear": {
-        "no_data": []
-    },
 }
 
 category_groups = copy.deepcopy(category_groups_template)
@@ -87,7 +84,6 @@ if objects:
         prev_friends_scraped = old_data["count"]
     if "category_groups" in old_data:
         category_groups = old_data["category_groups"]
-    
 
 # scrape participant info if not in pickle
 if not old_data and not "friends" in old_data:
@@ -103,10 +99,6 @@ if not old_data and not "friends" in old_data:
 else:
     friends = old_data["friends"]
 
-# table of times
-time_df = pd.DataFrame(columns=["mutual friends", "Word and ed", "Places lived", \
-"contact and basic info", "relationship and family", "total time"])
-
 # manual override if didnt scrape properly
 #prev_friends_scraped = 250
 exception_list = []
@@ -116,27 +108,20 @@ num_friends_scraped = 0
 num_to_scrape = 300 # len(friends) for all
 num_mutual_pages = 1 # -1 for all, otherwise a 8* will be number of friends scraped
 num_mutuals_inf = -1 # -1 for all, otherwise sets mutuals to make inferences on
-time_df = pd.DataFrame(columns=[str(num_mutual_pages)+" pages", "Word and ed", \
-"Places lived", "contact and basic info", "friend total time"])
 print(f"friends scraped from pickle: {prev_friends_scraped}")
 for p, f in friends.items():
-     # start_time = time.time()
+    # start_time = time.time()
     try:
         # use backup pickle if present else scrape normally
         if num_friends_scraped < prev_friends_scraped:
             if not f.name or num_friends_scraped>=num_to_scrape:
                 continue
             f = old_data["friends"][p]
-            # time_df.loc[len(time_df.index)] = f.time_array
         else:
             if num_friends_scraped >= num_to_scrape:
                 break
             # get current friend data, mutual friends in batches of 8
-            f.time_array = scrape_friend_info(f, num_mutual_pages, category_groups, driver)
-            if not f.time_array:
-                driver.get("http://facebook.com")
-                f.name = ""
-                continue
+            scrape_friend_info(f, num_mutual_pages, category_groups, driver)
             populate_category_groups_funct(f, category_groups)
 
         num_friends_scraped+=1
@@ -170,10 +155,6 @@ for p, f in friends.items():
         #     insert_inf_into_database(friend, mydb, mycursor)
         # break
 
-        # print time and append time array to df
-        # print("friend total time: "+str(time.time()-start_time))
-        # f.time_array.append(float(time.time()-start_time))
-        # time_df.loc[len(time_df.index)] = f.time_array
     except:
         print(f"exception: {f.url}")
         print("---------")
@@ -192,11 +173,3 @@ for p, f in friends.items():
 print(f"exception list: {exception_list}")
 print(f"number of friends scraped: {num_friends_scraped}")
 print("total runtime: "+str(time.time() - total_time))
-
-for url, friend in friends.items():
-    category_frequency_data = copy.deepcopy(category_groups_template)
-    for category, category_data in category_groups.items():
-        for name, list_of_urls in category_data.items():
-            category_frequency_data[category][name] = list(set(get_list_of_people(friend.mutual_friends, participant.url, list_of_urls, num_mutuals_inf)))
-    friend.inference_count = category_frequency_data
-    insert_inf_into_database(friend, mydb, mycursor)
