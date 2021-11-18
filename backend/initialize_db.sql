@@ -57,6 +57,16 @@ CREATE TABLE places_lived (
     PRIMARY KEY(friend_url, location)
 );
 
+CREATE TABLE friend_inf (
+	friend_url VARCHAR(50) NOT NULL,
+    work_inf VARCHAR(50),
+    college_inf VARCHAR(50),
+    high_school_inf VARCHAR(50),
+	religion_inf VARCHAR(50),
+	politic_inf VARCHAR(50),
+    PRIMARY KEY(friend_url)
+);
+
 CREATE TABLE work_inf (
 	friend_url VARCHAR(50) NOT NULL,
     workplace VARCHAR(100) NOT NULL,

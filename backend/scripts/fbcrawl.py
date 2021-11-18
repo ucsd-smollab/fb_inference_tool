@@ -125,7 +125,6 @@ for p, f in friends.items():
             populate_category_groups_funct(f, category_groups)
 
         num_friends_scraped+=1
-        insert_scraped_into_database(f, mydb, mycursor)
 
         # # updating local data, breaking after number of friends achieved
         # file = open(f"file_{num_friends_scraped}.pkl","wb")
@@ -138,6 +137,8 @@ for p, f in friends.items():
         # }
         # pickle.dump(formatted_data, file)
         # file.close()
+
+        insert_scraped_into_database(f, mydb, mycursor)
 
         print(num_friends_scraped)
         print(f.name)

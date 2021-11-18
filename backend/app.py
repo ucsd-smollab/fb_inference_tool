@@ -24,8 +24,11 @@ def index():
 @app.route("/stage_three_step_one", methods=["GET"])
 @cross_origin()
 def StageThreeStepOne():
-    query_most = "SELECT name FROM privacy_db.friend_profiles ORDER BY perc_comp_total DESC, perc_comp_inf DESC LIMIT 5;"
-    query_least = "SELECT name FROM privacy_db.friend_profiles ORDER BY perc_comp_total, perc_comp_inf LIMIT 5;"
+    # if using total complete
+    # query_most = "SELECT name FROM privacy_db.friend_profiles ORDER BY perc_comp_total DESC, perc_comp_inf DESC LIMIT 5;"
+    # query_least = "SELECT name FROM privacy_db.friend_profiles ORDER BY perc_comp_total, perc_comp_inf LIMIT 5;"
+    query_most = "SELECT name FROM privacy_db.friend_profiles ORDER BY perc_comp_inf DESC LIMIT 5;"
+    query_least = "SELECT name FROM privacy_db.friend_profiles ORDER BY perc_comp_inf LIMIT 5;"
     mycursor.execute(query_most)
     myresult_most = mycursor.fetchall()
     myresult_most = [name[0] for name in myresult_most]
