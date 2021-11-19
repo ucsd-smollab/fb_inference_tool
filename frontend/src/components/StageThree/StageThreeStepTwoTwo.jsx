@@ -11,7 +11,7 @@ const StageThreeStepTwoTwo = (props) => {
   const [prediction, changePrediction] = useState([]);
 
   useEffect(() => {
-    const responseUsersShared= fetch("http://localhost:5000/stage_three_step_two_one_one", {
+    const responseUsersShared= fetch("http://localhost:5000/stage_three_step_two", {
       method: "GET",
       headers: {
         "Content-Type": "application/json"
@@ -37,7 +37,7 @@ const StageThreeStepTwoTwo = (props) => {
         <div className={globalStyles.mainContent}>
         <div className={`${globalStyles.flex_container} ${globalStyles.two_column}`}>
           <div className={`${globalStyles.itemBoxes} ${globalStyles.longBox} ${globalStyles.wideBox}`}>
-            <h2>Friends who explicitly shared that they {prediction}</h2>
+            <h2>shared</h2>
             {friendsExplicit.map((friend) => (
               <div className={globalStyles.medText}>
                 <span>{friend}</span>
@@ -47,7 +47,7 @@ const StageThreeStepTwoTwo = (props) => {
         </div>
         <div className={`${globalStyles.flex_container} ${globalStyles.two_column}`}>
           <div className={`${globalStyles.itemBoxes} ${globalStyles.longBox} ${globalStyles.wideBox}`}>
-            <h2>Friends who we can infer {prediction}</h2>
+            <h2>inferred</h2>
             {friendsInferred.map((friend) => (
               <div className={globalStyles.medText}>
                 <span>

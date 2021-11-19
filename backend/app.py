@@ -11,6 +11,7 @@ mydb = mysql.connector.connect(
   user="privacy_admin",
   password="kristenisthebest",
 )
+
 mycursor = mydb.cursor()
 
 app = Flask(__name__)
@@ -46,12 +47,13 @@ def StageThreeStepOne():
     )
     return response
 
-@app.route("/stage_three_step_two_one_one", methods=["GET"])
+@app.route("/stage_three_step_two", methods=["GET"])
 @cross_origin()
 def StageThreeStepTwoOne():
     attribute_query = "SELECT attribute FROM privacy_db.attribute_count WHERE inf_count>=5 ORDER BY mutual_count DESC LIMIT 1;"
     mycursor.execute(attribute_query)
     attribute = mycursor.fetchall()[0][0]
+
     category_query = "SELECT category FROM privacy_db.attribute_count WHERE inf_count>=5 ORDER BY mutual_count DESC LIMIT 1;"
     mycursor.execute(category_query)
     category = mycursor.fetchall()[0][0]
@@ -66,26 +68,45 @@ def StageThreeStepTwoOne():
 
     category_line = f"category: {category} attribute: {attribute}"
     if category=="high_school":
-        five_shared_query = f"SELECT friend_url FROM privacy_db.high_school WHERE hs_name=%s AND friend_url!={participant_url} LIMIT 5;"
+        five_shared_query = f"SELECT friend_url FROM privacy_db.high_school WHERE hs_name=%s AND friend_url!='{participant_url}' LIMIT 5;"
     elif category=="college":
-        five_shared_query = f"SELECT friend_url FROM privacy_db.college WHERE college_name=%s AND friend_url!={participant_url}LIMIT 5;"
+        five_shared_query = f"SELECT friend_url FROM privacy_db.college WHERE college_name=%s AND friend_url!='{participant_url}' LIMIT 5;"
     elif category=="work":
-        five_shared_query = f"SELECT friend_url FROM privacy_db.work WHERE workplace=%s AND friend_url!={participant_url} LIMIT 5;"
+        five_shared_query = f"SELECT friend_url FROM privacy_db.work WHERE workplace=%s AND friend_url!='{participant_url}' LIMIT 5;"
     elif category=="places_lived":
-        five_shared_query = f"SELECT friend_url FROM privacy_db.places_lived WHERE location=%s AND friend_url!={participant_url} LIMIT 5;"
+        five_shared_query = f"SELECT friend_url FROM privacy_db.places_lived WHERE location=%s AND friend_url!='{participant_url}' LIMIT 5;"
     else:
-        five_shared_query = f"SELECT friend_url FROM privacy_db.friend_profiles WHERE {category}=%s AND friend_url!={participant_url} ORDER BY mutual_count DESC LIMIT 5;"
+        five_shared_query = f"SELECT friend_url FROM privacy_db.friend_profiles WHERE {category}=%s AND friend_url!='{participant_url}' ORDER BY mutual_count DESC LIMIT 5;"
 
     val = (attribute,)
     mycursor.execute(five_shared_query, val)
     five_shared = mycursor.fetchall()
 
-    five_inf_query = "SELECT friend_url FROM privacy_db.mutual_count WHERE category=%s AND attribute=%s ORDER BY mutual_count DESC LIMIT 5;"
+    five_inf_query = "SELECT friend_url, category FROM privacy_db.mutual_count WHERE category=%s AND attribute=%s ORDER BY mutual_count DESC;"
     val = (category, attribute)
     mycursor.execute(five_inf_query, val)
     five_inf = mycursor.fetchall()
 
-    newList = [category_line, five_shared, five_inf]
+    inf_to_display = []
+    for url, cat in five_inf:
+        if cat=="religion" or cat=="politics":
+            query = f"SELECT {cat} FROM privacy_db.friend_profiles WHERE friend_url=%s;"
+            value = (url,)
+            mycursor.execute(query, value)
+            temp_val = mycursor.fetchall()
+            if temp_val=="NA":
+                inf_to_display.append(url)
+        else:
+            query = f"SELECT friend_url FROM privacy_db.{cat} WHERE friend_url=%s;"
+            value = (url,)
+            mycursor.execute(query, value)
+            temp_val = mycursor.fetchall()
+            if not temp_val:
+                inf_to_display.append(url)
+        if len(inf_to_display) >= 5:
+            break
+
+    newList = [category_line, five_shared, inf_to_display]
 
     response = app.response_class(
         response=json.dumps(newList),
