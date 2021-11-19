@@ -137,6 +137,7 @@ def StopScrape():
     else:
         end_scrape = True
         print("Changed")
+        end_scrape = True
         response = app.response_class(
             response=json.dumps(end_scrape),
             status=200,

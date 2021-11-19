@@ -26,8 +26,8 @@ const StageFour = (props) => {
 
   return (
     <div className={globalStyles.background}>
-{/*      <input className={mainStyles.SearchBar} placeholder="Enter your Friend's Name" onChange={event => changeQuery(event.target.value)} />
-      <div className={mainStyles.MainBody}>
+     <input type="text" className={mainStyles.SearchBar} placeholder="" onChange={event => changeQuery(event.target.value)} />
+      {/* <div className={mainStyles.MainBody}>
         {friendData.filter(friend => {
           if (query === '' || friend.toLowerCase().includes(query.toLowerCase())) {
             return friend;
@@ -35,7 +35,7 @@ const StageFour = (props) => {
         }).map( (friend, index) => 
           <FriendBox friend={friend}/>
         )}
-      </div>*/}
+      </div> */}
       <FriendBox friend={exampleFriendData}/>
     </div>
   );
