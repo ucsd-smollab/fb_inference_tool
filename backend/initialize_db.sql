@@ -112,8 +112,16 @@ CREATE TABLE politics_inf (
 
 CREATE TABLE attribute_count (
 	attribute VARCHAR(50) NOT NULL,
-    category VARCHAR(50) DEFAULT NULL,
+    category VARCHAR(50) NOT NULL,
     mutual_count SMALLINT NOT NULL DEFAULT 0,
     inf_count SMALLINT NOT NULL DEFAULT 0,
-    PRIMARY KEY(attribute)
+    PRIMARY KEY(attribute, category)
+);
+
+CREATE TABLE mutual_count (
+    friend_url VARCHAR(50) NOT NULL,
+	attribute VARCHAR(50) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    mutual_count SMALLINT NOT NULL DEFAULT 0,
+    PRIMARY KEY(friend_url, category, attribute)
 );

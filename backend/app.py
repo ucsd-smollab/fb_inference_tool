@@ -51,19 +51,23 @@ def StageThreeStepOne():
 @app.route("/stage_three_step_two_one_one", methods=["GET"])
 @cross_origin()
 def StageThreeStepTwoOne():
-    top_attribute_query = "SELECT attribute, category FROM privacy_db.attribute_count WHERE inf_count>=5 ORDER BY mutual_count DESC LIMIT 1;"
-    mycursor.execute(top_attribute_query)
-    top_attribute = mycursor.fetchall()
+    attribute_query = "SELECT attribute FROM privacy_db.attribute_count WHERE inf_count>=5 ORDER BY mutual_count DESC LIMIT 1;"
+    mycursor.execute(attribute_query)
+    attribute = mycursor.fetchall()[0][0]
+    category_query = "SELECT category FROM privacy_db.attribute_count WHERE inf_count>=5 ORDER BY mutual_count DESC LIMIT 1;"
+    mycursor.execute(category_query)
+    category = mycursor.fetchall()[0][0]
 
     # do if statements to determine how it should be formatter
     # example These friends lived in ____ vs These friends went to ____ for college
-    category_line = top_attribute
+    category_line = f"category: {category} attribute: {attribute}"
+    print(category_line)
 
     five_shared = []
-    five_shared_query = "SELECT attribute, category FROM attribute_count WHERE inf_count>=5 ORDER BY mutual_count DESC LIMIT 1;"
+    five_shared_query = ""
 
     five_inf = []
-    five_inf_query = "SELECT attribute, category FROM attribute_count WHERE inf_count>=5 ORDER BY mutual_count DESC LIMIT 1;"
+    five_inf_query = ""
 
     newList = [category_line, five_shared, five_inf]
 
