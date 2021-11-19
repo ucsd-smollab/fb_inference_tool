@@ -63,8 +63,11 @@ def StageThreeStepTwoOne():
     category_line = f"category: {category} attribute: {attribute}"
     print(category_line)
 
-    five_shared = []
-    five_shared_query = ""
+    five_shared_query = "SELECT friend_url FROM privacy_db.mutual_count WHERE category=%s AND attribute=%s ORDER BY mutual_count DESC LIMIT 5;"
+    val = (category, attribute)
+    mycursor.execute(five_shared_query, val)
+    five_shared = mycursor.fetchall()
+
 
     five_inf = []
     five_inf_query = ""

@@ -52,6 +52,8 @@ def insert_inf_into_database(friend, mydb, mycursor):
     work_max = 0
     work_max_inf = None
     for work in friend.inference_count["work"]:
+        if work=="no_data":
+            continue
         mutual_count = len(friend.inference_count["work"][work])
         if mutual_count > work_max:
             work_max = mutual_count
@@ -69,6 +71,8 @@ def insert_inf_into_database(friend, mydb, mycursor):
     college_max = 0
     college_max_inf = None
     for college in friend.inference_count["college"]:
+        if college=="no_data":
+            continue
         mutual_count = len(friend.inference_count["college"][college])
         if mutual_count > college_max:
             college_max = mutual_count
@@ -85,6 +89,8 @@ def insert_inf_into_database(friend, mydb, mycursor):
     hs_max = 0
     hs_max_inf = None
     for hs in friend.inference_count["highschool"]:
+        if hs=="no_data":
+            continue
         mutual_count = len(friend.inference_count["highschool"][hs])
         if mutual_count > hs_max:
             hs_max = mutual_count
@@ -101,6 +107,8 @@ def insert_inf_into_database(friend, mydb, mycursor):
     city_max = 0
     city_max_inf = None
     for city in friend.inference_count["cities"]:
+        if city=="no_data":
+            continue
         mutual_count = len(friend.inference_count["cities"][city])
         if mutual_count > city_max:
             work_max = mutual_count
@@ -117,6 +125,8 @@ def insert_inf_into_database(friend, mydb, mycursor):
     religion_max = 0
     religion_max_inf = None
     for religion in friend.inference_count["religiousviews"]:
+        if religion=="no_data":
+            continue
         mutual_count = len(friend.inference_count["religiousviews"][religion])
         if mutual_count > religion_max:
             religion_max = mutual_count
@@ -133,6 +143,8 @@ def insert_inf_into_database(friend, mydb, mycursor):
     politic_max = 0
     politic_max_inf = None
     for politic in friend.inference_count["politicalviews"]:
+        if politic=="no_data":
+            continue
         mutual_count = len(friend.inference_count["politicalviews"][politic])
         if mutual_count > politic_max:
             politic_max = mutual_count
@@ -177,12 +189,12 @@ def insert_all_attribute(category_groups, mydb, mycursor):
 
 def make_mutual_count(mydb, mycursor):
     sql = "INSERT INTO mutual_count SELECT * FROM\
-        (SELECT friend_url, 'college' AS category, college_name AS attribute, mutual_count FROM college_inf WHERE college_name<>'no_data' UNION ALL\
-        SELECT friend_url, 'high_school' AS category, hs_name AS attribute, mutual_count FROM high_school_inf WHERE hs_name<>'no_data' UNION ALL\
-        SELECT friend_url, 'places_lived' AS category, location AS attribute, mutual_count FROM places_lived_inf WHERE location<>'no_data' UNION ALL\
-        SELECT friend_url, 'politcs' AS category, political_view AS attribute, mutual_count FROM politics_inf WHERE political_view<>'no_data' UNION ALL\
-        SELECT friend_url, 'religion' AS category, religious_belief AS attribute, mutual_count FROM religion_inf WHERE religious_belief<>'no_data' UNION ALL\
-        SELECT friend_url, 'work' AS category, workplace AS attribute, mutual_count FROM work_inf WHERE workplace<>'no_data'\
+        (SELECT friend_url, college_name AS attribute, 'college' AS category, mutual_count FROM college_inf WHERE college_name<>'no_data' UNION ALL\
+        SELECT friend_url, hs_name AS attribute, 'high_school' AS category, mutual_count FROM high_school_inf WHERE hs_name<>'no_data' UNION ALL\
+        SELECT friend_url, location AS attribute, 'places_lived' AS category, mutual_count FROM places_lived_inf WHERE location<>'no_data' UNION ALL\
+        SELECT friend_url, political_view AS attribute, 'politics' AS category, mutual_count FROM politics_inf WHERE political_view<>'no_data' UNION ALL\
+        SELECT friend_url, religious_belief AS attribute, 'religion' AS category, mutual_count FROM religion_inf WHERE religious_belief<>'no_data' UNION ALL\
+        SELECT friend_url, workplace AS attribute, 'work' AS category, mutual_count FROM work_inf WHERE workplace<>'no_data'\
         ORDER BY mutual_count) a;"
     mycursor.execute(sql)
     mydb.commit()
