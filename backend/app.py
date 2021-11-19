@@ -61,16 +61,26 @@ def StageThreeStepTwoOne():
     # do if statements to determine how it should be formatter
     # example These friends lived in ____ vs These friends went to ____ for college
     category_line = f"category: {category} attribute: {attribute}"
-    print(category_line)
 
-    five_shared_query = "SELECT friend_url FROM privacy_db.mutual_count WHERE category=%s AND attribute=%s ORDER BY mutual_count DESC LIMIT 5;"
-    val = (category, attribute)
+    if category=="high_school":
+        five_shared_query = "SELECT friend_url FROM privacy_db.high_school WHERE hs_name=%s LIMIT 5;"
+    elif category=="college":
+        five_shared_query = "SELECT friend_url FROM privacy_db.college WHERE college_name=%s LIMIT 5;"
+    elif category=="work":
+        five_shared_query = "SELECT friend_url FROM privacy_db.work WHERE workplace=%s LIMIT 5;"
+    elif category=="places_lived":
+        five_shared_query = "SELECT friend_url FROM privacy_db.places_lived WHERE location=%s LIMIT 5;"
+    else:
+        five_shared_query = f"SELECT friend_url FROM privacy_db.friend_profiles WHERE {category}=%s ORDER BY mutual_count DESC LIMIT 5;"
+    print(five_shared_query, attribute)
+    val = (attribute)
     mycursor.execute(five_shared_query, val)
     five_shared = mycursor.fetchall()
 
-
-    five_inf = []
-    five_inf_query = ""
+    five_inf_query = "SELECT friend_url FROM privacy_db.mutual_count WHERE category=%s AND attribute=%s ORDER BY mutual_count DESC LIMIT 5;"
+    val = (category, attribute)
+    mycursor.execute(five_inf_query, val)
+    five_inf = mycursor.fetchall()
 
     newList = [category_line, five_shared, five_inf]
 
