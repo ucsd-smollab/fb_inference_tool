@@ -1,0 +1,17 @@
+.linktofb {
+  background-color: rgb(240, 242, 245);
+  border: none;
+  border-radius: 20px;
+  width: 120%;
+  height: 150%;
+  color: black;
+  font-size: 2em;
+  cursor: pointer;
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
