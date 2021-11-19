@@ -13,8 +13,6 @@ mydb = mysql.connector.connect(
 )
 mycursor = mydb.cursor()
 
-
-end_scrape = False
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
 CORS(app)
@@ -62,17 +60,21 @@ def StageThreeStepTwoOne():
     # example These friends lived in ____ vs These friends went to ____ for college
     # remove user from list and fix %s in else
 
+    participant_url_query = "SELECT participant_url FROM privacy_db.participant_profile;"
+    mycursor.execute(participant_url_query)
+    participant_url = mycursor.fetchall()[0][0]
+
     category_line = f"category: {category} attribute: {attribute}"
     if category=="high_school":
-        five_shared_query = "SELECT friend_url FROM privacy_db.high_school WHERE hs_name=%s LIMIT 5;"
+        five_shared_query = f"SELECT friend_url FROM privacy_db.high_school WHERE hs_name=%s AND friend_url!={participant_url} LIMIT 5;"
     elif category=="college":
-        five_shared_query = "SELECT friend_url FROM privacy_db.college WHERE college_name=%s LIMIT 5;"
+        five_shared_query = f"SELECT friend_url FROM privacy_db.college WHERE college_name=%s AND friend_url!={participant_url}LIMIT 5;"
     elif category=="work":
-        five_shared_query = "SELECT friend_url FROM privacy_db.work WHERE workplace=%s LIMIT 5;"
+        five_shared_query = f"SELECT friend_url FROM privacy_db.work WHERE workplace=%s AND friend_url!={participant_url} LIMIT 5;"
     elif category=="places_lived":
-        five_shared_query = "SELECT friend_url FROM privacy_db.places_lived WHERE location=%s LIMIT 5;"
+        five_shared_query = f"SELECT friend_url FROM privacy_db.places_lived WHERE location=%s AND friend_url!={participant_url} LIMIT 5;"
     else:
-        five_shared_query = f"SELECT friend_url FROM privacy_db.friend_profiles WHERE {category}=%s ORDER BY mutual_count DESC LIMIT 5;"
+        five_shared_query = f"SELECT friend_url FROM privacy_db.friend_profiles WHERE {category}=%s AND friend_url!={participant_url} ORDER BY mutual_count DESC LIMIT 5;"
 
     val = (attribute,)
     mycursor.execute(five_shared_query, val)
@@ -120,8 +122,7 @@ def StageThreeStepThree():
 @app.route("/stop_scraper", methods=["GET", "POST"])
 @cross_origin()
 def StopScrape():
-    end_scrape = True
-
+    global end_scrape 
     if request.method == "GET":
         response = app.response_class (
             response=json.dumps("wow"),
@@ -131,18 +132,22 @@ def StopScrape():
         if end_scrape:
             print("ended scraper")
             response.status = 200
-
+        print(end_scrape)
         return response
     else:
+        end_scrape = True
         print("Changed")
         response = app.response_class(
             response=json.dumps(end_scrape),
             status=200,
             mimetype='application/json'
         )
+        print(end_scrape)
         return response
 
 if __name__ == '__main__':
+    global end_scrape 
+    end_scrape = False
     app.run()
 
 '''

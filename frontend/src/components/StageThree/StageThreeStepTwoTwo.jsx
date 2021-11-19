@@ -11,31 +11,17 @@ const StageThreeStepTwoTwo = (props) => {
   const [prediction, changePrediction] = useState([]);
 
   useEffect(() => {
-    changeFriendsExplicit([
-      "Andy Nafets",
-      "Aaron B",
-      "Stephen T",
-      "Mary A",
-      "Kristen V",
-    ]);
-    changeFriendsInferred([
-      "Andy Nafets",
-      "Aaron B",
-      "Stephen T",
-      "Mary A",
-      "Kristen V",
-    ]);
-    changePrediction("have lived in San Diego");
-  }, []);
-
-  const stopScraper = () => {
-    const stop_scrapper_request = fetch("http://localhost:5000/stop_scraper", {
-      method: "POST",
+    const responseUsersShared= fetch("http://localhost:5000/stage_three_step_two_one_one", {
+      method: "GET",
       headers: {
         "Content-Type": "application/json"
       }
-    })
-  };
+    }).then(res => res.json()).then(data => {
+      changePrediction(data[0])
+      changeFriendsExplicit(data[1])
+      changeFriendsInferred(data[2])
+    });
+  }, []);
 
   return (
     <div className={globalStyles.background}>
@@ -43,7 +29,7 @@ const StageThreeStepTwoTwo = (props) => {
       <div>
         <div className={globalStyles.StageTitleContainer}>
           <h1>
-            We can infer that these friends also {prediction}
+            {prediction}
           </h1>
         </div >
         <br />
@@ -75,9 +61,7 @@ const StageThreeStepTwoTwo = (props) => {
       </div>
       <div className={globalStyles.ButtonContainer}>
         <Link to="/StageThreeStepThree">
-          <button className={globalStyles.ButtonNav} onclick={() => {
-            stopScraper()
-          }}>Next</button>
+          <button className={globalStyles.ButtonNav} >Next</button>
         </Link>
       </div>
     </div>

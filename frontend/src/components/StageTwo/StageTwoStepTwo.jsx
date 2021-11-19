@@ -8,6 +8,15 @@ import globalStyles from "../../styles/styles.module.css";
 import styles from "./StageTwoStepTwo.module.css";
 
 const StageTwoStepTwo = (props) => {
+  const stopScraper = () => {
+    const stop_scrapper_request = fetch("http://localhost:5000/stop_scraper", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+  };
+
   return (
     <div className={globalStyles.background}>
       <div className={globalStyles.mainContent}>
@@ -17,9 +26,10 @@ const StageTwoStepTwo = (props) => {
       </div>
       <div className={globalStyles.ButtonContainer}>
         <Link to="/StageThreeStepOne">
-          <button className={globalStyles.ButtonNav}>
-            Next
-          </button>
+          <button className={globalStyles.ButtonNav} onClick={() => {
+            stopScraper();
+            console.log("called stopScraper");
+          }}>Next</button>
         </Link>
       </div>
     </div>
