@@ -1,5 +1,5 @@
 .SearchBar {
-    font-size: 50px;
+    background-color: black;
 }
 
 .MainBody {
@@ -7,4 +7,20 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+input[type=text] {
+    width: 50%;
+    height: 50px;
+    font-size: 20px;
+    color: #76787c;
+    margin-top: 3%;
+    background: rgb(240, 242, 245);
+    background-image: url(../../images/SearchBarIcon.png);
+    background-repeat: no-repeat;
+    background-position: left center;
+    padding-left: 40px;
+    margin-left: 25%;
+    border-radius: 10px;
+    border: none;
 }

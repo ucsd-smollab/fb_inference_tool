@@ -120,7 +120,7 @@ def StageThreeStepThree():
 @app.route("/stop_scraper", methods=["GET", "POST"])
 @cross_origin()
 def StopScrape():
-    end_scrape = True
+    global end_scrape
 
     if request.method == "GET":
         response = app.response_class (
@@ -135,6 +135,7 @@ def StopScrape():
         return response
     else:
         print("Changed")
+        end_scrape = True
         response = app.response_class(
             response=json.dumps(end_scrape),
             status=200,
