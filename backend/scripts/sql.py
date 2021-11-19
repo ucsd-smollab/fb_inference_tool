@@ -48,6 +48,7 @@ def insert_scraped_into_database(friend, mydb, mycursor, is_participant=False):
 
 def insert_inf_into_database(friend, mydb, mycursor):
     # pprint.pprint(friend.inference_count)
+    one = 1
     work_max = 0
     work_max_inf = None
     for work in friend.inference_count["work"]:
@@ -60,6 +61,10 @@ def insert_inf_into_database(friend, mydb, mycursor):
             sql = "INSERT INTO work_inf (friend_url, workplace, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
             val = (friend.url, work, mutual_count, mutual_count)
             mycursor.execute(sql, val)
+    if work_max_inf and work_max_inf != "no_data":
+        sql = "INSERT INTO attribute_count (attribute, category, inf_count) VALUES (%s, 'work', %s) ON DUPLICATE KEY UPDATE inf_count=inf_count+%s"
+        val = (work_max_inf, one, one)
+        mycursor.execute(sql, val)
 
     college_max = 0
     college_max_inf = None
@@ -72,6 +77,10 @@ def insert_inf_into_database(friend, mydb, mycursor):
             sql = "INSERT INTO college_inf (friend_url, college_name, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
             val = (friend.url, college, mutual_count, mutual_count)
             mycursor.execute(sql, val)
+    if college_max_inf and college_max_inf != "no_data":
+        sql = "INSERT INTO attribute_count (attribute, category, inf_count) VALUES (%s, 'college', %s) ON DUPLICATE KEY UPDATE inf_count=inf_count+%s"
+        val = (college_max_inf, one, one)
+        mycursor.execute(sql, val)
 
     hs_max = 0
     hs_max_inf = None
@@ -84,6 +93,10 @@ def insert_inf_into_database(friend, mydb, mycursor):
             sql = "INSERT INTO high_school_inf (friend_url, hs_name, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
             val = (friend.url, hs, mutual_count, mutual_count)
             mycursor.execute(sql, val)
+    if hs_max_inf and hs_max_inf != "no_data":
+        sql = "INSERT INTO attribute_count (attribute, category, inf_count) VALUES (%s, 'high_school', %s) ON DUPLICATE KEY UPDATE inf_count=inf_count+%s"
+        val = (hs_max_inf, one, one)
+        mycursor.execute(sql, val)
 
     city_max = 0
     city_max_inf = None
@@ -96,6 +109,10 @@ def insert_inf_into_database(friend, mydb, mycursor):
             sql = "INSERT INTO places_lived_inf (friend_url, location, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
             val = (friend.url, city, mutual_count, mutual_count)
             mycursor.execute(sql, val)
+    if city_max_inf and city_max_inf != "no_data":
+        sql = "INSERT INTO attribute_count (attribute, category, inf_count) VALUES (%s, 'places_lived', %s) ON DUPLICATE KEY UPDATE inf_count=inf_count+%s"
+        val = (city_max_inf, one, one)
+        mycursor.execute(sql, val)
 
     religion_max = 0
     religion_max_inf = None
@@ -108,6 +125,10 @@ def insert_inf_into_database(friend, mydb, mycursor):
             sql = "INSERT INTO religion_inf (friend_url, religious_belief, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
             val = (friend.url, religion, mutual_count, mutual_count)
             mycursor.execute(sql, val)
+    if religion_max_inf and religion_max_inf != "no_data":
+        sql = "INSERT INTO attribute_count (attribute, category, inf_count) VALUES (%s, 'religion', %s) ON DUPLICATE KEY UPDATE inf_count=inf_count+%s"
+        val = (religion_max_inf, one, one)
+        mycursor.execute(sql, val)
 
     politic_max = 0
     politic_max_inf = None
@@ -120,9 +141,37 @@ def insert_inf_into_database(friend, mydb, mycursor):
             sql = "INSERT INTO politics_inf (friend_url, political_view, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
             val = (friend.url, politic, mutual_count, mutual_count)
             mycursor.execute(sql, val)
+    if politic_max_inf and politic_max_inf != "no_data":
+        sql = "INSERT INTO attribute_count (attribute, category, inf_count) VALUES (%s, 'politics', %s) ON DUPLICATE KEY UPDATE inf_count=inf_count+%s"
+        val = (politic_max_inf, one, one)
+        mycursor.execute(sql, val)
 
-    sql = "INSERT INTO friend_inf (friend_url, work_inf, college_inf, high_school_inf, religion_inf, politic_inf) VALUES (%s, %s, %s, %s, %s, %s)"
-    val = (friend.url, work_max_inf, college_max_inf, hs_max_inf, religion_max_inf, politic_max_inf)
+    sql = "INSERT INTO friend_inf (friend_url, work_inf, college_inf, high_school_inf, places_lived_inf, religion_inf, politic_inf) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    val = (friend.url, work_max_inf, college_max_inf, hs_max_inf, city_max_inf, religion_max_inf, politic_max_inf)
     mycursor.execute(sql, val)
-    
+
     mydb.commit()
+
+def insert_attribute_count(mydb, mycursor, attribute, category_name, count):
+    sql = "INSERT INTO attribute_count (attribute, category, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
+    val = (attribute, category_name, count, count)
+    mycursor.execute(sql, val)
+    mydb.commit()
+
+def insert_all_attribute(category_groups, mydb, mycursor):
+    for category_name, data in category_groups.items():
+        if category_name=="highschool":
+            category = "high_school"
+        elif category_name=="cities":
+            category = "places_lived"
+        elif category_name=="religiousviews":
+            category = "religion"
+        elif category_name=="politicalviews":
+            category = "politics"
+        else:
+            category = category_name
+        for attribute, url_list in data.items():
+            if "no_data" in attribute:
+                continue
+
+            insert_attribute_count(mydb, mycursor, attribute, category, len(url_list))

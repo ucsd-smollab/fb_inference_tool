@@ -1,13 +1,14 @@
 import time
 import copy
 import pickle
+import requests
 import pandas as pd
 import mysql.connector
 
 from fbdriver import *
 from fbscrape_helpers import *
 from fbInferences import get_list_of_people
-from sql import insert_scraped_into_database, insert_inf_into_database
+from sql import *
 
 # connect to database and initialize schemas
 mydb = mysql.connector.connect(
@@ -126,17 +127,16 @@ for p, f in friends.items():
 
         num_friends_scraped+=1
 
-        # # updating local data, breaking after number of friends achieved
-        # file = open(f"file_{num_friends_scraped}.pkl","wb")
-        # formatted_data = {
-        #     "count": num_friends_scraped,
-        #     "friends": friends,
-        #     "participant": participant,
-        #     "category_groups": category_groups,
-        #     "time_df": time_df
-        # }
-        # pickle.dump(formatted_data, file)
-        # file.close()
+        # updating local data, breaking after number of friends achieved
+        file = open("file.pkl","wb")
+        formatted_data = {
+            "count": num_friends_scraped,
+            "friends": friends,
+            "participant": participant,
+            "category_groups": category_groups,
+        }
+        pickle.dump(formatted_data, file)
+        file.close()
 
         insert_scraped_into_database(f, mydb, mycursor)
 
@@ -145,8 +145,30 @@ for p, f in friends.items():
         print(f"Actual Mutual Friends: {f.numMutualFriends}")
         print(f"Scraped Mutual Friends: {len(f.mutual_friends)}")
 
-        # insert event listener here for when we want to update inferences
+        # STOP SCRAPING 
+        url = 'http://localhost:5000/stop_scraper'
+        response = requests.get(url)
+        if (response.status_code == 200):
+            print("starting stage four, inserting inferences into database")
+            insert_all_attribute(category_groups, mydb, mycursor)
+            for url, friend in friends.items():
+                category_frequency_data = copy.deepcopy(category_groups_template)
+                for category, category_data in category_groups.items():
+                    for name, list_of_urls in category_data.items():
+                        category_frequency_data[category][name] = list(set(get_list_of_people(friend.mutual_friends, participant.url, list_of_urls, num_mutuals_inf)))
+                friend.inference_count = category_frequency_data
+                insert_inf_into_database(friend, mydb, mycursor)
+            break
+
+    except Exception as e:
+        print(f"Command skipped: {command}")
+        print(f"Reason: {e}")
+        print(f"exception: {f.url}")
+        print("---------")
+        exception_list.append(f.url)
+
         # print("starting stage four, inserting inferences into database")
+        # insert_all_attribute(category_groups, mydb, mycursor)
         # for url, friend in friends.items():
         #     category_frequency_data = copy.deepcopy(category_groups_template)
         #     for category, category_data in category_groups.items():
@@ -155,21 +177,6 @@ for p, f in friends.items():
         #     friend.inference_count = category_frequency_data
         #     insert_inf_into_database(friend, mydb, mycursor)
         # break
-
-    except:
-        print(f"exception: {f.url}")
-        print("---------")
-        exception_list.append(f.url)
-
-        print("starting stage four, inserting inferences into database")
-        for url, friend in friends.items():
-            category_frequency_data = copy.deepcopy(category_groups_template)
-            for category, category_data in category_groups.items():
-                for name, list_of_urls in category_data.items():
-                    category_frequency_data[category][name] = list(set(get_list_of_people(friend.mutual_friends, participant.url, list_of_urls, num_mutuals_inf)))
-            friend.inference_count = category_frequency_data
-            insert_inf_into_database(friend, mydb, mycursor)
-        break
 
 print(f"exception list: {exception_list}")
 print(f"number of friends scraped: {num_friends_scraped}")

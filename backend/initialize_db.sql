@@ -62,6 +62,7 @@ CREATE TABLE friend_inf (
     work_inf VARCHAR(50),
     college_inf VARCHAR(50),
     high_school_inf VARCHAR(50),
+    places_lived_inf VARCHAR(50),
 	religion_inf VARCHAR(50),
 	politic_inf VARCHAR(50),
     PRIMARY KEY(friend_url)
@@ -107,4 +108,12 @@ CREATE TABLE politics_inf (
     political_view VARCHAR(100) NOT NULL,
     mutual_count SMALLINT DEFAULT '0' NOT NULL,
     PRIMARY KEY(friend_url, political_view)
+);
+
+CREATE TABLE attribute_count (
+	attribute VARCHAR(50) NOT NULL,
+    category VARCHAR(50) DEFAULT NULL,
+    mutual_count SMALLINT NOT NULL DEFAULT 0,
+    inf_count SMALLINT NOT NULL DEFAULT 0,
+    PRIMARY KEY(attribute)
 );

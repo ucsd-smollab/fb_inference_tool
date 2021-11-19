@@ -28,6 +28,15 @@ const StageThreeStepTwoTwo = (props) => {
     changePrediction("have lived in San Diego");
   }, []);
 
+  const stopScraper = () => {
+    const stop_scrapper_request = fetch("http://localhost:5000/stop_scraper", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+  };
+
   return (
     <div className={globalStyles.background}>
       <br />
@@ -66,7 +75,9 @@ const StageThreeStepTwoTwo = (props) => {
       </div>
       <div className={globalStyles.ButtonContainer}>
         <Link to="/StageThreeStepThree">
-          <button className={globalStyles.ButtonNav}>Next</button>
+          <button className={globalStyles.ButtonNav} onclick={() => {
+            stopScraper()
+          }}>Next</button>
         </Link>
       </div>
     </div>

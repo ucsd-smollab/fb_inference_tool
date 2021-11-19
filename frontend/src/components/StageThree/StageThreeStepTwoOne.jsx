@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { Link } from "react-router-dom";
 
 import globalStyles from "../../styles/styles.module.css";
@@ -11,21 +10,16 @@ const StageThreeStepTwoOne = (props) => {
   const [prediction, changePrediction] = useState([]);
 
   useEffect(() => {
-    changeFriendsExplicit([
-      "Andy Nafets",
-      "Aaron B",
-      "Stephen T",
-      "Mary A",
-      "Kristen V",
-    ]);
-    changeFriendsInferred([
-      "Andy Nafets",
-      "Aaron B",
-      "Stephen T",
-      "Mary A",
-      "Kristen V",
-    ]);
-    changePrediction("have lived in San Diego");
+    const responseUsersShared= fetch("http://localhost:5000/stage_three_step_two_one_one", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => res.json()).then(data => {
+      changePrediction(data[0])
+      changeFriendsExplicit(data[1])
+      changeFriendsInferred(data[2])
+    });
   }, []);
 
   return (
@@ -34,7 +28,7 @@ const StageThreeStepTwoOne = (props) => {
       <div>
         <div className={globalStyles.StageTitleContainer}>
           <h1>
-            Some of your friends who {prediction}:
+            {prediction}
           </h1>
         </div >
         <br />
