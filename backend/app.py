@@ -60,8 +60,9 @@ def StageThreeStepTwoOne():
 
     # do if statements to determine how it should be formatter
     # example These friends lived in ____ vs These friends went to ____ for college
-    category_line = f"category: {category} attribute: {attribute}"
+    # remove user from list and fix %s in else
 
+    category_line = f"category: {category} attribute: {attribute}"
     if category=="high_school":
         five_shared_query = "SELECT friend_url FROM privacy_db.high_school WHERE hs_name=%s LIMIT 5;"
     elif category=="college":
@@ -72,8 +73,8 @@ def StageThreeStepTwoOne():
         five_shared_query = "SELECT friend_url FROM privacy_db.places_lived WHERE location=%s LIMIT 5;"
     else:
         five_shared_query = f"SELECT friend_url FROM privacy_db.friend_profiles WHERE {category}=%s ORDER BY mutual_count DESC LIMIT 5;"
-    print(five_shared_query, attribute)
-    val = (attribute)
+
+    val = (attribute,)
     mycursor.execute(five_shared_query, val)
     five_shared = mycursor.fetchall()
 
