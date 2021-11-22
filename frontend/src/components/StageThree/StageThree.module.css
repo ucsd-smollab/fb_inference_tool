@@ -1,2 +1,17 @@
+.flex_container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-self: center;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: flex-start;
+}
 
-
+.flex_items {
+    width: 353;
+    background: rgb(240, 242, 245);
+    border-radius: 20px;
+    margin: 10px 20px 10px 20px;
+    padding: 10px;
+}
