@@ -69,25 +69,41 @@ def StageThreeStepTwoOne():
     category_line = f"category: {category} attribute: {attribute}"
     if category=="high_school":
         five_shared_query = f"SELECT friend_url FROM privacy_db.high_school WHERE hs_name=%s AND friend_url!='{participant_url}' LIMIT 5;"
+        category_line = f"Some of your friends who went to {attribute}"
     elif category=="college":
         five_shared_query = f"SELECT friend_url FROM privacy_db.college WHERE college_name=%s AND friend_url!='{participant_url}' LIMIT 5;"
+        category_line = f"Some of your friends who went to {attribute}"
     elif category=="work":
         five_shared_query = f"SELECT friend_url FROM privacy_db.work WHERE workplace=%s AND friend_url!='{participant_url}' LIMIT 5;"
+        category_line = f"Some of your friends who worked at {attribute}"
     elif category=="places_lived":
         five_shared_query = f"SELECT friend_url FROM privacy_db.places_lived WHERE location=%s AND friend_url!='{participant_url}' LIMIT 5;"
+        category_line = f"Some of your friends who lived in {attribute}"
     else:
         five_shared_query = f"SELECT friend_url FROM privacy_db.friend_profiles WHERE {category}=%s AND friend_url!='{participant_url}' ORDER BY mutual_count DESC LIMIT 5;"
+        if category=="religion":
+            category_line = f"Some of your friends whose religion is {attribute}"
+        elif category=="politics":
+            category_line = f"Some of your friends who politically identify as {attribute}"
 
     val = (attribute,)
     mycursor.execute(five_shared_query, val)
     five_shared = mycursor.fetchall()
+
+    shared_to_display = []
+    for url in five_shared:
+        query = "SELECT name FROM privacy_db.friend_profiles WHERE friend_url=%s;"
+        value = (url[0],)
+        mycursor.execute(query, value)
+        temp_name = mycursor.fetchall()
+        shared_to_display.append(temp_name[0])
 
     five_inf_query = "SELECT friend_url, category FROM privacy_db.mutual_count WHERE category=%s AND attribute=%s ORDER BY mutual_count DESC;"
     val = (category, attribute)
     mycursor.execute(five_inf_query, val)
     five_inf = mycursor.fetchall()
 
-    inf_to_display = []
+    inf_to_display_url = []
     for url, cat in five_inf:
         if cat=="religion" or cat=="politics":
             query = f"SELECT {cat} FROM privacy_db.friend_profiles WHERE friend_url=%s;"
@@ -95,18 +111,26 @@ def StageThreeStepTwoOne():
             mycursor.execute(query, value)
             temp_val = mycursor.fetchall()
             if temp_val=="NA":
-                inf_to_display.append(url)
+                inf_to_display_url.append(url)
         else:
             query = f"SELECT friend_url FROM privacy_db.{cat} WHERE friend_url=%s;"
             value = (url,)
             mycursor.execute(query, value)
             temp_val = mycursor.fetchall()
             if not temp_val:
-                inf_to_display.append(url)
-        if len(inf_to_display) >= 5:
+                inf_to_display_url.append(url)
+        if len(inf_to_display_url) >= 5:
             break
+    
+    inf_to_display = []
+    for url in inf_to_display_url:
+        query = "SELECT name FROM privacy_db.friend_profiles WHERE friend_url=%s;"
+        value = (url,)
+        mycursor.execute(query, value)
+        temp_name = mycursor.fetchall()
+        inf_to_display.append(temp_name)
 
-    newList = [category_line, five_shared, inf_to_display]
+    newList = [category_line, shared_to_display, inf_to_display]
 
     response = app.response_class(
         response=json.dumps(newList),

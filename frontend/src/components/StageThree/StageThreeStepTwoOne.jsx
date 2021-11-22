@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import globalStyles from "../../styles/styles.module.css";
-import mainStyles from "./StageThree.module.css";
+import styles from "./StageThree.module.css";
 
 const StageThreeStepTwoOne = (props) => {
   const [friendsExplicit, changeFriendsExplicit] = useState([]);
@@ -24,27 +24,16 @@ const StageThreeStepTwoOne = (props) => {
 
   return (
     <div className={globalStyles.background}>
-      <br />
       <div>
-        <div className={globalStyles.StageTitleContainer}>
-          <h1>
-            {prediction}
-          </h1>
-        </div >
-        <br />
-        <br />
-        <div className={globalStyles.mainContent}>
-        <div className={`${globalStyles.flex_container} ${globalStyles.two_column}`}>
-          <div className={`${globalStyles.itemBoxes} ${globalStyles.longBox} ${globalStyles.wideBox}`}>
-            {friendsExplicit.map((friend) => (
-              <div className={globalStyles.medText}>
-                <span>{friend}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className={`${globalStyles.flex_container} ${globalStyles.two_column}`}>
-          </div>
+        <h1>{prediction}</h1>
+        <div className={styles.flex_container}>
+          <span className={styles.flex_items}>
+          <div>
+              {friendsExplicit.map((friend) => (
+                <div className={globalStyles.medText}>{friend}</div>
+              ))}
+            </div>
+          </span>
         </div>
       </div>
       <div className={globalStyles.ButtonContainer}>

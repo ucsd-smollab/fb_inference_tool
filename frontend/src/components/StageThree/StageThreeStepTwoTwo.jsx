@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import globalStyles from "../../styles/styles.module.css";
-import mainStyles from "./StageThree.module.css";
+import styles from "./StageThree.module.css";
 
 const StageThreeStepTwoTwo = (props) => {
   const [friendsExplicit, changeFriendsExplicit] = useState([]);
@@ -25,45 +25,30 @@ const StageThreeStepTwoTwo = (props) => {
 
   return (
     <div className={globalStyles.background}>
-      <br />
-      <div>
-        <div className={globalStyles.StageTitleContainer}>
-          <h1>
-            {prediction}
-          </h1>
-        </div >
-        <br />
-        <br />
-        <div className={globalStyles.mainContent}>
-        <div className={`${globalStyles.flex_container} ${globalStyles.two_column}`}>
-          <div className={`${globalStyles.itemBoxes} ${globalStyles.longBox} ${globalStyles.wideBox}`}>
-            <h2>shared</h2>
-            {friendsExplicit.map((friend) => (
-              <div className={globalStyles.medText}>
-                <span>{friend}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className={`${globalStyles.flex_container} ${globalStyles.two_column}`}>
-          <div className={`${globalStyles.itemBoxes} ${globalStyles.longBox} ${globalStyles.wideBox}`}>
-            <h2>inferred</h2>
+      <h1>{prediction}</h1>
+      <div className={styles.flex_container}>
+        <span className={styles.flex_items}>
+          <h3>Shared:</h3>
+          {friendsExplicit.map((friend) => (
+            <div className={globalStyles.medText}>
+              <div>{friend}</div>
+            </div>
+          ))}
+        </span>
+        <span className={styles.flex_items}>
+            <h3>Inferred:</h3>
             {friendsInferred.map((friend) => (
               <div className={globalStyles.medText}>
-                <span>
-                {friend}
-                </span>
+                <div>{friend}</div>
               </div>
             ))}
-          </div>
-        </div>
-        </div>
+        </span>
       </div>
-      <div className={globalStyles.ButtonContainer}>
-        <Link to="/StageThreeStepThree">
-          <button className={globalStyles.ButtonNav} >Next</button>
-        </Link>
-      </div>
+    <div className={globalStyles.ButtonContainer}>
+      <Link to="/StageThreeStepThree">
+        <button className={globalStyles.ButtonNav} >Next</button>
+      </Link>
+    </div>
     </div>
   );
 };

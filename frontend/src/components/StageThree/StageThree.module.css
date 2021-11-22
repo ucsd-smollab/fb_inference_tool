@@ -9,9 +9,10 @@
 }
 
 .flex_items {
-    width: 353;
+    width: 30%;
+    min-height: 50vh;
     background: rgb(240, 242, 245);
     border-radius: 20px;
     margin: 10px 20px 10px 20px;
-    padding: 10px;
+    padding: 15px;
 }
