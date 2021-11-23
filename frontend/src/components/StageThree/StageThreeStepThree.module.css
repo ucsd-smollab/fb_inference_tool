@@ -1,42 +1,29 @@
 .CategoryListContainer {
     display: flex;
-    flex-flow: column;
-    margin-left: 20%;
-    margin-right: 20%;
-}
-
-.CategoryListItem {
-    border-width: 2px;
-    border-color: black;
-    border-style:solid;
-    margin-bottom: 20px;
-}
-
-.CategoryText {
-    font-size: 80px;
-}
-
-.CategoryListItemContainer {
-    background-color: white;
+    flex-flow: row;
+    justify-content: center;
     width: 100%;
 }
 
-.DataContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    font-size: 80px;
-    margin-left: 10vw;
-    margin-right: 10vw;
-    margin-top: 5vh;
+.CategoryListItem {
+    border-radius: 20px;
+    justify-self: center;
+    width: 35%;
+    border: none;
 }
 
-.ColumnContainer {
+.SelectedCategoryContainer {
     display: flex;
-    flex-direction: column;
+    flex-flow: row;
+    width: 100%;
     justify-content: center;
+    margin-top: 20px;
 }
 
-.ColumnDataItem {
-    font-size: 50px;
+.SelectedCategoryColumn {
+    width: 35%;
+    background: rgb(240, 242, 245);
+    border-radius: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
 }

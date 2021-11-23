@@ -53,38 +53,32 @@ const StageThreeStepThree = (props) => {
 
   return (
     <div className={globalStyles.background}>
-      <div>
-        <h1>Select a Category</h1>
-      </div>
-      <div className={globalStyles.mainContent}>
-        <div>
-          {categories.map((category) => (
-            <CategorySelection
-              category={category}
-              changeCategory={selectCateory}
-              selectedCategory={categorySelected}
-            />
-          ))}
-        </div>
+      <h1>Select a Category</h1>
+      <div className={styles.category}>
+        {categories.map((category) => (
+          <CategorySelection
+            category={category}
+            changeCategory={selectCateory}
+            selectedCategory={categorySelected}
+          />
+        ))}
       </div>
 
-      <div className={globalStyles.mainContent}>
-      <div className={`${globalStyles.flex_container} ${globalStyles.two_column}`}>
-        <div className={`${globalStyles.itemBoxes} ${globalStyles.longBox}`}>
-            <div><h2>Shared directly</h2></div>
+      <div className={styles.SelectedCategoryContainer}>
+        <span className={styles.SelectedCategoryColumn}>
+            <div><h3 style={{"fontWeight": "bold"}}>Shared:</h3></div>
             <ColumnData data={friendsDirect} />
-        </div>
-        <div className={`${globalStyles.itemBoxes} ${globalStyles.longBox}`}>
-            <div><h2>Inferred</h2></div>
+        </span>
+        <span className={styles.SelectedCategoryColumn}>
+            <div><h3 style={{"fontWeight": "bold"}}>Inferred:</h3></div>
             <ColumnData data={friendsInferred} />
-        </div>
+        </span>
       </div>
-      </div>
-      <div className={globalStyles.ButtonContainer}>
+      <span className={globalStyles.ButtonContainer}>
         <Link to="/StageFour">
           <button className={globalStyles.ButtonNav}>Next</button>
         </Link>
-      </div>
+      </span>
     </div>
   );
 };

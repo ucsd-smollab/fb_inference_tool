@@ -3,9 +3,9 @@ import styles from "../StageThreeStepThree.module.css"
 const ColumnData = (props) => {
   const data = props.data;
   return (
-    <div className={styles.ColumnDataItem}>
+    <div>
       {data && data.map( (entry) =>
-        <span>{entry}</span>
+        <h2 style={{"lineHeight": "0.8"}}>{entry}</h2>
       )}
     </div>
   );

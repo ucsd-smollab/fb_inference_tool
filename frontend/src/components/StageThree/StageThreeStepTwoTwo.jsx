@@ -28,7 +28,7 @@ const StageThreeStepTwoTwo = (props) => {
       <h1>{prediction}</h1>
       <div className={styles.flex_container}>
         <span className={styles.flex_items}>
-          <h3>Shared:</h3>
+          <h3 style={{"fontWeight": "bold"}}>Shared:</h3>
           {friendsExplicit.map((friend) => (
             <div className={globalStyles.medText}>
               <div>{friend}</div>
@@ -36,7 +36,7 @@ const StageThreeStepTwoTwo = (props) => {
           ))}
         </span>
         <span className={styles.flex_items}>
-            <h3>Inferred:</h3>
+            <h3 style={{"fontWeight": "bold"}}>Inferred:</h3>
             {friendsInferred.map((friend) => (
               <div className={globalStyles.medText}>
                 <div>{friend}</div>

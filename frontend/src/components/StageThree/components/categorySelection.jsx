@@ -5,15 +5,15 @@ const CategorySelection = (props) => {
     props.changeCategory(props.category)
   }
   return (
-    <div className={styles.CategoryListItem}>
+    <div className={styles.CategoryListContainer}>
       <button
-        className={styles.CategoryListItemContainer}
+        className={styles.CategoryListItem}
         onClick={changeCat}
         style={{
-          "backgroundColor": props.category===props.selectedCategory ? "lightBlue" : "white",
+          "backgroundColor": props.category===props.selectedCategory ? "rgb(189, 231 , 255)" : 'rgb(240, 242, 245)',
         }}
       >
-        <h2>{props.category}</h2>
+        <h3 style={{"marginBottom": "25px"}}>{props.category}</h3>
       </button>
     </div>
   );
