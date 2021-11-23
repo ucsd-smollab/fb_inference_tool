@@ -20,29 +20,29 @@ const StageThreeStepThree = (props) => {
   const [friendsInferredMap, changeFriendsInferredMap] = useState({});
 
   useEffect(() => {
-    // make call to fetch friends
-    let friendsDirectCategories = [["shared SD"], ["shared Arby's"], ["shared Camden High"], ["shared Catholic"]];
-    let friendsInferredCategories = [["inferred SD"], ["inferred Arby's"], ["inferred Camden High"], ["inferred Catholic"]];
-    let fetchedCategories =  [
-      "friends who have lived in San Diego",
-      "friends who have worked at Arby's",
-      "friends who attended Camden High",
-      "friends who are Catholic",
-    ]
+    const responseUsersShared= fetch("http://localhost:5000/stage_three_step_three", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => res.json()).then(data => {
+      let fetchedCategories =  data[0];
+      let friendsDirectCategories = data[1];
+      let friendsInferredCategories = data[2];
+      let friendsDMap = {};
+      let friendsIMap = {};
+  
+      changeCategories(fetchedCategories);
+  
+      for (let i = 0; i < fetchedCategories.length; i++) {
+        friendsDMap[fetchedCategories[i]] = friendsDirectCategories[i];
+        friendsIMap[fetchedCategories[i]] = friendsInferredCategories[i];
+      }
 
-    let friendsDMap = {};
-    let friendsIMap = {};
-
-    changeCategories(fetchedCategories);
-
-    for (let i = 0; i < fetchedCategories.length; i++) {
-      friendsDMap[fetchedCategories[i]] = friendsDirectCategories[i];
-      friendsIMap[fetchedCategories[i]] = friendsInferredCategories[i];
-    }
-
-    // updated state
-    changeFriendsDirectMap(friendsDMap);
-    changeFriendsInferredMap(friendsIMap);
+      // updated state
+      changeFriendsDirectMap(friendsDMap);
+      changeFriendsInferredMap(friendsIMap);
+    });
   }, []);
 
   const selectCateory = (category) => {

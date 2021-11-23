@@ -111,8 +111,8 @@ def insert_inf_into_database(friend, mydb, mycursor):
             continue
         mutual_count = len(friend.inference_count["cities"][city])
         if mutual_count > city_max:
-            work_max = mutual_count
-            work_max_inf = city
+            city_max = mutual_count
+            city_max_inf = city
         if mutual_count:
             sql = "INSERT INTO places_lived_inf (friend_url, location, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
             val = (friend.url, city, mutual_count, mutual_count)
