@@ -25,13 +25,13 @@ const StageThreeStepOne = (props) => {
       <h1>Your Friends</h1>
         <div className={styles.flex_container}>
           <span className={styles.flex_items}>
-              <h3>Some of your friends have shared a lot:</h3>
+              <h3 style={{"fontWeight": "bold"}}>Some of your friends have shared a lot:</h3>
             <div>
               {friendsManyShared.map((friend) => <div className={globalStyles.medText}>{friend}</div>)}
             </div>
           </span>
           <span className={styles.flex_items}>
-            <h3>Others haven't shared much at all:</h3>
+            <h3 style={{"fontWeight": "bold"}}>Others haven't shared much at all:</h3>
             <div>
               {friendsSparseShared.map((friend) => <div className={globalStyles.medText}>{friend}</div>)}
             </div>
