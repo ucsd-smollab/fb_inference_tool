@@ -26,17 +26,12 @@ const StageFour = (props) => {
 
   return (
     <div className={globalStyles.background}>
-     <input type="text" className={mainStyles.SearchBar} placeholder="" onChange={event => changeQuery(event.target.value)} />
-      {/* <div className={mainStyles.MainBody}>
-        {friendData.filter(friend => {
-          if (query === '' || friend.toLowerCase().includes(query.toLowerCase())) {
-            return friend;
-          }
-        }).map( (friend, index) => 
-          <FriendBox friend={friend}/>
-        )}
-      </div> */}
-      <FriendBox friend={exampleFriendData}/>
+    <div className={globalStyles.SearchContainer}>
+      <div className={globalStyles.SearchBar}>
+        <input type="text" placeholder="" onChange={event => changeQuery(event.target.value)} />
+      </div>
+    </div>
+    <FriendBox friend={exampleFriendData}/>
     </div>
   );
 };

@@ -11,6 +11,16 @@ import friend_post from "../../images/friend-post.png";
 import activity from "../../images/activity.png";
 
 const StageTwoStepOne = (props) => {
+
+  const stopScraper = () => {
+    const stop_scrapper_request = fetch("http://localhost:5000/stop_scraper", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+  };
+  
   return (
     <div className={globalStyles.background}>
       <h1>Facebook can learn about you from:</h1>
@@ -49,9 +59,10 @@ const StageTwoStepOne = (props) => {
         </ul>
         <div className={globalStyles.ButtonContainer}>
           <Link to="/StageTwoStepTwo">
-            <button className={globalStyles.ButtonNav}>
-              Next
-            </button>
+            <button className={globalStyles.ButtonNav} onClick={() => {
+              stopScraper();
+              console.log("called stopScraper");
+            }}>Next</button>
           </Link>
         </div>
       </div>

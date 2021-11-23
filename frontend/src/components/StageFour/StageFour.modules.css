@@ -1,26 +1,18 @@
-.SearchBar {
-    background-color: black;
-}
-
-.MainBody {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
 input[type=text] {
-    width: 50%;
+    display: flex;
+    width: 100%;
     height: 50px;
-    font-size: 20px;
-    color: #76787c;
-    margin-top: 3%;
+    font-size: 25px;
+    text-indent: 15px;
+    color: #65676B;
+    margin-top: 38px;
     background: rgb(240, 242, 245);
     background-image: url(../../images/SearchBarIcon.png);
+    background-size: 30px;
     background-repeat: no-repeat;
     background-position: left center;
+    background-position-x: 15px;
     padding-left: 40px;
-    margin-left: 25%;
-    border-radius: 10px;
+    border-radius: 40px;
     border: none;
 }
