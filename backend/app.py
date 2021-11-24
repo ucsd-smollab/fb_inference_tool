@@ -3,14 +3,13 @@ from flask import json
 from flask import request
 from flask import render_template
 from flask_cors import CORS, cross_origin
-
 import mysql.connector
+
 mydb = mysql.connector.connect(
   host="127.0.0.1",
   user="privacy_admin",
   password="kristenisthebest",
 )
-
 mycursor = mydb.cursor()
 
 app = Flask(__name__)
@@ -350,4 +349,5 @@ def StopScrape():
 if __name__ == '__main__':
     global end_scrape 
     end_scrape = False
-    app.run()
+    app.run(threaded=False)
+    print("main running")

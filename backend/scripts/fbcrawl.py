@@ -170,6 +170,7 @@ for p, f in friends.items():
         # print("---------")
         # exception_list.append(f.url)
 
+mydb.close()
 print(f"exception list: {exception_list}")
 print(f"number of friends scraped: {num_friends_scraped}")
 print("total runtime: "+str(time.time() - total_time))

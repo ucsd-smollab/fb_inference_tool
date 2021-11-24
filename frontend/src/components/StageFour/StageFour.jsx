@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import FriendBox from "./Components/FriendBox";
+import Dropdown from "./Components/Dropdown";
 
 import globalStyles from "../../styles/styles.module.css";
 import mainStyles from "./StageFour.modules.css";
@@ -18,7 +19,7 @@ const StageFour = (props) => {
     politics: ['']
   };
 
-  const [query, changeQuery] = useState("");
+  const [query, changeQuery] = useState("Type Name Here");
   const [selectedFriend, changeSelectedFriend] = useState("danielnewman21");
   const [friendData, changeFriendData] = useState(emptyFriendData);
   const [searchFriendSuggestions, changeSearchFriendSuggestions] = useState([]);
@@ -49,13 +50,17 @@ const StageFour = (props) => {
     });
   }, [query]);
 
+  function handleChange(newValue) {
+    changeQuery(newValue);
+  }
+
+  const onClickChangeSelected = (newUrl) => {
+    changeSelectedFriend(newUrl)
+  }
+
   return (
     <div className={globalStyles.background}>
-    <div className={globalStyles.SearchContainer}>
-      <div className={globalStyles.SearchBar}>
-        <input type="text" placeholder="" onChange={event => changeQuery(event.target.value)} />
-      </div>
-    </div>
+    <Dropdown onChange={handleChange} friendSuggestions={searchFriendSuggestions} onClick={onClickChangeSelected}/>
     <FriendBox friend={friendData}/>
     </div>
   );
