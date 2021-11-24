@@ -19,7 +19,7 @@ const StageFour = (props) => {
   };
 
   const [query, changeQuery] = useState("");
-  const [selectedFriend, changeSelectedFriend] = useState("arrfarr");
+  const [selectedFriend, changeSelectedFriend] = useState("danielnewman21");
   const [friendData, changeFriendData] = useState(exampleFriendData);
   const [searchFriendSuggestions, changeSearchFriendSuggestions] = useState([]);
 

@@ -48,7 +48,11 @@ def StageThreeStepOne():
 def StageThreeStepTwoOne():
     attribute_query = "SELECT attribute FROM privacy_db.attribute_count WHERE inf_count>=5 AND mutual_count>1 ORDER BY mutual_count DESC LIMIT 1;"
     mycursor.execute(attribute_query)
-    attribute = mycursor.fetchall()[0][0]
+    attribute = mycursor.fetchall()
+    if attribute:
+        attribute = attribute[0][0]
+    else:
+        attribute = "Not Enough Data"
 
     category_query = "SELECT category FROM privacy_db.attribute_count WHERE inf_count>=5 ORDER BY mutual_count DESC LIMIT 1;"
     mycursor.execute(category_query)
@@ -239,21 +243,67 @@ def getFriendData():
     friend_url = request.get_json()['friend_url']
     print(friend_url)
 
-    query = "SELECT attribute FROM privacy_db.attribute_count WHERE inf_count>=5 AND mutual_count>1 ORDER BY mutual_count DESC LIMIT 4;"
-    mycursor.execute(query, friend_url)
-    attribute_list = mycursor.fetchall()
+    query = "SELECT * FROM privacy_db.friend_profiles WHERE friend_url=%s;"
+    mycursor.execute(query, (friend_url,))
+    friend_info = mycursor.fetchall()[0]
+
+    print(friend_info)
+
+    query = "SELECT workplace FROM privacy_db.work WHERE friend_url=%s;"
+    mycursor.execute(query, (friend_url,))
+    workplaces = mycursor.fetchall()
+    if not workplaces:
+        workplaces = ["No Data"]
+    else:
+        workplaces = [''.join(i) for i in workplaces]
+
+    query = "SELECT college_name FROM privacy_db.college WHERE friend_url=%s;"
+    mycursor.execute(query, (friend_url,))
+    college = mycursor.fetchall()
+    if not college:
+        college = ["No Data"]
+    else:
+        college = [''.join(i) for i in college]
+
+    query = "SELECT hs_name FROM privacy_db.high_school WHERE friend_url=%s;"
+    mycursor.execute(query, (friend_url,))
+    high_school = mycursor.fetchall()
+    if not high_school:
+        high_school = ["No Data"]
+    else:
+        high_school = [''.join(i) for i in high_school]
+
+    query = "SELECT location FROM privacy_db.places_lived WHERE friend_url=%s;"
+    mycursor.execute(query, (friend_url,))
+    places_lived = mycursor.fetchall()
+    if not places_lived:
+        places_lived = ["No Data"]
+    else:
+        places_lived = [''.join(i) for i in places_lived]
+
+    if friend_info[6]=="NA":
+        religion = ["No Data"]
+    else:
+        religion = [friend_info[6]]
+
+    if friend_info[7]=="NA":
+        politics = ["No Data"]
+    else:
+        politics = [friend_info[7]]
 
     FriendData = {
-        'name': 'Jacey Smith',
-        'mutualFriendCount': '321',
-        'profilePictureURL': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREQSG0xK1r5xe4WvQsV7WTNey9OSBunMh6GLY8HcxYUinuG_hHJ4IWUtjeAcV3M7bfhbo&usqp=CAU',
-        'workplace': ['UCSD Department of Computer Science'],
-        'college': ['University of California San Diego'],
-        'highschool': ['No Data'],
-        'places': ['Los Angeles', 'San Diego'],
-        'religion': ['No Data'],
-        'politics': ['No Data'],
+        'name': friend_info[1],
+        'profilePictureURL': friend_info[2],
+        'mutualFriendCount': friend_info[3],
+        'workplace': workplaces,
+        'college': college,
+        'highschool': high_school,
+        'places': places_lived,
+        'religion': religion,
+        'politics': politics,
     }
+
+    print(FriendData)
 
     return FriendData
 
