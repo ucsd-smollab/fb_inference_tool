@@ -7,19 +7,19 @@ import mainStyles from "./StageFour.modules.css";
 
 const StageFour = (props) => {
   const exampleFriendData = {
-    name: 'Jacey Smith',
-    mutualFriendCount: '321',
-    profilePictureURL: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREQSG0xK1r5xe4WvQsV7WTNey9OSBunMh6GLY8HcxYUinuG_hHJ4IWUtjeAcV3M7bfhbo&usqp=CAU',
-    workplace: ['UCSD Department of Computer Science'],
-    college: ['University of California San Diego'],
-    highschool: ['No Data'],
-    places: ['Los Angeles', 'San Diego'],
-    religion: ['No Data'],
-    politics: ['No Data']
+    name: '',
+    mutualFriendCount: '',
+    profilePictureURL: '',
+    workplace: [''],
+    college: [''],
+    highschool: [''],
+    places: [''],
+    religion: [''],
+    politics: ['']
   };
 
   const [query, changeQuery] = useState("");
-  const [selectedFriend, changeSelectedFriend] = useState("aaron.broukhim");
+  const [selectedFriend, changeSelectedFriend] = useState("arrfarr");
   const [friendData, changeFriendData] = useState(exampleFriendData);
   const [searchFriendSuggestions, changeSearchFriendSuggestions] = useState([]);
 
