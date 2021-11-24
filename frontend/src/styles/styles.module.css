@@ -159,8 +159,8 @@ h3 {
 }
 
 .profilePicture img{
-    width: auto;
-    height: 100%;
+    width: 100%;
+    height: auto;
 }
 
 .friendInfoHeader {
@@ -240,7 +240,7 @@ h3 {
 .categoryName {
     width: 100%;
     text-align: left;
-    font-size: 30px;
+    font-size: 26px;
     font-weight: bold;
     overflow-wrap: break-word;
 }

@@ -2,7 +2,6 @@ from flask import Flask
 from flask import json
 from flask import request
 from flask import render_template
-# from flask_cors import CORS
 from flask_cors import CORS, cross_origin
 
 import mysql.connector
@@ -234,6 +233,37 @@ def StageThreeStepThree():
     )
     return response
 
+@app.route("/stage_four_friend", methods=["POST"])
+@cross_origin()
+def getFriendData():
+    friend_url = request.get_json()['friend_url']
+    print(friend_url)
+
+    query = "SELECT attribute FROM privacy_db.attribute_count WHERE inf_count>=5 AND mutual_count>1 ORDER BY mutual_count DESC LIMIT 4;"
+    mycursor.execute(query, friend_url)
+    attribute_list = mycursor.fetchall()
+
+    FriendData = {
+        'name': 'Jacey Smith',
+        'mutualFriendCount': '321',
+        'profilePictureURL': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREQSG0xK1r5xe4WvQsV7WTNey9OSBunMh6GLY8HcxYUinuG_hHJ4IWUtjeAcV3M7bfhbo&usqp=CAU',
+        'workplace': ['UCSD Department of Computer Science'],
+        'college': ['University of California San Diego'],
+        'highschool': ['No Data'],
+        'places': ['Los Angeles', 'San Diego'],
+        'religion': ['No Data'],
+        'politics': ['No Data'],
+    }
+
+    return FriendData
+
+@app.route("/stage_four_query", methods=["POST"])
+@cross_origin()
+def getFriendQuery():
+    query = request.get_json()['query']
+    print(query)
+    return {"none": "none"}
+
 @app.route("/stop_scraper", methods=["GET", "POST"])
 @cross_origin()
 def StopScrape():
@@ -265,8 +295,3 @@ if __name__ == '__main__':
     global end_scrape 
     end_scrape = False
     app.run()
-
-'''
-localhost:5000/StageThreeStepOne/mostShared
-GET request
-'''

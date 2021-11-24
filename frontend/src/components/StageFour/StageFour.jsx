@@ -6,8 +6,6 @@ import globalStyles from "../../styles/styles.module.css";
 import mainStyles from "./StageFour.modules.css";
 
 const StageFour = (props) => {
-  const [query, changeQuery] = useState("");
-  const [friendData, changeFriendData] = useState([]);
   const exampleFriendData = {
     name: 'Jacey Smith',
     mutualFriendCount: '321',
@@ -20,9 +18,36 @@ const StageFour = (props) => {
     politics: ['No Data']
   };
 
+  const [query, changeQuery] = useState("");
+  const [selectedFriend, changeSelectedFriend] = useState("aaron.broukhim");
+  const [friendData, changeFriendData] = useState(exampleFriendData);
+  const [searchFriendSuggestions, changeSearchFriendSuggestions] = useState([]);
+
   useEffect(() => {
-    changeFriendData(["gello", "hello", "wow"]);
-  }, []);
+    const request_body = {
+      "friend_url": selectedFriend,
+    }
+    const getFriendData = fetch("http://localhost:5000/stage_four_friend", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(request_body),
+    }).then(res => res.json()).then(data => {
+      changeFriendData(data)
+    });
+  }, [selectedFriend]);
+
+  useEffect(() => {
+    const request_body = {
+      "query": query,
+    }
+    const getFriendQuery= fetch("http://localhost:5000/stage_four_query", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(request_body)
+    }).then(res => res.json()).then(data => {
+      changeSearchFriendSuggestions(data)
+    });
+  }, [query]);
 
   return (
     <div className={globalStyles.background}>
@@ -31,7 +56,7 @@ const StageFour = (props) => {
         <input type="text" placeholder="" onChange={event => changeQuery(event.target.value)} />
       </div>
     </div>
-    <FriendBox friend={exampleFriendData}/>
+    <FriendBox friend={friendData}/>
     </div>
   );
 };
