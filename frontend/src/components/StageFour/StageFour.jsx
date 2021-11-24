@@ -6,7 +6,7 @@ import globalStyles from "../../styles/styles.module.css";
 import mainStyles from "./StageFour.modules.css";
 
 const StageFour = (props) => {
-  const exampleFriendData = {
+  const emptyFriendData = {
     name: '',
     mutualFriendCount: '',
     profilePictureURL: '',
@@ -20,7 +20,7 @@ const StageFour = (props) => {
 
   const [query, changeQuery] = useState("");
   const [selectedFriend, changeSelectedFriend] = useState("danielnewman21");
-  const [friendData, changeFriendData] = useState(exampleFriendData);
+  const [friendData, changeFriendData] = useState(emptyFriendData);
   const [searchFriendSuggestions, changeSearchFriendSuggestions] = useState([]);
 
   useEffect(() => {

@@ -241,13 +241,11 @@ def StageThreeStepThree():
 @cross_origin()
 def getFriendData():
     friend_url = request.get_json()['friend_url']
-    print(friend_url)
+    print(f"friend_url: {friend_url}")
 
     query = "SELECT * FROM privacy_db.friend_profiles WHERE friend_url=%s;"
     mycursor.execute(query, (friend_url,))
     friend_info = mycursor.fetchall()[0]
-
-    print(friend_info)
 
     query = "SELECT workplace FROM privacy_db.work WHERE friend_url=%s;"
     mycursor.execute(query, (friend_url,))
@@ -303,16 +301,24 @@ def getFriendData():
         'politics': politics,
     }
 
-    print(FriendData)
-
     return FriendData
 
 @app.route("/stage_four_query", methods=["POST"])
 @cross_origin()
 def getFriendQuery():
-    query = request.get_json()['query']
-    print(query)
-    return {"none": "none"}
+    search_query = request.get_json()['query']
+
+    query = "SELECT friend_url, name, mutual_count, prof_pic_url FROM privacy_db.friend_profiles WHERE name SOUNDS LIKE %s;"
+    mycursor.execute(query, (search_query,))
+    similar_friends_name = mycursor.fetchall()
+    print(f"names: {similar_friends_name}")
+    
+    query_dict = {}
+    for friend in similar_friends_name:
+        query_dict[friend[0]] = [friend[1], friend[2], friend[3]]
+    print(query_dict)
+    
+    return query_dict
 
 @app.route("/stop_scraper", methods=["GET", "POST"])
 @cross_origin()
