@@ -6,7 +6,7 @@ const Dropdown = (props) => {
     }
 
     return (
-        <div className={globalStyles.mapContainer}>
+        <div style={{"position":"absolute", "marginTop":"-90px"}} className={globalStyles.mapContainer}>
             <div className={globalStyles.SearchContainer}>
                 <div className={globalStyles.SearchBar}>
                     <input style={{"zIndex": "1"}} type="text" placeholder="" onChange={handleChange}/>

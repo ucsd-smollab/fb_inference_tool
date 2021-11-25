@@ -2,7 +2,7 @@ import globalStyles from "../../../styles/styles.module.css";
 
 const FriendBox = (props) => {
   return (
-    <div className={globalStyles.wrapper}>
+    <div style={{"marginTop":"90px"}} className={globalStyles.wrapper}>
       <div className={globalStyles.friendInfoHeader}>
         <div className={globalStyles.headerContainer}>
           <span> 
