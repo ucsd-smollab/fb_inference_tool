@@ -10,8 +10,6 @@ from fbscrape_helpers import *
 from fbInferences import get_list_of_people
 from sql import *
 
-
-
 # connect to database and initialize schemas
 mydb = mysql.connector.connect(
   host="127.0.0.1",
@@ -21,16 +19,19 @@ mydb = mysql.connector.connect(
 mycursor = mydb.cursor()
 sql_file = open("./backend/initialize_db.sql")
 sql_as_string = sql_file.read()
-sqlCommands = sql_as_string.split(';')
+sqlCommands = sql_as_string.strip().split(';')
 for command in sqlCommands:
     try:
         mycursor.execute(command)
-    except:
+    except Exception as e:
         print(f"Command skipped: {command}")
+        print(e)
 mydb.commit()
 sql_file.close()
 
 # connect to chromedriver for scraping
+# path_to_chrome_driver = '/Users/masmart/Downloads/chromedriver'
+# username = "masmart14@gmail.com"
 path_to_chrome_driver = "/Users/aaron/opt/WebDriver/bin/chromedriver"
 username = "aaronbroukhim@aol.com"
 url = "https://mobile.facebook.com/home.php"
@@ -147,7 +148,7 @@ for p, f in friends.items():
         print(f"Actual Mutual Friends: {f.numMutualFriends}")
         print(f"Scraped Mutual Friends: {len(f.mutual_friends)}")
 
-        # STOP SCRAPING 
+        # STOP SCRAPING
         url = 'http://localhost:5000/stop_scraper'
         response = requests.get(url)
         if (response.status_code == 200):

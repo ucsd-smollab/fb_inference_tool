@@ -120,8 +120,13 @@ CREATE TABLE attribute_count (
 
 CREATE TABLE mutual_count (
     friend_url VARCHAR(50) NOT NULL,
-	attribute VARCHAR(100) NOT NULL,
+		attribute VARCHAR(100) NOT NULL,
     category VARCHAR(50) NOT NULL,
     mutual_count SMALLINT NOT NULL DEFAULT 0,
     PRIMARY KEY(friend_url, category, attribute)
+);
+
+CREATE TABLE stop_scraping (
+		stop TINYINT(1),
+    PRIMARY KEY(stop)
 );

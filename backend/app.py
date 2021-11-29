@@ -20,6 +20,20 @@ CORS(app)
 def index():
     return "Hello world"
 
+@app.route("/stage_one", methods=["GET"])
+@cross_origin()
+def StageOne(): # in progress
+    queryt = ";"
+    mycursor.execute(query)
+    myresult = mycursor.fetchall()
+
+    response = app.response_class(
+        response=json.dumps(myresult),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
 @app.route("/stage_three_step_one", methods=["GET"])
 @cross_origin()
 def StageThreeStepOne():
@@ -116,7 +130,7 @@ def StageThreeStepTwoOne():
                 inf_to_display_url.append(url)
         if len(inf_to_display_url) >= 5:
             break
-    
+
     inf_to_display = []
     for url in inf_to_display_url:
         query = "SELECT name FROM privacy_db.friend_profiles WHERE friend_url=%s;"
@@ -214,7 +228,7 @@ def StageThreeStepThree():
                     inf_to_display_url.append(url)
             if len(inf_to_display_url) >= 5:
                 break
-        
+
         inf_to_display = []
         for url in inf_to_display_url:
             query = "SELECT name FROM privacy_db.friend_profiles WHERE friend_url=%s;"
@@ -311,43 +325,41 @@ def getFriendQuery():
     mycursor.execute(query, (search_query,))
     similar_friends_name = mycursor.fetchall()
     print(f"names: {similar_friends_name}")
-    
+
     query_dict = {}
     for friend in similar_friends_name:
         query_dict[friend[0]] = [friend[1], friend[2], friend[3]]
     print(query_dict)
-    
+
     return query_dict
 
 @app.route("/stop_scraper", methods=["GET", "POST"])
 @cross_origin()
 def StopScrape():
-    global end_scrape 
     if request.method == "GET":
+        query = "SELECT COUNT(*) from privacy_db.stop_scraping WHERE stop=1;"
+        mycursor.execute(query)
+        end_scrape = mycursor.fetchall()[0][0]
+        if end_scrape>0:
+            status = 200
+        else:
+            status = 404
         response = app.response_class (
-            response=json.dumps("wow"),
-            status = 400,
+            response=json.dumps(end_scrape),
+            status = status,
             mimetype='application/json'
         )
-        if end_scrape:
-            print("ended scraper")
-            response.status = 200
-        print(end_scrape)
         return response
     else:
-        end_scrape = True
-        print("Changed")
-        end_scrape = True
+        query = "INSERT INTO privacy_db.stop_scraping (stop) VALUES (1);"
+        mycursor.execute(query)
+        end_scrape = 1
         response = app.response_class(
             response=json.dumps(end_scrape),
             status=200,
             mimetype='application/json'
         )
-        print(end_scrape)
         return response
 
 if __name__ == '__main__':
-    global end_scrape 
-    end_scrape = False
-    app.run(threaded=False)
-    print("main running")
+    app.run()
