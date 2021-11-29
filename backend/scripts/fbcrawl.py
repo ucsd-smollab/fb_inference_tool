@@ -10,7 +10,12 @@ from fbscrape_helpers import *
 from fbInferences import get_list_of_people
 from sql import *
 
-
+# Check to ensure Flask server is running
+url = 'http://localhost:5000/'
+try:
+    response = requests.get(url)
+except requests.exceptions.ConnectionError as e:
+    raise Exception('You need to start the Flask server!')
 
 # connect to database and initialize schemas
 mydb = mysql.connector.connect(
@@ -147,7 +152,7 @@ for p, f in friends.items():
         print(f"Actual Mutual Friends: {f.numMutualFriends}")
         print(f"Scraped Mutual Friends: {len(f.mutual_friends)}")
 
-        # STOP SCRAPING 
+        # STOP SCRAPING
         url = 'http://localhost:5000/stop_scraper'
         response = requests.get(url)
         if (response.status_code == 200):
