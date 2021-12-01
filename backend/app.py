@@ -20,15 +20,17 @@ CORS(app)
 def index():
     return "Hello world"
 
-@app.route("/stage_one", methods=["GET"])
+@app.route("/stage_one_query", methods=["GET"])
 @cross_origin()
 def StageOne(): # in progress
-    queryt = ";"
+    query = "SELECT participant_url from privacy_db.participant_profile;"
     mycursor.execute(query)
     myresult = mycursor.fetchall()
+    participant_url = myresult[0][0]
+    url = 'https://www.facebook.com/{}/about'.format(participant_url)
 
     response = app.response_class(
-        response=json.dumps(myresult),
+        response=json.dumps(url),
         status=200,
         mimetype='application/json'
     )
