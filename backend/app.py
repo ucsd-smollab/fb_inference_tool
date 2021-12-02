@@ -22,7 +22,7 @@ def index():
 
 @app.route("/stage_one_query", methods=["GET"])
 @cross_origin()
-def StageOne(): # in progress
+def StageOne(): 
     query = "SELECT participant_url from privacy_db.participant_profile;"
     mycursor.execute(query)
     myresult = mycursor.fetchall()
