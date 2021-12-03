@@ -404,6 +404,7 @@ def StopScrape():
             status=200,
             mimetype='application/json'
         )
+        mydb.commit()
         mycursor.close()
         return response
 
