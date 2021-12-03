@@ -20,7 +20,7 @@ const StageFour = (props) => {
   };
 
   const [query, changeQuery] = useState("Type Name Here");
-  const [selectedFriend, changeSelectedFriend] = useState("danielnewman21");
+  const [selectedFriend, changeSelectedFriend] = useState("bobby.smart.775");
   const [friendData, changeFriendData] = useState(emptyFriendData);
   const [searchFriendSuggestions, changeSearchFriendSuggestions] = useState([]);
 
@@ -28,10 +28,11 @@ const StageFour = (props) => {
     const request_body = {
       "friend_url": selectedFriend,
     }
-    const getFriendData = fetch("http://localhost:5000/stage_four_friend", {
-      method: "POST",
+    const url = "http://localhost:5000/stage_four_friend?friend_url=" + encodeURIComponent(selectedFriend);
+    const getFriendData = fetch(url, {
+      method: "GET",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(request_body),
+      // body: JSON.stringify(request_body),
     }).then(res => res.json()).then(data => {
       changeFriendData(data)
     });

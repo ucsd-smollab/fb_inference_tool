@@ -5,7 +5,7 @@ USE privacy_db;
 
 CREATE TABLE participant_profile (
 	participant_url VARCHAR(50) NOT NULL,
-	name VARCHAR(50) NOT NULL,
+	name VARCHAR(100) NOT NULL,
 	prof_pic_url VARCHAR(400) NOT NULL,
 	perc_comp_total FLOAT(4, 3) UNSIGNED NOT NULL,
 	perc_comp_inf FLOAT(4, 3) UNSIGNED NOT NULL,

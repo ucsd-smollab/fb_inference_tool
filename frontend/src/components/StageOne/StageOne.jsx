@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import globalStyles from "../../styles/styles.module.css";
 import styles from "./StageOne.module.css";
 
-const StageOne = (props) => { 
+const StageOne = (props) => {
   const [url, seturl] = useState([]);
   useEffect(() => {
     const responseUsersShared= fetch("http://localhost:5000/stage_one_query", {
@@ -24,7 +24,7 @@ const StageOne = (props) => {
       <div class={styles.centered}>
       <a href={url} target="_blank" rel="noopener noreferrer">
       <button class={styles.linktofb}>
-        View Your Info
+        View Your Info on Facebook
       </button>
       </a>
       </div>
