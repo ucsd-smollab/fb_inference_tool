@@ -4,23 +4,18 @@ from flask import request
 from flask import render_template
 from flask_cors import CORS, cross_origin
 import mysql.connector
-# from flaskext.mysql import MySQL
-
-# mydb = mysql.connector.connect(
-#   host="127.0.0.1",
-#   user="privacy_admin",
-#   password="kristenisthebest",
-# )
-# mycursor = mydb.cursor()
 
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
-# app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
-# app.config['MYSQL_DATABASE_USER'] = 'privacy_admin'
-# app.config['MYSQL_DATABASE_PASSWORD'] = 'kristenisthebest'
 CORS(app)
-# mysql = MySQL()
-# mysql.init_app(app)
+
+def mysql_connect():
+    mydb = mysql.connector.connect(
+      host="127.0.0.1",
+      user="privacy_admin",
+      password="kristenisthebest",
+    )
+    return mydb
 
 @app.route("/", methods=["GET"])
 def index():
@@ -29,12 +24,7 @@ def index():
 @app.route("/stage_one_query", methods=["GET"])
 @cross_origin()
 def StageOne():
-    # mycursor = mysql.get_db().cursor()
-    mydb = mysql.connector.connect(
-      host="127.0.0.1",
-      user="privacy_admin",
-      password="kristenisthebest",
-    )
+    mydb = mysql_connect()
     mydb.commit()
     mycursor = mydb.cursor()
     query = "SELECT participant_url from privacy_db.participant_profile;"
@@ -54,12 +44,7 @@ def StageOne():
 @app.route("/stage_three_step_one", methods=["GET"])
 @cross_origin()
 def StageThreeStepOne():
-    # mycursor = mysql.get_db().cursor()
-    mydb = mysql.connector.connect(
-      host="127.0.0.1",
-      user="privacy_admin",
-      password="kristenisthebest",
-    )
+    mydb = mysql_connect()
     mydb.commit()
     mycursor = mydb.cursor()
     query_most = "SELECT name FROM privacy_db.friend_profiles ORDER BY perc_comp_inf DESC LIMIT 5;"
@@ -85,14 +70,9 @@ def StageThreeStepOne():
 @app.route("/stage_three_step_two", methods=["GET"])
 @cross_origin()
 def StageThreeStepTwoOne():
-    mydb = mysql.connector.connect(
-      host="127.0.0.1",
-      user="privacy_admin",
-      password="kristenisthebest",
-    )
+    mydb = mysql_connect()
     mydb.commit()
     mycursor = mydb.cursor()
-    # mycursor = mysql.get_db().cursor()
     attribute_query = "SELECT attribute FROM privacy_db.attribute_count WHERE inf_count>=5 AND mutual_count>1 ORDER BY mutual_count DESC LIMIT 1;"
     mycursor.execute(attribute_query)
     attribute = mycursor.fetchall()
@@ -196,14 +176,10 @@ def StageThreeStepTwoOne():
 @app.route("/stage_three_step_three", methods=["GET"])
 @cross_origin()
 def StageThreeStepThree():
-    mydb = mysql.connector.connect(
-      host="127.0.0.1",
-      user="privacy_admin",
-      password="kristenisthebest",
-    )
+    mydb = mysql_connect()
     mydb.commit()
     mycursor = mydb.cursor()
-    # mycursor = mysql.get_db().cursor()
+
     attribute_query = "SELECT attribute FROM privacy_db.attribute_count WHERE inf_count>=5 AND mutual_count>1 ORDER BY mutual_count DESC LIMIT 4;"
     mycursor.execute(attribute_query)
     attribute_list = mycursor.fetchall()
@@ -307,14 +283,10 @@ def StageThreeStepThree():
 @app.route("/stage_four_friend", methods=["GET"])
 @cross_origin()
 def getFriendData():
-    mydb = mysql.connector.connect(
-      host="127.0.0.1",
-      user="privacy_admin",
-      password="kristenisthebest",
-    )
-    # mycursor = mysql.get_db().cursor()
+    mydb = mysql_connect()
     mydb.commit()
     mycursor = mydb.cursor()
+
     friend_url = request.get_json()['friend_url']
     print(f"friend_url: {friend_url}")
 
@@ -381,14 +353,10 @@ def getFriendData():
 @app.route("/stage_four_query", methods=["POST"])
 @cross_origin()
 def getFriendQuery():
-    mydb = mysql.connector.connect(
-      host="127.0.0.1",
-      user="privacy_admin",
-      password="kristenisthebest",
-    )
-    # mycursor = mysql.get_db().cursor()
+    mydb = mysql_connect()
     mydb.commit()
     mycursor = mydb.cursor()
+
     search_query = request.get_json()['query']
 
     query = "SELECT friend_url, name, mutual_count, prof_pic_url FROM privacy_db.friend_profiles WHERE name SOUNDS LIKE %s;"
@@ -408,14 +376,10 @@ def getFriendQuery():
 @app.route("/stop_scraper", methods=["GET", "POST"])
 @cross_origin()
 def StopScrape():
-    mydb = mysql.connector.connect(
-      host="127.0.0.1",
-      user="privacy_admin",
-      password="kristenisthebest",
-    )
-    # mycursor = mysql.get_db().cursor()
+    mydb = mysql_connect()
     mydb.commit()
     mycursor = mydb.cursor()
+    
     if request.method == "GET":
         query = "SELECT COUNT(*) from privacy_db.stop_scraping WHERE stop=1;"
         mycursor.execute(query)
