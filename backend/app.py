@@ -287,7 +287,7 @@ def getFriendData():
     mydb.commit()
     mycursor = mydb.cursor()
 
-    friend_url = request.get_json()['friend_url']
+    friend_url = request.args.get('friend_url')
     print(f"friend_url: {friend_url}")
 
     query = "SELECT * FROM privacy_db.friend_profiles WHERE friend_url=%s;"
@@ -379,7 +379,7 @@ def StopScrape():
     mydb = mysql_connect()
     mydb.commit()
     mycursor = mydb.cursor()
-    
+
     if request.method == "GET":
         query = "SELECT COUNT(*) from privacy_db.stop_scraping WHERE stop=1;"
         mycursor.execute(query)
