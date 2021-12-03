@@ -92,7 +92,7 @@ class FBdriver(webdriver.Chrome):
                 else:
                      all_friends_loaded = True
             last_height = new_height
-        
+
         # getting all url to friends
         friend_elements = self.find_elements_by_css_selector("._55wp._7om2._5pxa._8yo0")
 
@@ -120,7 +120,7 @@ class FBdriver(webdriver.Chrome):
                 if new_height == last_height:
                     all_friends_loaded = True
             last_height = new_height
-        
+
         # getting all url to friends
         friend_elements = self.find_elements_by_css_selector("._5pxa ._5pxc a")
         if not friend_elements:
@@ -203,11 +203,15 @@ class FBdriver(webdriver.Chrome):
     def scrape_work_and_ed(self, friend):
         self.get(format_url(friend, "about_work_and_education"))
 
-        # getting profile image url
-        profile_picture_section = self.find_element_by_class_name("mpmpiqla.aovbcota.fln0ibad.anxc55fr.aw8vmcxp.l54s1dlg.rmzkg9qa.a0ua4ts5")
-        # profile_picture_section = self.find_element_by_class_name("b3onmgus.e5nlhep0.ph5uu5jm.ecm0bbzt.spb7xbtv.bkmhp75w.emlxlaya.s45kfl79.cwj9ozl2")
-        profile_picture_image = profile_picture_section.find_element_by_tag_name("image")
-        profile_picture_url = profile_picture_image.get_attribute("xlink:href")
+        try:
+            # getting profile image url
+            profile_picture_section = self.find_element_by_class_name("mpmpiqla.aovbcota.fln0ibad.anxc55fr.aw8vmcxp.l54s1dlg.rmzkg9qa.a0ua4ts5")
+            # profile_picture_section = self.find_element_by_class_name("b3onmgus.e5nlhep0.ph5uu5jm.ecm0bbzt.spb7xbtv.bkmhp75w.emlxlaya.s45kfl79.cwj9ozl2")
+            profile_picture_image = profile_picture_section.find_element_by_tag_name("image")
+            profile_picture_url = profile_picture_image.get_attribute("xlink:href")
+        except Exception as e:
+            print('Failed to scrape profile picture. Error:', e)
+            profile_picture_url = ''
 
         # work scraping
         sections = self.find_elements_by_css_selector(".dati1w0a.tu1s4ah4.f7vcsfb0.discj3wi > div")
@@ -241,7 +245,7 @@ class FBdriver(webdriver.Chrome):
                 #     facebookPageUrlC = schoolUrlElement[0].get_attribute("href")
             else:
                 continue
-                
+
             if " at " in schoolName:
                 schoolName = schoolName.split("at ")[1]
             tempDict = {
@@ -342,7 +346,7 @@ class FBdriver(webdriver.Chrome):
             "religiousviews": "NA",
             "politicalviews": "NA",
         }
-        
+
         # getting basic info
         basic_info = extract_data(text_elements[2], basic_info)
 
