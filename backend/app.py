@@ -357,9 +357,10 @@ def getFriendQuery():
     mydb.commit()
     mycursor = mydb.cursor()
 
-    search_query = request.args.get('query')
+    search_query = '%' + request.args.get('query') + '%'
 
-    query = "SELECT friend_url, name, mutual_count, prof_pic_url FROM privacy_db.friend_profiles WHERE name SOUNDS LIKE %s;"
+    # query = "SELECT friend_url, name, mutual_count, prof_pic_url FROM privacy_db.friend_profiles WHERE name SOUNDS LIKE %s;"
+    query = "SELECT friend_url, name, mutual_count, prof_pic_url FROM privacy_db.friend_profiles WHERE name LIKE %s;"
     print(query)
     print(search_query)
     mycursor.execute(query, (search_query,))
