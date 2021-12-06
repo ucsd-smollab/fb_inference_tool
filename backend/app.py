@@ -350,14 +350,14 @@ def getFriendData():
     mycursor.close()
     return FriendData
 
-@app.route("/stage_four_query", methods=["POST"])
+@app.route("/stage_four_query", methods=["GET"])
 @cross_origin()
 def getFriendQuery():
     mydb = mysql_connect()
     mydb.commit()
     mycursor = mydb.cursor()
 
-    search_query = request.get_json()['query']
+    search_query = request.args.get('query')
 
     query = "SELECT friend_url, name, mutual_count, prof_pic_url FROM privacy_db.friend_profiles WHERE name SOUNDS LIKE %s;"
     print(query)
