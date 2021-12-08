@@ -83,7 +83,7 @@ def StageThreeStepTwoOne():
         attribute = "Not Enough Data"
 
     # category_query = "SELECT category FROM privacy_db.attribute_count WHERE inf_count>=5 ORDER BY mutual_count DESC LIMIT 1;"
-    category_query = "SELECT category FROM privacy_db.attribute_count ORDER BY mutual_count DESC;"
+    category_query = "SELECT category FROM privacy_db.attribute_count WHERE inf_count>1 ORDER BY mutual_count DESC;"
     mycursor.execute(category_query)
     result = mycursor.fetchall()
     print(result)
@@ -357,22 +357,35 @@ def getFriendQuery():
     mydb.commit()
     mycursor = mydb.cursor()
 
-    search_query = '%' + request.args.get('query') + '%'
+    query = request.args.get('query')
+    if query == '':
+        query = "SELECT friend_url, name, mutual_count, prof_pic_url FROM privacy_db.friend_profiles ORDER BY RAND() LIMIT 4;"
+        mycursor.execute(query)
+        friends = mycursor.fetchall()
+        print(f"names: {friends}")
 
-    # query = "SELECT friend_url, name, mutual_count, prof_pic_url FROM privacy_db.friend_profiles WHERE name SOUNDS LIKE %s;"
-    query = "SELECT friend_url, name, mutual_count, prof_pic_url FROM privacy_db.friend_profiles WHERE name LIKE %s;"
-    print(query)
-    print(search_query)
-    mycursor.execute(query, (search_query,))
-    similar_friends_name = mycursor.fetchall()
-    print(f"names: {similar_friends_name}")
+        query_dict = {}
+        for friend in friends:
+            query_dict[friend[0]] = [friend[1], friend[2], friend[3]]
+        print(query_dict)
+        mycursor.close()
+        return query_dict
+    else:
+        search_query = '%' + query + '%'
+        # query = "SELECT friend_url, name, mutual_count, prof_pic_url FROM privacy_db.friend_profiles WHERE name SOUNDS LIKE %s;"
+        query = "SELECT friend_url, name, mutual_count, prof_pic_url FROM privacy_db.friend_profiles WHERE name LIKE %s;"
+        print(query)
+        print(search_query)
+        mycursor.execute(query, (search_query,))
+        similar_friends_name = mycursor.fetchall()
+        print(f"names: {similar_friends_name}")
 
-    query_dict = {}
-    for friend in similar_friends_name:
-        query_dict[friend[0]] = [friend[1], friend[2], friend[3]]
-    print(query_dict)
-    mycursor.close()
-    return query_dict
+        query_dict = {}
+        for friend in similar_friends_name:
+            query_dict[friend[0]] = [friend[1], friend[2], friend[3]]
+        print(query_dict)
+        mycursor.close()
+        return query_dict
 
 @app.route("/stop_scraper", methods=["GET", "POST"])
 @cross_origin()

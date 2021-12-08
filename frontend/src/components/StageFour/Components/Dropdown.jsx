@@ -1,28 +1,30 @@
 import globalStyles from "../../../styles/styles.module.css";
+import { useState } from "react";
 
 const Dropdown = (props) => {
+    const [hasFocus, setFocus] = useState(false);
     function handleChange(event) {
         props.onChange(event.target.value);
     }
 
     return (
-        <div style={{"position":"absolute", "marginTop":"-90px"}} className={globalStyles.mapContainer}>
+        <div style={{"position":"absolute", "marginTop":"-90px"}} onBlur={() => setFocus(false)} className={globalStyles.mapContainer}>
             <div className={globalStyles.SearchContainer}>
                 <div className={globalStyles.SearchBar}>
-                    <input style={{"zIndex": "1"}} type="text" placeholder="" onChange={handleChange}/>
+                    <input style={{"zIndex": "1"}} type="text" placeholder="" onFocus={() => setFocus(true)} onChange={handleChange}/>
                 </div>
             </div>
             <div className={globalStyles.SearchContainer}>
                 <div className={globalStyles.SearchBar}>
-                    {Object.keys(props.friendSuggestions).map((key, index) => 
-                        <div style={{"display":"flex", "width":"100%", "flexFlow":"row wrap"}}>
+                    {Object.keys(props.friendSuggestions).map((key, index) =>
+                        <div style={{display: hasFocus ? "flex" : "none", "width":"100%", "flexFlow":"row wrap"}}>
                             {index===0 && (
                             <div className={globalStyles.spacer}/>
                             )}
-                            <div style={{"marginTop": "0px", "zIndex": "0", "height":"108px"}} className={index%2 ? globalStyles.friendInfoHeader : globalStyles.friendInfoHeaderOdd} onClick={props.onClick(key)}>
+                            <div onMouseDown={() => {props.onClick(key)}} style={{"marginTop": "0px", "zIndex": "0", "height":"108px", "cursor":"pointer"}} className={index%2 ? globalStyles.friendInfoHeader : globalStyles.friendInfoHeaderOdd}>
                                 <div className={globalStyles.headerContainer}>
-                                <span> 
-                                    <img style={{"width":"80px", "height":"80px", "zIndex":"2"}}className={globalStyles.profilePicture} src={props.friendSuggestions[key][2]}/> 
+                                <span>
+                                    <img style={{"width":"80px", "height":"80px", "zIndex":"2"}}className={globalStyles.profilePicture} src={props.friendSuggestions[key][2]}/>
                                 </span>
                                 <span>
                                     <div style={{"fontSize":"24px"}} className={globalStyles.friendName}>{props.friendSuggestions[key][0]}</div>
