@@ -28,7 +28,7 @@ class FBdriver(webdriver.Chrome):
             username_box.send_keys(username)
             password_box = self.find_element_by_id("m_login_password")
             password_box.send_keys("")
-        retry = 10
+        retry = 60
         logged_in = False
         while retry > 0 and not logged_in:
             if len(self.find_elements_by_css_selector("#rootcontainer")) > 0:
