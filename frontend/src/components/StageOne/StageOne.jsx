@@ -23,9 +23,9 @@ const StageOne = (props) => {
       <div class={globalStyles.mainContent} >
       <div class={styles.centered}>
       <a href={url} target="_blank" rel="noopener noreferrer">
-      <button class={styles.linktofb}>
+      {(url.length>1) && (<button class={styles.linktofb}>
         View Your Info on Facebook
-      </button>
+      </button>)}
       </a>
       </div>
         <div className={globalStyles.ButtonContainer}>

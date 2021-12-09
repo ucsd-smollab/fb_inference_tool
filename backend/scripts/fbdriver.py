@@ -184,12 +184,13 @@ class FBdriver(webdriver.Chrome):
         # load friends facebook page
         self.get("https://facebook.com/" + friend.url)
         # find name element by css selector and return attribute string value
-        elt = self.find_elements_by_css_selector("h1.gmql0nx0.l94mrbxd.p1ri9a11.lzcic4wl")
-        if len(elt) > 1:
-            elt = elt[1]
+        elts = self.find_elements_by_css_selector("h1.gmql0nx0.l94mrbxd.p1ri9a11.lzcic4wl")
+        names = [elt.get_attribute('innerText') for elt in elts]
+        if len(names) > 1:
+            names = [name for name in names if name not in ['Messenger', 'Notifications']]
+            name = names[0]
         else:
-            elt = elt[0]
-        name = elt.get_attribute("innerText")
+            name = names[0]
         return name
 
     def scrape_participant_name(self, participant):
