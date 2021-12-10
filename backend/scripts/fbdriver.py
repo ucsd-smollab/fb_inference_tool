@@ -230,6 +230,8 @@ class FBdriver(webdriver.Chrome):
                 "title": workName,
             }
             workList.append(tempDict)
+        uniqueWorkList = list({v['title']:v for v in workList}.values())
+        workList = uniqueWorkList
 
         # college scraping
         college = sections[1]
@@ -252,6 +254,8 @@ class FBdriver(webdriver.Chrome):
                 "title": schoolName,
             }
             collegeList.append(tempDict)
+        uniqueCollegeList = list({v['title']:v for v in collegeList}.values())
+        collegeList = uniqueCollegeList
 
         # high school scraping
         highSchool = sections[2]
@@ -273,6 +277,8 @@ class FBdriver(webdriver.Chrome):
                 "title": hSchoolName,
             }
             highSchoolList.append(tempDict)
+        uniqueHighSchoolList = list({v['title']:v for v in highSchoolList}.values())
+        highSchoolList = uniqueHighSchoolList
 
         # update profile completion counts
         completionCount = 2

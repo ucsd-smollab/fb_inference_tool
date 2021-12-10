@@ -35,30 +35,30 @@ CREATE TABLE mutual_friends (
 
 CREATE TABLE work (
 	friend_url VARCHAR(200) NOT NULL,
-    workplace VARCHAR(200) NOT NULL,
+    workplace VARCHAR(400) NOT NULL,
     PRIMARY KEY(friend_url, workplace)
 );
 
 CREATE TABLE college (
 	friend_url VARCHAR(200) NOT NULL,
-    college_name VARCHAR(200) NOT NULL,
+    college_name VARCHAR(400) NOT NULL,
     PRIMARY KEY(friend_url, college_name)
 );
 
 CREATE TABLE high_school (
 	friend_url VARCHAR(200) NOT NULL,
-    hs_name VARCHAR(200) NOT NULL,
+    hs_name VARCHAR(400) NOT NULL,
     PRIMARY KEY(friend_url, hs_name)
 );
 
 CREATE TABLE places_lived (
 	friend_url VARCHAR(200) NOT NULL,
-    location VARCHAR(200) NOT NULL,
+    location VARCHAR(400) NOT NULL,
     PRIMARY KEY(friend_url, location)
 );
 
 CREATE TABLE friend_inf (
-	friend_url VARCHAR(500) NOT NULL,
+	friend_url VARCHAR(200) NOT NULL,
     work_inf VARCHAR(1000),
     college_inf VARCHAR(1000),
     high_school_inf VARCHAR(1000),
@@ -70,49 +70,49 @@ CREATE TABLE friend_inf (
 
 CREATE TABLE work_inf (
 	friend_url VARCHAR(200) NOT NULL,
-    workplace VARCHAR(200) NOT NULL,
+    workplace VARCHAR(400) NOT NULL,
     mutual_count SMALLINT DEFAULT '0' NOT NULL,
     PRIMARY KEY(friend_url, workplace)
 );
 
 CREATE TABLE college_inf (
 	friend_url VARCHAR(200) NOT NULL,
-    college_name VARCHAR(200) NOT NULL,
+    college_name VARCHAR(400) NOT NULL,
     mutual_count SMALLINT DEFAULT '0' NOT NULL,
     PRIMARY KEY(friend_url, college_name)
 );
 
 CREATE TABLE high_school_inf (
 	friend_url VARCHAR(200) NOT NULL,
-    hs_name VARCHAR(200) NOT NULL,
+    hs_name VARCHAR(400) NOT NULL,
     mutual_count SMALLINT DEFAULT '0' NOT NULL,
     PRIMARY KEY(friend_url, hs_name)
 );
 
 CREATE TABLE places_lived_inf (
 	friend_url VARCHAR(200) NOT NULL,
-    location VARCHAR(200) NOT NULL,
+    location VARCHAR(400) NOT NULL,
     mutual_count SMALLINT DEFAULT '0' NOT NULL,
     PRIMARY KEY(friend_url, location)
 );
 
 CREATE TABLE religion_inf (
 	friend_url VARCHAR(200) NOT NULL,
-    religious_belief VARCHAR(200) NOT NULL,
+    religious_belief VARCHAR(400) NOT NULL,
     mutual_count SMALLINT DEFAULT '0' NOT NULL,
     PRIMARY KEY(friend_url, religious_belief)
 );
 
 CREATE TABLE politics_inf (
 	friend_url VARCHAR(200) NOT NULL,
-    political_view VARCHAR(200) NOT NULL,
+    political_view VARCHAR(400) NOT NULL,
     mutual_count SMALLINT DEFAULT '0' NOT NULL,
     PRIMARY KEY(friend_url, political_view)
 );
 
 CREATE TABLE attribute_count (
-	attribute VARCHAR(200) NOT NULL,
-    category VARCHAR(200) NOT NULL,
+	attribute VARCHAR(400) NOT NULL,
+    category VARCHAR(400) NOT NULL,
     mutual_count SMALLINT NOT NULL DEFAULT 0,
     inf_count SMALLINT NOT NULL DEFAULT 0,
     PRIMARY KEY(attribute, category)
@@ -120,8 +120,8 @@ CREATE TABLE attribute_count (
 
 CREATE TABLE mutual_count (
     friend_url VARCHAR(200) NOT NULL,
-		attribute VARCHAR(200) NOT NULL,
-    category VARCHAR(200) NOT NULL,
+		attribute VARCHAR(400) NOT NULL,
+    category VARCHAR(400) NOT NULL,
     mutual_count SMALLINT NOT NULL DEFAULT 0,
     PRIMARY KEY(friend_url, category, attribute)
 );

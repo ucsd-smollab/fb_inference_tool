@@ -103,6 +103,7 @@ if not old_data and not "friends" in old_data:
 else:
     friends = old_data["friends"]
 
+
 # manual override if didnt scrape properly
 #prev_friends_scraped = 250
 exception_list = []
@@ -155,18 +156,23 @@ for p, f in friends.items():
             print("starting stage four, inserting inferences into database")
             insert_all_attribute(category_groups, mydb, mycursor)
             for url, friend in friends.items():
-                category_frequency_data = copy.deepcopy(category_groups_template)
-                for category, category_data in category_groups.items():
-                    for name, list_of_urls in category_data.items():
-                        category_frequency_data[category][name] = list(set(get_list_of_people(friend.mutual_friends, participant.url, list_of_urls, num_mutuals_inf)))
-                friend.inference_count = category_frequency_data
-                insert_inf_into_database(friend, mydb, mycursor)
+                if friend.name is not None:
+                    category_frequency_data = copy.deepcopy(category_groups_template)
+                    for category, category_data in category_groups.items():
+                        for name, list_of_urls in category_data.items():
+                            category_frequency_data[category][name] = list(set(get_list_of_people(friend.mutual_friends, participant.url, list_of_urls, num_mutuals_inf)))
+                    friend.inference_count = category_frequency_data
+                    insert_inf_into_database(friend, mydb, mycursor)
             make_mutual_count(mydb, mycursor)
             break
 
     except Exception as e:
         print(f"Command skipped: {command}")
         print(f"Reason: {e}")
+        print(e)
+        if (response.status_code == 200):
+            print('Aborting...')
+            break
         # print(f"exception: {f.url}")
         # print("---------")
         # exception_list.append(f.url)

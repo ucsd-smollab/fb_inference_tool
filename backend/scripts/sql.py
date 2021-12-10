@@ -47,12 +47,11 @@ def insert_scraped_into_database(friend, mydb, mycursor, is_participant=False):
     mydb.commit()
 
 def insert_inf_into_database(friend, mydb, mycursor):
-    # pprint.pprint(friend.inference_count)
     one = 1
     work_max = 0
     work_max_inf = None
     for work in friend.inference_count["work"]:
-        if work=="no_data":
+        if work=="no_data" or friend.attributes["work"]=="NA":
             continue
         mutual_count = len(friend.inference_count["work"][work])
         if mutual_count > work_max:
@@ -71,7 +70,7 @@ def insert_inf_into_database(friend, mydb, mycursor):
     college_max = 0
     college_max_inf = None
     for college in friend.inference_count["college"]:
-        if college=="no_data":
+        if college=="no_data" or friend.attributes["college"]=="NA":
             continue
         mutual_count = len(friend.inference_count["college"][college])
         if mutual_count > college_max:
@@ -89,7 +88,7 @@ def insert_inf_into_database(friend, mydb, mycursor):
     hs_max = 0
     hs_max_inf = None
     for hs in friend.inference_count["highschool"]:
-        if hs=="no_data":
+        if hs=="no_data" or friend.attributes["highschool"]=="NA":
             continue
         mutual_count = len(friend.inference_count["highschool"][hs])
         if mutual_count > hs_max:
@@ -107,7 +106,7 @@ def insert_inf_into_database(friend, mydb, mycursor):
     city_max = 0
     city_max_inf = None
     for city in friend.inference_count["cities"]:
-        if city=="no_data":
+        if city=="no_data" or friend.attributes["places lived"]["list_of_cities"]=="NA":
             continue
         mutual_count = len(friend.inference_count["cities"][city])
         if mutual_count > city_max:
@@ -125,7 +124,7 @@ def insert_inf_into_database(friend, mydb, mycursor):
     religion_max = 0
     religion_max_inf = None
     for religion in friend.inference_count["religiousviews"]:
-        if religion=="no_data":
+        if religion=="no_data" or friend.attributes['contact and basic']['basic_info']["religiousviews"]=="NA":
             continue
         mutual_count = len(friend.inference_count["religiousviews"][religion])
         if mutual_count > religion_max:
@@ -142,7 +141,7 @@ def insert_inf_into_database(friend, mydb, mycursor):
 
     politic_max = 0
     politic_max_inf = None
-    for politic in friend.inference_count["politicalviews"]:
+    for politic in friend.inference_count["politicalviews"] or friend.attributes['contact and basic']['basic_info']["politicalviews"]=="NA":
         if politic=="no_data":
             continue
         mutual_count = len(friend.inference_count["politicalviews"][politic])

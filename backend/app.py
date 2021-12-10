@@ -82,17 +82,9 @@ def StageThreeStepTwoOne():
     else:
         attribute = "Not Enough Data"
 
-    # category_query = "SELECT category FROM privacy_db.attribute_count WHERE inf_count>=5 ORDER BY mutual_count DESC LIMIT 1;"
-    category_query = "SELECT category FROM privacy_db.attribute_count WHERE inf_count>1 ORDER BY mutual_count DESC;"
-    mycursor.execute(category_query)
-    result = mycursor.fetchall()
-    print(result)
-
     category_query = "SELECT category FROM privacy_db.attribute_count WHERE inf_count>=3 ORDER BY mutual_count DESC LIMIT 1;"
     mycursor.execute(category_query)
-    # category = mycursor.fetchall()[0][0]
     result = mycursor.fetchall()
-    print(result)
     category = result[0][0]
 
     participant_url_query = "SELECT participant_url FROM privacy_db.participant_profile;"
