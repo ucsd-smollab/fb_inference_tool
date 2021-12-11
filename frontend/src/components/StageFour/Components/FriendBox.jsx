@@ -5,12 +5,12 @@ const FriendBox = (props) => {
     <div style={{"marginTop":"90px"}} className={globalStyles.wrapper}>
       <div className={globalStyles.friendInfoHeader}>
         <div className={globalStyles.headerContainer}>
-          <span> 
-            <img className={globalStyles.profilePicture} src={props.friend.profilePictureURL}/> 
+          <span>
+            <img className={globalStyles.profilePicture} src={props.friend.shared.profilePictureURL}/>
           </span>
           <span>
-            <div className={globalStyles.friendName}>{props.friend.name}</div>
-            <div className={globalStyles.friendH4}>{props.friend.mutualFriendCount} Mutual Friends</div>
+            <div className={globalStyles.friendName}>{props.friend.shared.name}</div>
+            <div className={globalStyles.friendH4}>{props.friend.shared.mutualFriendCount} Mutual Friends</div>
           </span>
         </div>
       </div>
@@ -24,36 +24,36 @@ const FriendBox = (props) => {
           <div className={globalStyles.centerColumnInfo}>
             <div className={globalStyles.centerColumnItem}>
               <div className={globalStyles.categoryName}>Workplace</div>
-                {props.friend.workplace.map( (entry) =>
+                {props.friend.shared.workplace.map( (entry) =>
                     <div className={globalStyles.knownInfo}>{entry}</div>
                 )}
             </div>
             <div className={globalStyles.centerColumnItem}>
               <div className={globalStyles.categoryName}>College</div>
-                {props.friend.college.map( (entry) =>
+                {props.friend.shared.college.map( (entry) =>
                     <div className={globalStyles.knownInfo}>{entry}</div>
                 )}
             </div>
             <div className={globalStyles.centerColumnItem}>
               <div className={globalStyles.categoryName}>High School</div>
-                {props.friend.highschool.map( (entry) =>
+                {props.friend.shared.highschool.map( (entry) =>
                     <div className={globalStyles.knownInfo}>{entry}</div>
                 )}
             </div>
             <div className={globalStyles.centerColumnItem}>
               <div className={globalStyles.categoryName}>Places Lived</div>
-                {props.friend.places.map( (entry) =>
+                {props.friend.shared.places.map( (entry) =>
                     <div className={globalStyles.knownInfo}>{entry}</div>
                 )}
             </div>
             <div className={globalStyles.centerColumnItem}>
               <div className={globalStyles.categoryName}>Religious Views</div>
-                {props.friend.religion.map( (entry) =>
+                {props.friend.shared.religion.map( (entry) =>
                     <div className={globalStyles.knownInfo}>{entry}</div>
                 )}
             </div>
             <div className={globalStyles.categoryName}>Political Views</div>
-              {props.friend.politics.map( (entry) =>
+              {props.friend.shared.politics.map( (entry) =>
                   <div className={globalStyles.knownInfo}>{entry}</div>
               )}
             </div>

@@ -8,19 +8,29 @@ import mainStyles from "./StageFour.modules.css";
 
 const StageFour = (props) => {
   const emptyFriendData = {
-    name: '',
-    mutualFriendCount: '',
-    profilePictureURL: '',
-    workplace: [''],
-    college: [''],
-    highschool: [''],
-    places: [''],
-    religion: [''],
-    politics: ['']
+    shared: {
+      name: '',
+      mutualFriendCount: '',
+      profilePictureURL: '',
+      workplace: [''],
+      college: [''],
+      highschool: [''],
+      places: [''],
+      religion: [''],
+      politics: ['']
+    },
+    inferred: {
+      work_inf: '',
+      college_inf: '',
+      hs_inf: '',
+      places_inf: '',
+      religion_inf: '',
+      politic_inf: ''
+    }
   };
 
   const [query, changeQuery] = useState("Type Name Here");
-  const [selectedFriend, changeSelectedFriend] = useState("bobby.smart.775");
+  const [selectedFriend, changeSelectedFriend] = useState("");
   const [friendData, changeFriendData] = useState(emptyFriendData);
   const [searchFriendSuggestions, changeSearchFriendSuggestions] = useState([]);
 
@@ -35,13 +45,13 @@ const StageFour = (props) => {
   }, [selectedFriend]);
 
   useEffect(() => {
-    const url = "http://localhost:5000/stage_four_query?query=" + encodeURIComponent(query);
-    const getFriendQuery= fetch(url, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    }).then(res => res.json()).then(data => {
-      changeSearchFriendSuggestions(data)
-    });
+      const url = "http://localhost:5000/stage_four_query?query=" + encodeURIComponent(query);
+      const getFriendQuery= fetch(url, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }).then(res => res.json()).then(data => {
+        changeSearchFriendSuggestions(data)
+      });
   }, [query]);
 
   function handleChange(newValue) {

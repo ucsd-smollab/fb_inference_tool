@@ -312,12 +312,11 @@ def getFriendData():
         'politics': politic_inf,
     }
     data = {
-        'Shared': FriendData,
-        'Inferred': InferenceData,
+        'shared': FriendData,
+        'inferred': InferenceData,
     }
-    print(data)
     mycursor.close()
-    return FriendData
+    return data
 
 @app.route("/stage_four_query", methods=["GET"])
 @cross_origin()
