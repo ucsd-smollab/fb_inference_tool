@@ -242,6 +242,14 @@ def getFriendData():
     mycursor.execute(query, (friend_url,))
     friend_info = mycursor.fetchall()[0]
 
+    query = "SELECT work_inf, college_inf, high_school_inf, places_lived_inf, religion_inf, politic_inf FROM privacy_db.friend_inf WHERE friend_url=%s;"
+    mycursor.execute(query, (friend_url,))
+    all_inf = mycursor.fetchall()
+    if all_inf:
+        (work_inf, college_inf, hs_inf, places_inf, religion_inf, politic_inf) = all_inf[0]
+    else:
+        work_inf, college_inf, hs_inf, places_inf, religion_inf, politic_inf = None;
+
     query = "SELECT workplace FROM privacy_db.work WHERE friend_url=%s;"
     mycursor.execute(query, (friend_url,))
     workplaces = mycursor.fetchall()
@@ -295,6 +303,19 @@ def getFriendData():
         'religion': religion,
         'politics': politics,
     }
+    InferenceData = {
+        'work': work_inf,
+        'college': college_inf,
+        'highschool': hs_inf,
+        'places': places_inf,
+        'religion': religion_inf,
+        'politics': politic_inf,
+    }
+    data = {
+        'Shared': FriendData,
+        'Inferred': InferenceData,
+    }
+    print(data)
     mycursor.close()
     return FriendData
 
