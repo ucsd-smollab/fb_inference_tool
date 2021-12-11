@@ -73,19 +73,13 @@ def StageThreeStepTwoOne():
     mydb = mysql_connect()
     mydb.commit()
     mycursor = mydb.cursor()
-    attribute_query = "SELECT attribute FROM privacy_db.attribute_count WHERE inf_count>=5 AND mutual_count>1 ORDER BY mutual_count DESC LIMIT 1;"
-    mycursor.execute(attribute_query)
-    attribute = mycursor.fetchall()
-    print(attribute)
-    if attribute:
-        attribute = attribute[0][0]
+    attribute_cat_query = "SELECT attribute, category FROM privacy_db.attribute_count WHERE inf_count>=5 AND mutual_count>1 ORDER BY mutual_count DESC LIMIT 1;"
+    mycursor.execute(attribute_cat_query)
+    attribute_cat = mycursor.fetchall()
+    if attribute_cat:
+        (attribute, category) = attribute_cat[0]
     else:
-        attribute = "Not Enough Data"
-
-    category_query = "SELECT category FROM privacy_db.attribute_count WHERE inf_count>=3 ORDER BY mutual_count DESC LIMIT 1;"
-    mycursor.execute(category_query)
-    result = mycursor.fetchall()
-    category = result[0][0]
+        attribute_cat = "Not Enough Data"
 
     participant_url_query = "SELECT participant_url FROM privacy_db.participant_profile;"
     mycursor.execute(participant_url_query)
@@ -123,32 +117,13 @@ def StageThreeStepTwoOne():
         temp_name = mycursor.fetchall()
         shared_to_display.append(temp_name[0])
 
-    five_inf_query = "SELECT friend_url, category FROM privacy_db.mutual_count WHERE category=%s AND attribute=%s ORDER BY mutual_count DESC;"
+    five_inf_query = "SELECT friend_url FROM privacy_db.mutual_count WHERE category=%s AND attribute=%s ORDER BY mutual_count DESC LIMIT 5;"
     val = (category, attribute)
     mycursor.execute(five_inf_query, val)
     five_inf = mycursor.fetchall()
 
-    inf_to_display_url = []
-    for url, cat in five_inf:
-        if cat=="religion" or cat=="politics":
-            query = f"SELECT {cat} FROM privacy_db.friend_profiles WHERE friend_url=%s;"
-            value = (url,)
-            mycursor.execute(query, value)
-            temp_val = mycursor.fetchall()
-            if temp_val=="NA":
-                inf_to_display_url.append(url)
-        else:
-            query = f"SELECT friend_url FROM privacy_db.{cat} WHERE friend_url=%s;"
-            value = (url,)
-            mycursor.execute(query, value)
-            temp_val = mycursor.fetchall()
-            if not temp_val:
-                inf_to_display_url.append(url)
-        if len(inf_to_display_url) >= 5:
-            break
-
     inf_to_display = []
-    for url in inf_to_display_url:
+    for (url,) in five_inf:
         query = "SELECT name FROM privacy_db.friend_profiles WHERE friend_url=%s;"
         value = (url,)
         mycursor.execute(query, value)
@@ -226,32 +201,13 @@ def StageThreeStepThree():
             temp_name = mycursor.fetchall()
             shared_to_display.append(temp_name[0])
 
-        five_inf_query = "SELECT friend_url, category FROM privacy_db.mutual_count WHERE category=%s AND attribute=%s ORDER BY mutual_count DESC;"
+        five_inf_query = "SELECT friend_url, category FROM privacy_db.mutual_count WHERE category=%s AND attribute=%s ORDER BY mutual_count DESC LIMIT 5;"
         val = (category, attribute)
         mycursor.execute(five_inf_query, val)
         five_inf = mycursor.fetchall()
 
-        inf_to_display_url = []
-        for url, cat in five_inf:
-            if cat=="religion" or cat=="politics":
-                query = f"SELECT {cat} FROM privacy_db.friend_profiles WHERE friend_url=%s;"
-                value = (url,)
-                mycursor.execute(query, value)
-                temp_val = mycursor.fetchall()
-                if temp_val=="NA":
-                    inf_to_display_url.append(url)
-            else:
-                query = f"SELECT friend_url FROM privacy_db.{cat} WHERE friend_url=%s;"
-                value = (url,)
-                mycursor.execute(query, value)
-                temp_val = mycursor.fetchall()
-                if not temp_val:
-                    inf_to_display_url.append(url)
-            if len(inf_to_display_url) >= 5:
-                break
-
         inf_to_display = []
-        for url in inf_to_display_url:
+        for (url, _) in five_inf:
             query = "SELECT name FROM privacy_db.friend_profiles WHERE friend_url=%s;"
             value = (url,)
             mycursor.execute(query, value)
@@ -359,15 +315,11 @@ def getFriendQuery():
         query_dict = {}
         for friend in friends:
             query_dict[friend[0]] = [friend[1], friend[2], friend[3]]
-        print(query_dict)
         mycursor.close()
         return query_dict
     else:
         search_query = '%' + query + '%'
-        # query = "SELECT friend_url, name, mutual_count, prof_pic_url FROM privacy_db.friend_profiles WHERE name SOUNDS LIKE %s;"
         query = "SELECT friend_url, name, mutual_count, prof_pic_url FROM privacy_db.friend_profiles WHERE name LIKE %s;"
-        print(query)
-        print(search_query)
         mycursor.execute(query, (search_query,))
         similar_friends_name = mycursor.fetchall()
         print(f"names: {similar_friends_name}")
@@ -375,7 +327,6 @@ def getFriendQuery():
         query_dict = {}
         for friend in similar_friends_name:
             query_dict[friend[0]] = [friend[1], friend[2], friend[3]]
-        print(query_dict)
         mycursor.close()
         return query_dict
 
