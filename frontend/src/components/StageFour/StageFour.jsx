@@ -20,12 +20,12 @@ const StageFour = (props) => {
       politics: ['']
     },
     inferred: {
-      work_inf: '',
-      college_inf: '',
-      hs_inf: '',
-      places_inf: '',
-      religion_inf: '',
-      politic_inf: ''
+      work: '',
+      college: '',
+      highschool: '',
+      places: '',
+      religion: '',
+      politics: ''
     }
   };
 

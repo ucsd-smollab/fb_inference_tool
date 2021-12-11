@@ -27,35 +27,41 @@ const FriendBox = (props) => {
                 {props.friend.shared.workplace.map( (entry) =>
                     <div className={globalStyles.knownInfo}>{entry}</div>
                 )}
+                {props.friend.inferred.work && <div className={globalStyles.inferredInfo}>{props.friend.inferred.work} (inferred)</div>}
             </div>
             <div className={globalStyles.centerColumnItem}>
               <div className={globalStyles.categoryName}>College</div>
                 {props.friend.shared.college.map( (entry) =>
                     <div className={globalStyles.knownInfo}>{entry}</div>
                 )}
+                {props.friend.inferred.college && <div className={globalStyles.inferredInfo}>{props.friend.inferred.college} (inferred)</div>}
             </div>
             <div className={globalStyles.centerColumnItem}>
               <div className={globalStyles.categoryName}>High School</div>
                 {props.friend.shared.highschool.map( (entry) =>
                     <div className={globalStyles.knownInfo}>{entry}</div>
                 )}
+                {props.friend.inferred.highschool && <div className={globalStyles.inferredInfo}>{props.friend.inferred.highschool} (inferred)</div>}
             </div>
             <div className={globalStyles.centerColumnItem}>
               <div className={globalStyles.categoryName}>Places Lived</div>
                 {props.friend.shared.places.map( (entry) =>
                     <div className={globalStyles.knownInfo}>{entry}</div>
                 )}
+                {props.friend.inferred.places && <div className={globalStyles.inferredInfo}>{props.friend.inferred.places} (inferred)</div>}
             </div>
             <div className={globalStyles.centerColumnItem}>
               <div className={globalStyles.categoryName}>Religious Views</div>
                 {props.friend.shared.religion.map( (entry) =>
                     <div className={globalStyles.knownInfo}>{entry}</div>
                 )}
+                {props.friend.inferred.religion && <div className={globalStyles.inferredInfo}>{props.friend.inferred.religion} (inferred)</div>}
             </div>
             <div className={globalStyles.categoryName}>Political Views</div>
               {props.friend.shared.politics.map( (entry) =>
                   <div className={globalStyles.knownInfo}>{entry}</div>
               )}
+              {props.friend.inferred.political && <div className={globalStyles.inferredInfo}>{props.friend.inferred.political} (inferred)</div>}
             </div>
         </div>
       </div>
