@@ -1,5 +1,5 @@
 import time
-
+import re
 from time import sleep
 from friend import Friend
 from selenium import webdriver
@@ -39,7 +39,12 @@ class FBdriver(webdriver.Chrome):
             raise Exception("Login failed.")
         elt = self.find_element_by_css_selector("[role=button]")
         url = elt.get_attribute("href")
-        self.participant_path = url.split("?")[0].split("/")[-1]
+        if ".php" in url:
+            self.get("https://www.facebook.com/profile")
+            url = self.current_url
+            self.participant_path = url.split("/")[-1]
+        else:
+            self.participant_path = url.split("?")[0].split("/")[-1]
 
     # scroll to bottom of the page
     def scroll(self, time):
@@ -53,6 +58,7 @@ class FBdriver(webdriver.Chrome):
         if not href:
             return ("", 0, False)
         href = href.split("/")[-1]
+        href = re.sub('\?refid=[0-9]+', '', href)
         if "mutual friends" in full_text:
             formatted_text = full_text.split(" ")
             for i in range(len(formatted_text)):
