@@ -276,6 +276,14 @@ h3 {
     overflow-wrap: break-word;
 }
 
+.inferredInfo {
+    color: #52c1fc;
+    font-size: 20px;
+    margin-top: 0px;
+    font-weight: normal;
+    overflow-wrap: break-word;
+}
+
 .SearchContainer {
     display: flex;
     width: 100%;
