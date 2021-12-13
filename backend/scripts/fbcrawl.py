@@ -29,9 +29,13 @@ for command in sqlCommands:
 mydb.commit()
 sql_file.close()
 
+# hacky
+response = None
+
 # connect to chromedriver for scraping
 # path_to_chrome_driver = '/Users/masmart/Downloads/chromedriver'
 # username = "masmart14@gmail.com"
+# username = "msmart@ucsd.edu"
 path_to_chrome_driver = "/Users/aaron/opt/WebDriver/bin/chromedriver"
 username = "aaronbroukhim@aol.com"
 url = "https://mobile.facebook.com/home.php"
@@ -152,7 +156,7 @@ for p, f in friends.items():
         # STOP SCRAPING
         url = 'http://localhost:5000/stop_scraper'
         response = requests.get(url)
-        if (response.status_code == 200):
+        if (response is not None) and (response.status_code == 200):
             print("starting stage four, inserting inferences into database")
             insert_all_attribute(category_groups, mydb, mycursor)
             for url, friend in friends.items():
