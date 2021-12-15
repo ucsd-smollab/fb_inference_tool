@@ -174,12 +174,10 @@ for p, f in friends.items():
         print(f"Command skipped: {command}")
         print(f"Reason: {e}")
         print(e)
-        if (response.status_code == 200):
+        if (response is not None) and (response.status_code == 200):
             print('Aborting...')
             break
-        # print(f"exception: {f.url}")
-        # print("---------")
-        # exception_list.append(f.url)
+
 
 mydb.close()
 print(f"exception list: {exception_list}")
