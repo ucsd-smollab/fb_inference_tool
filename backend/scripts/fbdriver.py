@@ -220,71 +220,89 @@ class FBdriver(webdriver.Chrome):
             profile_picture_url = ''
 
         # work scraping
-        sections = self.find_elements_by_css_selector(".dati1w0a.tu1s4ah4.f7vcsfb0.discj3wi > div")
-        workList = []
-        work = sections[0]
-        for w in work.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt"):
-            workName = "NA"
-            if not "Add a " in w.get_attribute("innerText") and not " to show" in w.get_attribute("innerText"):
-                workElement = w.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id")
-                workName = workElement.get_attribute("innerText")
-            else:
-                continue
-            if " at " in workName:
-                workName = workName.split("at ")[1]
-            tempDict = {
-                "title": workName,
-            }
-            workList.append(tempDict)
-        uniqueWorkList = list({v['title']:v for v in workList}.values())
-        workList = uniqueWorkList
+        retries = 1
+        while retries>=0:
+            retries -= 1
+            try:
+                sections = self.find_elements_by_css_selector(".dati1w0a.tu1s4ah4.f7vcsfb0.discj3wi > div")
+                workList = []
+                work = sections[0]
+                for w in work.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt"):
+                    workName = "NA"
+                    if not "Add a " in w.get_attribute("innerText") and not " to show" in w.get_attribute("innerText"):
+                        workElement = w.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id")
+                        workName = workElement.get_attribute("innerText")
+                    else:
+                        continue
+                    if " at " in workName:
+                        workName = workName.split("at ")[1]
+                    tempDict = {
+                        "title": workName,
+                    }
+                    workList.append(tempDict)
+                uniqueWorkList = list({v['title']:v for v in workList}.values())
+                workList = uniqueWorkList
+            except Exception as e:
+                print('Failed to scrape work. Error:', e)
 
         # college scraping
-        college = sections[1]
-        collegeList = []
-        for c in college.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt"):
-            schoolName = "NA"
+        retries = 1
+        while retries>=0:
+            retries -= 1
+            try:
+                college = sections[1]
+                collegeList = []
+                for c in college.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt"):
+                    schoolName = "NA"
 
-            if not "Add a " in c.get_attribute("innerText") and not " to show" in c.get_attribute("innerText"):
-                schoolElement = c.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id")
-                schoolName = schoolElement.get_attribute("innerText")
-                # schoolUrlElement = schoolElement.find_elements_by_css_selector("[role='link']")
-                # if schoolUrlElement:
-                #     facebookPageUrlC = schoolUrlElement[0].get_attribute("href")
-            else:
-                continue
+                    if not "Add a " in c.get_attribute("innerText") and not " to show" in c.get_attribute("innerText"):
+                        schoolElement = c.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id")
+                        schoolName = schoolElement.get_attribute("innerText")
+                        # schoolUrlElement = schoolElement.find_elements_by_css_selector("[role='link']")
+                        # if schoolUrlElement:
+                        #     facebookPageUrlC = schoolUrlElement[0].get_attribute("href")
+                    else:
+                        continue
 
-            if " at " in schoolName:
-                schoolName = schoolName.split("at ")[1]
-            tempDict = {
-                "title": schoolName,
-            }
-            collegeList.append(tempDict)
-        uniqueCollegeList = list({v['title']:v for v in collegeList}.values())
-        collegeList = uniqueCollegeList
+                    if " at " in schoolName:
+                        schoolName = schoolName.split("at ")[1]
+                    tempDict = {
+                        "title": schoolName,
+                    }
+                    collegeList.append(tempDict)
+                uniqueCollegeList = list({v['title']:v for v in collegeList}.values())
+                collegeList = uniqueCollegeList
+            except Exception as e:
+                print('Failed to scrape college. Error:', e)
 
         # high school scraping
-        highSchool = sections[2]
-        highSchoolList = []
-        for h in highSchool.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt"):
-            hSchoolName = "NA"
+        retries = 1
+        while retries>=0:
+            retries -= 1
+            try:
+                highSchool = sections[2]
+                highSchoolList = []
+                for h in highSchool.find_elements_by_css_selector(".rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.o8rfisnq.p8fzw8mz.pcp91wgn.iuny7tx3.ipjc6fyt"):
+                    hSchoolName = "NA"
 
-            if not "Add a " in h.get_attribute("innerText") and not " to show" in h.get_attribute("innerText"):
-                hSchoolElement = h.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id")
-                hSchoolName = hSchoolElement.get_attribute("innerText")
-            else:
-                continue
+                    if not "Add a " in h.get_attribute("innerText") and not " to show" in h.get_attribute("innerText"):
+                        hSchoolElement = h.find_element_by_css_selector(".ii04i59q.a3bd9o3v.jq4qci2q.oo9gr5id")
+                        hSchoolName = hSchoolElement.get_attribute("innerText")
+                    else:
+                        continue
 
-            if " at " in hSchoolName:
-                hSchoolName = hSchoolName.split(" at ")[1]
-            if " to " in hSchoolName:
-                hSchoolName = hSchoolName.split(" to ")[1]
-            tempDict = {
-                "title": hSchoolName,
-            }
-            highSchoolList.append(tempDict)
-        uniqueHighSchoolList = list({v['title']:v for v in highSchoolList}.values())
-        highSchoolList = uniqueHighSchoolList
+                    if " at " in hSchoolName:
+                        hSchoolName = hSchoolName.split(" at ")[1]
+                    if " to " in hSchoolName:
+                        hSchoolName = hSchoolName.split(" to ")[1]
+                    tempDict = {
+                        "title": hSchoolName,
+                    }
+                    highSchoolList.append(tempDict)
+                uniqueHighSchoolList = list({v['title']:v for v in highSchoolList}.values())
+                highSchoolList = uniqueHighSchoolList
+            except Exception as e:
+                print('Failed to scrape highschool. Error:', e)
 
         # update profile completion counts
         completionCount = 2
