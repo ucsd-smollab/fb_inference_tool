@@ -11,6 +11,7 @@ class FBdriver(webdriver.Chrome):
     def __init__(self, executable_path, options=None):
         if options is None:
             options = Options()
+            options.add_argument("--incognito")
             option = webdriver.ChromeOptions()
             chrome_prefs = {}
             option.experimental_options["prefs"] = chrome_prefs
