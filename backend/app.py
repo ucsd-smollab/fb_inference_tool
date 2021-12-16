@@ -79,7 +79,7 @@ def StageThreeStepTwoOne():
     if attribute_cat:
         (attribute, category) = attribute_cat[0]
     else:
-        attribute_cat = "Not Enough Data"
+        raise Exception('Not enough inferences!')
 
     participant_url_query = "SELECT participant_url FROM privacy_db.participant_profile;"
     mycursor.execute(participant_url_query)
