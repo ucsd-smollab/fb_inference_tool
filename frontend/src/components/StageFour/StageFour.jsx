@@ -8,6 +8,7 @@ import mainStyles from "./StageFour.modules.css";
 
 const StageFour = (props) => {
   const emptyFriendData = {
+    initialized: '',
     shared: {
       name: '',
       mutualFriendCount: '',

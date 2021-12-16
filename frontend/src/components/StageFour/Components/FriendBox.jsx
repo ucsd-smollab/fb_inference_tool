@@ -3,7 +3,7 @@ import globalStyles from "../../../styles/styles.module.css";
 const FriendBox = (props) => {
   return (
     <div style={{"marginTop":"90px"}} className={globalStyles.wrapper}>
-      <div className={globalStyles.friendInfoHeader}>
+      {props.friend.initialized && (<div className={globalStyles.friendInfoHeader}>
         <div className={globalStyles.headerContainer}>
           <span>
             <img className={globalStyles.profilePicture} src={props.friend.shared.profilePictureURL}/>
@@ -13,9 +13,9 @@ const FriendBox = (props) => {
             <div className={globalStyles.friendH4}>{props.friend.shared.mutualFriendCount} Mutual Friends</div>
           </span>
         </div>
-      </div>
+      </div>)}
 
-      <div className={globalStyles.friendInfo}>
+      {props.friend.initialized && (<div className={globalStyles.friendInfo}>
         <div className={globalStyles.headerContainer} style={{"marginLeft": "20px"}}>
           <div className={globalStyles.about}>About</div>
         </div>
@@ -64,7 +64,7 @@ const FriendBox = (props) => {
               {props.friend.inferred.political && <div className={globalStyles.inferredInfo}>{props.friend.inferred.political} (inferred)</div>}
             </div>
         </div>
-      </div>
+      </div>)}
     </div>
   );
 };

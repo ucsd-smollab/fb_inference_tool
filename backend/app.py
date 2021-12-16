@@ -312,6 +312,7 @@ def getFriendData():
         'politics': politic_inf,
     }
     data = {
+        'initialized': 'true',
         'shared': FriendData,
         'inferred': InferenceData,
     }
