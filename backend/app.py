@@ -73,7 +73,7 @@ def StageThreeStepTwoOne():
     mydb = mysql_connect()
     mydb.commit()
     mycursor = mydb.cursor()
-    attribute_cat_query = "SELECT attribute, category FROM privacy_db.attribute_count WHERE inf_count>=5 AND mutual_count>1 ORDER BY mutual_count DESC LIMIT 1;"
+    attribute_cat_query = "SELECT attribute, category FROM privacy_db.attribute_count WHERE inf_count>=3 AND mutual_count>1 ORDER BY mutual_count DESC LIMIT 1;"
     mycursor.execute(attribute_cat_query)
     attribute_cat = mycursor.fetchall()
     if attribute_cat:
@@ -147,11 +147,11 @@ def StageThreeStepThree():
     mydb.commit()
     mycursor = mydb.cursor()
 
-    attribute_query = "SELECT attribute FROM privacy_db.attribute_count WHERE inf_count>=5 AND mutual_count>1 ORDER BY mutual_count DESC LIMIT 4;"
+    attribute_query = "SELECT attribute FROM privacy_db.attribute_count WHERE inf_count>=3 ORDER BY mutual_count DESC LIMIT 4;"
     mycursor.execute(attribute_query)
     attribute_list = mycursor.fetchall()
 
-    category_query = "SELECT category FROM privacy_db.attribute_count WHERE inf_count>=5 ORDER BY mutual_count DESC LIMIT 4;"
+    category_query = "SELECT category FROM privacy_db.attribute_count WHERE inf_count>=3 ORDER BY mutual_count DESC LIMIT 4;"
     mycursor.execute(category_query)
     category_li = mycursor.fetchall()
 
