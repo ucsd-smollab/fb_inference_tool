@@ -27,7 +27,7 @@ const StageTwoStepTwo = (props) => {
       <div className={globalStyles.ButtonContainer}>
         <Link to="/StageThreeStepOne">
           <button className={globalStyles.ButtonNav} onClick={() => {
-            /*stopScraper();*/
+            stopScraper();
             console.log("called stopScraper");
           }}>Next</button>
         </Link>
@@ -35,5 +35,5 @@ const StageTwoStepTwo = (props) => {
     </div>
   );
 }
-  
+
 export default StageTwoStepTwo;

@@ -20,7 +20,7 @@ const StageTwoStepOne = (props) => {
       }
     })
   };
-  
+
   return (
     <div className={globalStyles.background}>
       <h1>Facebook can learn about you from:</h1>
@@ -60,8 +60,8 @@ const StageTwoStepOne = (props) => {
         <div className={globalStyles.ButtonContainer}>
           <Link to="/StageTwoStepTwo">
             <button className={globalStyles.ButtonNav} onClick={() => {
-              stopScraper();
-              console.log("called stopScraper");
+              /*stopScraper();*/
+              /*console.log("called stopScraper");*/
             }}>Next</button>
           </Link>
         </div>
