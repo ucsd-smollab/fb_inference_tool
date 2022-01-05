@@ -33,17 +33,14 @@ sql_file.close()
 response = None
 
 # connect to chromedriver for scraping
-# path_to_chrome_driver = '/Users/masmart/Downloads/chromedriver'
-# username = "masmart14@gmail.com"
-# username = "msmart@ucsd.edu"
-path_to_chrome_driver = "/Users/aaron/opt/WebDriver/bin/chromedriver"
-username = "aaronbroukhim@aol.com"
+path_to_chrome_driver = '/Users/masmart/Downloads/chromedriver'
+# path_to_chrome_driver = "/Users/aaron/opt/WebDriver/bin/chromedriver"
 url = "https://mobile.facebook.com/home.php"
 
 driver = FBdriver(executable_path=path_to_chrome_driver)
 driver.set_page_load_timeout(60)
 driver.implicitly_wait(10) # 5 should work on fast computers, increase if getting unable to locate element errors
-driver.login(url, username) # type pw manually
+driver.login(url) # type pw manually
 
 # keep track of time
 total_time = time.time()
@@ -115,7 +112,7 @@ friends_with_most_data = []
 friends_with_least_data = []
 num_friends_scraped = 0
 num_to_scrape = 300 # len(friends) for all
-num_mutual_pages = 1 # -1 for all, otherwise a 8* will be number of friends scraped
+num_mutual_pages = 3 # -1 for all, otherwise a 8* will be number of friends scraped
 num_mutuals_inf = -1 # -1 for all, otherwise sets mutuals to make inferences on
 print(f"friends scraped from pickle: {prev_friends_scraped}")
 for p, f in friends.items():
