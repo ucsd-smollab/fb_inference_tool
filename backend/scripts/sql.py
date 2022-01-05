@@ -62,7 +62,7 @@ def insert_inf_into_database(friend, mydb, mycursor):
             sql = "INSERT INTO work_inf (friend_url, workplace, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
             val = (friend.url, work, mutual_count, mutual_count)
             mycursor.execute(sql, val)
-    if work_max_inf and work_max_inf != "no_data":
+    if work_max_inf and work_max_inf != "no_data" and work_max>1:
         sql = "INSERT INTO attribute_count (attribute, category, inf_count) VALUES (%s, 'work', %s) ON DUPLICATE KEY UPDATE inf_count=inf_count+%s"
         val = (work_max_inf, one, one)
         mycursor.execute(sql, val)
@@ -80,7 +80,7 @@ def insert_inf_into_database(friend, mydb, mycursor):
             sql = "INSERT INTO college_inf (friend_url, college_name, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
             val = (friend.url, college, mutual_count, mutual_count)
             mycursor.execute(sql, val)
-    if college_max_inf and college_max_inf != "no_data":
+    if college_max_inf and college_max_inf != "no_data" and college_max>1:
         sql = "INSERT INTO attribute_count (attribute, category, inf_count) VALUES (%s, 'college', %s) ON DUPLICATE KEY UPDATE inf_count=inf_count+%s"
         val = (college_max_inf, one, one)
         mycursor.execute(sql, val)
@@ -98,7 +98,7 @@ def insert_inf_into_database(friend, mydb, mycursor):
             sql = "INSERT INTO high_school_inf (friend_url, hs_name, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
             val = (friend.url, hs, mutual_count, mutual_count)
             mycursor.execute(sql, val)
-    if hs_max_inf and hs_max_inf != "no_data":
+    if hs_max_inf and hs_max_inf != "no_data" and hs_max>1:
         sql = "INSERT INTO attribute_count (attribute, category, inf_count) VALUES (%s, 'high_school', %s) ON DUPLICATE KEY UPDATE inf_count=inf_count+%s"
         val = (hs_max_inf, one, one)
         mycursor.execute(sql, val)
@@ -116,7 +116,7 @@ def insert_inf_into_database(friend, mydb, mycursor):
             sql = "INSERT INTO places_lived_inf (friend_url, location, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
             val = (friend.url, city, mutual_count, mutual_count)
             mycursor.execute(sql, val)
-    if city_max_inf and city_max_inf != "no_data":
+    if city_max_inf and city_max_inf != "no_data" and city_max>1:
         sql = "INSERT INTO attribute_count (attribute, category, inf_count) VALUES (%s, 'places_lived', %s) ON DUPLICATE KEY UPDATE inf_count=inf_count+%s"
         val = (city_max_inf, one, one)
         mycursor.execute(sql, val)
@@ -134,7 +134,7 @@ def insert_inf_into_database(friend, mydb, mycursor):
             sql = "INSERT INTO religion_inf (friend_url, religious_belief, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
             val = (friend.url, religion, mutual_count, mutual_count)
             mycursor.execute(sql, val)
-    if religion_max_inf and religion_max_inf != "no_data":
+    if religion_max_inf and religion_max_inf != "no_data" and religion_max>1:
         sql = "INSERT INTO attribute_count (attribute, category, inf_count) VALUES (%s, 'religion', %s) ON DUPLICATE KEY UPDATE inf_count=inf_count+%s"
         val = (religion_max_inf, one, one)
         mycursor.execute(sql, val)
@@ -152,7 +152,7 @@ def insert_inf_into_database(friend, mydb, mycursor):
             sql = "INSERT INTO politics_inf (friend_url, political_view, mutual_count) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE mutual_count=mutual_count+%s"
             val = (friend.url, politic, mutual_count, mutual_count)
             mycursor.execute(sql, val)
-    if politic_max_inf and politic_max_inf != "no_data":
+    if politic_max_inf and politic_max_inf != "no_data" and politic_max>1:
         sql = "INSERT INTO attribute_count (attribute, category, inf_count) VALUES (%s, 'politics', %s) ON DUPLICATE KEY UPDATE inf_count=inf_count+%s"
         val = (politic_max_inf, one, one)
         mycursor.execute(sql, val)
