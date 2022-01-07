@@ -12,14 +12,14 @@ import activity from "../../images/activity.png";
 
 const StageTwoStepOne = (props) => {
 
-  const stopScraper = () => {
-    const stop_scrapper_request = fetch("http://localhost:5000/stop_scraper", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-  };
+  // const stopScraper = () => {
+  //   const stop_scrapper_request = fetch("http://localhost:5000/stop_scraper", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json"
+  //     }
+  //   })
+  // };
 
   return (
     <div className={globalStyles.background}>
