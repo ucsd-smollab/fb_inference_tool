@@ -31,7 +31,10 @@ def StageOne():
     mycursor.execute(query)
     myresult = mycursor.fetchall()
     participant_url = myresult[0][0]
-    url = 'https://www.facebook.com/{}/about'.format(participant_url)
+    if 'profile.php' in participant_url:
+        url = 'https://www.facebook.com/{}&sk=about'.format(participant_url)
+    else:
+        url = 'https://www.facebook.com/{}/about'.format(participant_url)
 
     response = app.response_class(
         response=json.dumps(url),
