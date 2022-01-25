@@ -82,7 +82,16 @@ def StageThreeStepTwoOne():
     if attribute_cat:
         (attribute, category) = attribute_cat[0]
     else:
-        raise Exception('Not enough inferences!')
+        mydb = mysql_connect()
+        mydb.commit()
+        mycursor = mydb.cursor()
+        attribute_cat_query = "SELECT attribute, category FROM privacy_db.attribute_count WHERE inf_count>1 ORDER BY mutual_count DESC LIMIT 1;"
+        mycursor.execute(attribute_cat_query)
+        attribute_cat = mycursor.fetchall()
+        if attribute_cat:
+            (attribute, category) = attribute_cat[0]
+        else:
+            raise Exception('Not enough inferences!')
 
     participant_url_query = "SELECT participant_url FROM privacy_db.participant_profile;"
     mycursor.execute(participant_url_query)
@@ -150,11 +159,11 @@ def StageThreeStepThree():
     mydb.commit()
     mycursor = mydb.cursor()
 
-    attribute_query = "SELECT attribute FROM privacy_db.attribute_count WHERE inf_count>=3 ORDER BY mutual_count DESC LIMIT 4;"
+    attribute_query = "SELECT attribute FROM privacy_db.attribute_count WHERE inf_count>=2 ORDER BY mutual_count DESC LIMIT 4;"
     mycursor.execute(attribute_query)
     attribute_list = mycursor.fetchall()
 
-    category_query = "SELECT category FROM privacy_db.attribute_count WHERE inf_count>=3 ORDER BY mutual_count DESC LIMIT 4;"
+    category_query = "SELECT category FROM privacy_db.attribute_count WHERE inf_count>=2 ORDER BY mutual_count DESC LIMIT 4;"
     mycursor.execute(category_query)
     category_li = mycursor.fetchall()
 
