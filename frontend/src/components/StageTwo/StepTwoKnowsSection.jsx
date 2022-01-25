@@ -7,7 +7,7 @@ const StepTwoKnowsSection = (props) => {
     ["lived in Los Angeles", "shared directly"],
     ["interested in nature photography", "inferred from posts"],
     ["visited Yosemite", "inferred from friend's post"],
-    ["stayed at Madison Campground", "inferred from posts invisible"],
+    ["stayed at Madison Campground", "inferred from posts "],
     ["interested in Classical Music", "inferred from web browsing"],
     ["interested in cooking", "inferred from activity"]
   ];
@@ -21,7 +21,7 @@ const StepTwoKnowsSection = (props) => {
         {row.map((item, index) => {
           return (
               <div className={styles.left_and_right}>
-                <span className={styles.left}>{item[0]}</span> 
+                <span className={styles.left}>{item[0]}</span>
                 <span className={styles.right}>{item[1]}</span>
                 <br/>
               </div>
