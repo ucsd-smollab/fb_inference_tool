@@ -9,6 +9,7 @@ from fbdriver import *
 from fbscrape_helpers import *
 from fbInferences import get_list_of_people
 from sql import *
+from selenium.webdriver.chrome.options import Options
 
 # connect to database and initialize schemas
 mydb = mysql.connector.connect(
