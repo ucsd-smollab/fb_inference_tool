@@ -36,7 +36,7 @@ const StageFour = (props) => {
   const [searchFriendSuggestions, changeSearchFriendSuggestions] = useState([]);
 
   useEffect(() => {
-    const url = "http://localhost:5000/stage_four_friend?friend_url=" + encodeURIComponent(selectedFriend);
+    const url = "http://127.0.0.1:5000/stage_four_friend?friend_url=" + encodeURIComponent(selectedFriend);
     const getFriendData = fetch(url, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -46,7 +46,7 @@ const StageFour = (props) => {
   }, [selectedFriend]);
 
   useEffect(() => {
-      const url = "http://localhost:5000/stage_four_query?query=" + encodeURIComponent(query);
+      const url = "http://127.0.0.1:5000/stage_four_query?query=" + encodeURIComponent(query);
       const getFriendQuery= fetch(url, {
         method: "GET",
         headers: { "Content-Type": "application/json" },

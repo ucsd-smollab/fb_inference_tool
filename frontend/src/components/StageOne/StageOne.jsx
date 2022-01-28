@@ -7,7 +7,7 @@ import styles from "./StageOne.module.css";
 const StageOne = (props) => {
   const [url, seturl] = useState([]);
   useEffect(() => {
-    const responseUsersShared= fetch("http://localhost:5000/stage_one_query", {
+    const responseUsersShared= fetch("http://127.0.0.1:5000/stage_one_query", {
       method: "GET",
       headers: {
         "Content-Type": "application/json"

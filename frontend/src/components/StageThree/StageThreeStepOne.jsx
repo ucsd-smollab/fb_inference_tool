@@ -9,7 +9,7 @@ const StageThreeStepOne = (props) => {
   const [friendsSparseShared, changeFriendsSparse] = useState([]);
 
   useEffect(() => {
-    const responseUsersShared= fetch("http://localhost:5000/stage_three_step_one", {
+    const responseUsersShared= fetch("http://127.0.0.1:5000/stage_three_step_one", {
       method: "GET",
       headers: {
         "Content-Type": "application/json"

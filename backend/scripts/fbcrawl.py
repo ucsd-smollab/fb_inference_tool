@@ -33,7 +33,7 @@ sql_file.close()
 response = None
 
 # connect to chromedriver for scraping
-path_to_chrome_driver = '/Users/masmart/Downloads/chromedriver'
+path_to_chrome_driver = '/Users/aaron/bin/Selenium/chromedriver'
 # path_to_chrome_driver = "/Users/aaron/opt/WebDriver/bin/chromedriver"
 url = "https://mobile.facebook.com/home.php"
 
@@ -151,7 +151,7 @@ for p, f in friends.items():
         print(f"Scraped Mutual Friends: {len(f.mutual_friends)}")
 
         # STOP SCRAPING
-        url = 'http://localhost:5000/stop_scraper'
+        url = 'http://127.0.0.1:5000/stop_scraper'
         response = requests.get(url)
         if (response is not None) and (response.status_code == 200):
             print("starting stage four, inserting inferences into database")
