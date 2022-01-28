@@ -16,6 +16,7 @@ class FBdriver(webdriver.Chrome):
             chrome_prefs = {}
             option.experimental_options["prefs"] = chrome_prefs
             options.add_argument(" - window-size=1920x1080")
+            options.add_experimental_option("detach", True)
             chrome_prefs["profile.default_content_settings"] = {"images": 2}
             chrome_prefs["profile.managed_default_content_settings"] = {"images": 2}
         self.friend_lookup_table = None

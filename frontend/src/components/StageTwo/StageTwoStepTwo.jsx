@@ -9,7 +9,7 @@ import styles from "./StageTwoStepTwo.module.css";
 
 const StageTwoStepTwo = (props) => {
   const stopScraper = () => {
-    const stop_scrapper_request = fetch("http://localhost:5000/stop_scraper", {
+    const stop_scrapper_request = fetch("http://127.0.0.1:5000/stop_scraper", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

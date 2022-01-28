@@ -10,7 +10,7 @@ const StageThreeStepTwoOne = (props) => {
   const [prediction, changePrediction] = useState([]);
 
   useEffect(() => {
-    const responseUsersShared= fetch("http://localhost:5000/stage_three_step_two", {
+    const responseUsersShared= fetch("http://127.0.0.1:5000/stage_three_step_two", {
       method: "GET",
       headers: {
         "Content-Type": "application/json"
