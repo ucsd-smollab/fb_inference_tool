@@ -14,16 +14,18 @@ const StageOne = (props) => {
       }
     }).then(res => res.json()).then(data => {
       seturl(data);
+    }).catch(function(e) {
+      console.error(e.message); 
     });
   }, []);
 
   return (
     <div className={globalStyles.background}>
       <h1>What have you shared on your profile?</h1>
-      <div class={globalStyles.mainContent} >
-      <div class={styles.centered}>
+      <div className={globalStyles.mainContent} >
+      <div className={styles.centered}>
       <a href={url} target="_blank" rel="noopener noreferrer">
-      {(url.length>1) && (<button class={styles.linktofb}>
+      {(url.length>1) && (<button className={styles.linktofb}>
         View Your Info on Facebook
       </button>)}
       </a>

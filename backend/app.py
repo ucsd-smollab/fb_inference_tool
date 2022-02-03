@@ -242,12 +242,14 @@ def StageThreeStepThree():
 
 @app.route("/stage_four_friend", methods=["GET"])
 @cross_origin()
-def getFriendData():
+def requestFriendData():
+    return getFriendData(request.args.get('friend_url'))
+
+def getFriendData(friend_url):
     mydb = mysql_connect()
     mydb.commit()
     mycursor = mydb.cursor()
 
-    friend_url = request.args.get('friend_url')
     print(f"friend_url: {friend_url}")
 
     query = "SELECT * FROM privacy_db.friend_profiles WHERE friend_url=%s;"
@@ -260,7 +262,7 @@ def getFriendData():
     if all_inf:
         (work_inf, college_inf, hs_inf, places_inf, religion_inf, politic_inf) = all_inf[0]
     else:
-        work_inf, college_inf, hs_inf, places_inf, religion_inf, politic_inf = None;
+        work_inf = college_inf = hs_inf = places_inf = religion_inf = politic_inf = None
 
     query = "SELECT workplace FROM privacy_db.work WHERE friend_url=%s;"
     mycursor.execute(query, (friend_url,))
@@ -340,6 +342,7 @@ def getFriendQuery():
 
     query = request.args.get('query')
     if query == '':
+        print('empty')
         query = "SELECT friend_url, name, mutual_count, prof_pic_url FROM privacy_db.friend_profiles ORDER BY RAND() LIMIT 4;"
         mycursor.execute(query)
         friends = mycursor.fetchall()
@@ -347,7 +350,17 @@ def getFriendQuery():
 
         query_dict = {}
         for friend in friends:
-            query_dict[friend[0]] = [friend[1], friend[2], friend[3]]
+            has_inf = 0
+            friend_data = getFriendData(friend[0])
+            if (friend_data['shared']['workplace']==['No Data'] and friend_data['inferred']['work']) or \
+                (friend_data['shared']['college']==['No Data'] and friend_data['inferred']['college']) or \
+                (friend_data['shared']['highschool']==['No Data'] and friend_data['inferred']['highschool']) or \
+                (friend_data['shared']['places']==['No Data'] and friend_data['inferred']['places']) or \
+                (friend_data['shared']['religion']==['No Data'] and friend_data['inferred']['religion']) or \
+                (friend_data['shared']['politics']==['No Data'] and friend_data['inferred']['politics']):
+                has_inf = 1
+            query_dict[friend[0]] = [friend[1], friend[2], friend[3], has_inf]
+
         mycursor.close()
         return query_dict
     else:
@@ -359,7 +372,17 @@ def getFriendQuery():
 
         query_dict = {}
         for friend in similar_friends_name:
-            query_dict[friend[0]] = [friend[1], friend[2], friend[3]]
+            has_inf = 0
+            friend_data = getFriendData(friend[0])
+            print(friend_data['shared']['religion'],  friend_data['inferred']['work'])
+            if (friend_data['shared']['workplace']==['No Data'] and friend_data['inferred']['work']) or \
+                (friend_data['shared']['college']==['No Data'] and friend_data['inferred']['college']) or \
+                (friend_data['shared']['highschool']==['No Data'] and friend_data['inferred']['highschool']) or \
+                (friend_data['shared']['places']==['No Data'] and friend_data['inferred']['places']) or \
+                (friend_data['shared']['religion']==['No Data'] and friend_data['inferred']['religion']) or \
+                (friend_data['shared']['politics']==['No Data'] and friend_data['inferred']['politics']):
+                has_inf = 1
+            query_dict[friend[0]] = [friend[1], friend[2], friend[3], has_inf]
         mycursor.close()
         return query_dict
 

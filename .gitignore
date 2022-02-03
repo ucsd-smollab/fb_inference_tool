@@ -105,6 +105,7 @@ celerybeat.pid
 .env
 .venv
 pyvenv.cfg
+include/
 env/
 venv/
 ENV/

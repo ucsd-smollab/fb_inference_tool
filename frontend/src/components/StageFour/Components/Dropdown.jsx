@@ -1,4 +1,5 @@
 import globalStyles from "../../../styles/styles.module.css";
+import blue_star from "/Users/aaron/Desktop/GitHub/fb_inference_tool/frontend/src/images/blue-star.png";
 import { useState } from "react";
 
 const Dropdown = (props) => {
@@ -23,6 +24,11 @@ const Dropdown = (props) => {
                             )}
                             <div onMouseDown={() => {props.onClick(key)}} style={{"marginTop": "0px", "zIndex": "0", "height":"108px", "cursor":"pointer"}} className={index%2 ? globalStyles.friendInfoHeader : globalStyles.friendInfoHeaderOdd}>
                                 <div className={globalStyles.headerContainer}>
+                                <span>
+                                {props.friendSuggestions[key][3]===1 && 
+                                    <img className={globalStyles.blueStar} src={blue_star}/>
+                                }
+                                </span>
                                 <span>
                                     <img style={{"width":"80px", "height":"80px", "zIndex":"2"}}className={globalStyles.profilePicture} src={props.friendSuggestions[key][2]}/>
                                 </span>
