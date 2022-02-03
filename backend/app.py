@@ -260,7 +260,7 @@ def getFriendData():
     if all_inf:
         (work_inf, college_inf, hs_inf, places_inf, religion_inf, politic_inf) = all_inf[0]
     else:
-        work_inf, college_inf, hs_inf, places_inf, religion_inf, politic_inf = None;
+        work_inf, college_inf, hs_inf, places_inf, religion_inf, politic_inf = None, None, None, None, None, None
 
     query = "SELECT workplace FROM privacy_db.work WHERE friend_url=%s;"
     mycursor.execute(query, (friend_url,))
