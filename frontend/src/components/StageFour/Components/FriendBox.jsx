@@ -57,11 +57,13 @@ const FriendBox = (props) => {
                 )}
                 {props.friend.inferred.religion && <div className={globalStyles.inferredInfo}>{props.friend.inferred.religion} (inferred)</div>}
             </div>
-            <div className={globalStyles.categoryName}>Political Views</div>
-              {props.friend.shared.politics.map( (entry) =>
-                  <div className={globalStyles.knownInfo}>{entry}</div>
-              )}
-              {props.friend.inferred.political && <div className={globalStyles.inferredInfo}>{props.friend.inferred.political} (inferred)</div>}
+            <div className={globalStyles.centerColumnItem}>
+              <div className={globalStyles.categoryName}>Political Views</div>
+                {props.friend.shared.politics.map( (entry) =>
+                    <div className={globalStyles.knownInfo}>{entry}</div>
+                )}
+                {props.friend.inferred.politics && <div className={globalStyles.inferredInfo}>{props.friend.inferred.politics} (inferred)</div>}
+              </div>
             </div>
         </div>
       </div>)}
