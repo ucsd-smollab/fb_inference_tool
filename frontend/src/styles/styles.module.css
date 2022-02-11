@@ -159,9 +159,10 @@ h3 {
 }
 
 .blueStar {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
+    width: 15px;
+    height: 15px;
+    margin-left: 2px;
+    margin-bottom: 7px;
 }
 
 .profilePicture img{

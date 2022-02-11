@@ -25,15 +25,18 @@ const Dropdown = (props) => {
                             <div onMouseDown={() => {props.onClick(key)}} style={{"marginTop": "0px", "zIndex": "0", "height":"108px", "cursor":"pointer"}} className={index%2 ? globalStyles.friendInfoHeader : globalStyles.friendInfoHeaderOdd}>
                                 <div className={globalStyles.headerContainer}>
                                 <span>
-                                {props.friendSuggestions[key][3]===1 && 
-                                    <img className={globalStyles.blueStar} src={blue_star}/>
-                                }
                                 </span>
                                 <span>
                                     <img style={{"width":"80px", "height":"80px", "zIndex":"2"}}className={globalStyles.profilePicture} src={props.friendSuggestions[key][2]}/>
                                 </span>
                                 <span>
-                                    <div style={{"fontSize":"24px"}} className={globalStyles.friendName}>{props.friendSuggestions[key][0]}</div>
+                                    <span style={{"fontSize":"24px"}} className={globalStyles.friendName}>{props.friendSuggestions[key][0]}</span>
+                                    {/* {props.friendSuggestions[key][3]===1 && 
+                                        <img className={globalStyles.blueStar} src={blue_star}/>
+                                    } */}
+                                    {props.friendSuggestions[key][3]===1 && 
+                                        <span className={globalStyles.friendName} style={{color: "#52c1fc"}}>*</span>
+                                    } 
                                     <div className={globalStyles.friendH5} style={{"justifySelf": "left"}}>{props.friendSuggestions[key][1]} Mutual Friends</div>
                                 </span>
                                 </div>
