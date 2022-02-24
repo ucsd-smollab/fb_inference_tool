@@ -128,7 +128,7 @@ def insert_inf_into_database(friend, mydb, mycursor):
         if religion=="no_data" or friend.attributes['contact and basic']['basic_info']["religiousviews"]!="NA":
             continue
         mutual_count = len(friend.inference_count["religiousviews"][religion])
-        if mutual_count > religion_max:
+        if mutual_count >= threshold and mutual_count > religion_max:
             religion_max = mutual_count
             religion_max_inf = religion
         if mutual_count:

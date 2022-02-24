@@ -18,7 +18,7 @@ mydb = mysql.connector.connect(
   password="kristenisthebest",
 )
 mycursor = mydb.cursor()
-sql_file = open("./backend/initialize_db.sql")
+sql_file = open("./../backend/initialize_db.sql")
 sql_as_string = sql_file.read()
 sqlCommands = sql_as_string.strip().split(';')
 for command in sqlCommands:
