@@ -18,7 +18,7 @@ mydb = mysql.connector.connect(
   password="kristenisthebest",
 )
 mycursor = mydb.cursor()
-sql_file = open("./../backend/initialize_db.sql")
+sql_file = open("./backend/initialize_db.sql")
 sql_as_string = sql_file.read()
 sqlCommands = sql_as_string.strip().split(';')
 for command in sqlCommands:
@@ -34,11 +34,13 @@ sql_file.close()
 response = None
 
 # connect to chromedriver for scraping
+# path_to_chrome_driver = '/Users/masmart/Downloads/chromedriver'
 path_to_chrome_driver = '/Users/aaron/bin/Selenium/chromedriver'
 # path_to_chrome_driver = "/Users/aaron/opt/WebDriver/bin/chromedriver"
 url = "https://mobile.facebook.com/home.php"
 
 driver = FBdriver(executable_path=path_to_chrome_driver)
+driver.maximize_window()
 driver.set_page_load_timeout(60)
 driver.implicitly_wait(10) # 5 should work on fast computers, increase if getting unable to locate element errors
 driver.login(url) # type pw manually
