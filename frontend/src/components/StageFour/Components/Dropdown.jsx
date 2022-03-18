@@ -1,5 +1,5 @@
 import globalStyles from "../../../styles/styles.module.css";
-import blue_star from "/Users/aaron/Desktop/GitHub/fb_inference_tool/frontend/src/images/blue-star.png";
+import blue_star from "../../../images/blue-star.png";
 import { useState } from "react";
 
 const Dropdown = (props) => {
@@ -31,12 +31,12 @@ const Dropdown = (props) => {
                                 </span>
                                 <span>
                                     <span style={{"fontSize":"24px"}} className={globalStyles.friendName}>{props.friendSuggestions[key][0]}</span>
-                                    {/* {props.friendSuggestions[key][3]===1 && 
+                                    {/* {props.friendSuggestions[key][3]===1 &&
                                         <img className={globalStyles.blueStar} src={blue_star}/>
                                     } */}
-                                    {props.friendSuggestions[key][3]===1 && 
+                                    {props.friendSuggestions[key][3]===1 &&
                                         <span className={globalStyles.friendName} style={{color: "#52c1fc"}}>*</span>
-                                    } 
+                                    }
                                     <div className={globalStyles.friendH5} style={{"justifySelf": "left"}}>{props.friendSuggestions[key][1]} Mutual Friends</div>
                                 </span>
                                 </div>
